@@ -1,2 +1,2 @@
-# seatable-plugin-leave
-The plugin to show leave info.
+# seatable-plugin-timeline
+The plugin to show timeline.
