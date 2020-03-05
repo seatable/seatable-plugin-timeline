@@ -13,4 +13,4 @@ class TaskList {
 
 export default TaskList;
 
-window.app.registerPluginItemCallback('test', TaskList.execute);
+window.app.registerPluginItemCallback('seatable-plugin-timeline', TaskList.execute);

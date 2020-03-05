@@ -22,7 +22,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       isLoading: true,
-      isShowDialog: props.isShowDialog || true,
+      showDialog: props.showDialog || false,
       isShowTimelineSetting: false,
       settings: {},
       selectedDate: dates.getToday('YYYY-MM-DD'),
@@ -37,7 +37,7 @@ class App extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({isShowDialog: nextProps.isShowDialog});
+    this.setState({showDialog: nextProps.showDialog});
   }
 
   async init() {
@@ -75,7 +75,7 @@ class App extends React.Component {
   resetData = () => {
     this.setState({
       isLoading: false,
-      isShowDialog: true,
+      showDialog: true,
     });
   }
 
@@ -84,7 +84,7 @@ class App extends React.Component {
   }
 
   onPluginToggle = () => {
-    this.setState({isShowDialog: false});
+    this.setState({showDialog: false});
   }
 
   renderBtnGroups = () => {
@@ -171,8 +171,8 @@ class App extends React.Component {
   }
 
   render() {
-    let { isLoading, isShowDialog, isShowTimelineSetting, settings, selectedDate, selectedTimelineView } = this.state;
-    if (isLoading) {
+    let { isLoading, showDialog, isShowTimelineSetting, settings, selectedDate, selectedTimelineView } = this.state;
+    if (isLoading || !showDialog) {
       return '';
     }
     let tables = this.dtable.getTables();
@@ -190,7 +190,7 @@ class App extends React.Component {
     console.log(rows);
     console.log(`----------- Timeline plugin logs end -----------`);
     return (
-      <Modal isOpen={isShowDialog} toggle={this.onPluginToggle} className="dtable-plugin plugin-container" size='lg'>
+      <Modal isOpen={true} toggle={this.onPluginToggle} className="dtable-plugin plugin-container" size='lg'>
         <ModalHeader className="plugin-header" close={this.renderBtnGroups()}>{'Timeline'}</ModalHeader>
         <ModalBody className="plugin-body position-relative">
           <Timeline
