@@ -1,6 +1,5 @@
 .dtable-plugin.plugin-container {
-  width: 1398px;
-  max-width: 1398px;
+  max-width: 90%;
   position: absolute;
   margin-left: 50%;
   transform: translateX(-50%) !important;
@@ -8,8 +7,24 @@
   bottom: 0;
 }
 
+.plugin-container .plugin-header {
+  align-items: center;
+  padding: 10px 1rem;
+}
+
+.plugin-container .modal-title {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.plugin-container .modal-title .dtable-icon-leave {
+  margin-right: 10px;
+}
+
 .plugin-container .modal-content {
   height: 100%;
+  overflow: hidden;
 }
 
 .plugin-container .plugin-body {

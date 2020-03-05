@@ -191,7 +191,10 @@ class App extends React.Component {
     console.log(`----------- Timeline plugin logs end -----------`);
     return (
       <Modal isOpen={true} toggle={this.onPluginToggle} className="dtable-plugin plugin-container" size='lg'>
-        <ModalHeader className="plugin-header" close={this.renderBtnGroups()}>{'Timeline'}</ModalHeader>
+        <ModalHeader className="plugin-header" close={this.renderBtnGroups()}>
+          <i className="dtable-font dtable-icon-leave"></i>
+          <span>{'Timeline'}</span>
+        </ModalHeader>
         <ModalBody className="plugin-body position-relative">
           <Timeline
             rows={rows}
