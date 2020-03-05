@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TimelineHeader from '../header/timeline-header';
-import ViewportRight from '../viewport-right';
+import ViewportRight from '../timeline-viewport/viewport-right';
 import { dates } from '../../utils';
 
 const propTypes = {

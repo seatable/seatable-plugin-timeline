@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import moment from 'moment';
-import EventRow from './event-row';
-import { dates } from '../utils';
-import { ROW_HEIGHT, COLUMN_WIDTH, zIndexs } from '../constants';
-import SingleSelectFormatter from '../components/cell-formatter/single-select-formatter';
+import EventRow from '../event-row';
+import { dates } from '../../utils';
+import { ROW_HEIGHT, COLUMN_WIDTH, zIndexs } from '../../constants';
+import SingleSelectFormatter from '../../components/cell-formatter/single-select-formatter';
 
 const propTypes = {
   isToday: PropTypes.bool,

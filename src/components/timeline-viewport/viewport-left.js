@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import EventRow from './event-row';
-import EventCell from './event-cell';
-import CollaboratorFormatter from './cell-formatter/collaborator-formatter';
+import EventRow from '../event-row';
+import EventCell from '../event-cell';
+import CollaboratorFormatter from '../cell-formatter/collaborator-formatter';
 
 const propTypes = {
   rows: PropTypes.array,

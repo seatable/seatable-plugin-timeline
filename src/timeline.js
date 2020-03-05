@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import TimelineToolbar from './components/timeline-toolbar';
-import ViewportLeft from './components/viewport-left';
+import ViewportLeft from './components/timeline-viewport/viewport-left';
 import Month from './components/timeline-views/month';
 import { dates } from './utils';
 import { NAVIGATE, VIEW_TYPE, DATE_UNIT, zIndexs, COLUMN_WIDTH } from './constants';

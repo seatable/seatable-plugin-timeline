@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
-import DTable from './sdk/dtable';
+import DTable from 'dtable-sdk';
 import Timeline from './timeline';
 import TimelineSetting from './components/timeline-setting';
 import TimelineRow from './model/timeline-row';
