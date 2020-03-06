@@ -53,7 +53,7 @@ class ViewportRight extends React.Component {
 
   renderEventCells = (row) => {
     let { startDateOfMonth } = this.props;
-    let { collaborator, events } = row;
+    let { user, events } = row;
     if (!Array.isArray(events)) {
       return [];
     }
@@ -65,7 +65,7 @@ class ViewportRight extends React.Component {
       if (duration < 1) {
         return null;
       }
-      return <div key={`timeline-event-cell-${collaborator}-${index}`} className="timeline-event-cell">
+      return <div key={`timeline-event-cell-${user}-${index}`} className="timeline-event-cell">
         <SingleSelectFormatter
           label={label}
           bgColor={bgColor}

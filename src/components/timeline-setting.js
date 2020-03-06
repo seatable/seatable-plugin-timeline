@@ -8,7 +8,7 @@ import '../css/timeline-setting.css';
 const propTypes = {
   tables: PropTypes.array,
   views: PropTypes.array,
-  collaboratorColumns: PropTypes.array,
+  userColumns: PropTypes.array,
   singleSelectColumns: PropTypes.array,
   dateColumns: PropTypes.array,
   settings: PropTypes.object,
@@ -48,7 +48,7 @@ class TimelineSetting extends React.Component {
   };
 
   render() {
-    let { tables, views, collaboratorColumns, singleSelectColumns, dateColumns } = this.props;
+    let { tables, views, userColumns, singleSelectColumns, dateColumns } = this.props;
     return (
       <div className="plugin-timeline-setting position-absolute" style={{zIndex: zIndexs.TIMELINE_SETTING}}>
         <div className="setting-container">
@@ -67,11 +67,11 @@ class TimelineSetting extends React.Component {
               </div>
               <div className="split-line"></div>
               <div className="setting-item user-setting">
-                <div className="title">姓名字段</div>
-                {this.renderSelector(collaboratorColumns, SETTING_KEY.COLLABORATOR_COLUMN_NAME, 'name', 'name')}
+                <div className="title">名称字段</div>
+                {this.renderSelector(userColumns, SETTING_KEY.USER_COLUMN_NAME, 'name', 'name')}
               </div>
               <div className="setting-item color-setting">
-                <div className="title">请假类型字段</div>
+                <div className="title">颜色标签字段</div>
                 {this.renderSelector(singleSelectColumns, SETTING_KEY.SINGLE_SELECT_COLUMN_NAME, 'name', 'name')}
               </div>
               <div className="split-line"></div>

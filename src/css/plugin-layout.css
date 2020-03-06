@@ -18,7 +18,9 @@
   line-height: 1;
 }
 
-.plugin-container .modal-title .dtable-icon-leave {
+.plugin-container .modal-title .plugin-logo {
+  width: 32px;
+  height: 32px;
   margin-right: 10px;
 }
 

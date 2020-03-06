@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import EventRow from '../event-row';
 import EventCell from '../event-cell';
-import CollaboratorFormatter from '../cell-formatter/collaborator-formatter';
+import UserFormatter from '../cell-formatter/user-formatter';
 
 const propTypes = {
   rows: PropTypes.array,
@@ -11,11 +11,11 @@ const propTypes = {
 
 class ViewportLeft extends React.Component {
 
-  renderCells = (collaborator) => {
+  renderCells = (user) => {
     let cell = <EventCell
-      key={`timeline-left-event-cell-${collaborator}`}
-      formatter={CollaboratorFormatter}
-      value={collaborator}
+      key={`timeline-left-event-cell-${user}`}
+      formatter={UserFormatter}
+      value={user}
     />
     return [cell];
   }
@@ -37,13 +37,13 @@ class ViewportLeft extends React.Component {
 
     return (
       <div className="viewport-left" ref={ref => this.viewportLeft = ref} onScroll={this.onViewportLeftScroll}>
-        <div className="collaborator-rows">
+        <div className="user-rows">
           {Array.isArray(rows) && rows.map((r, index) => {
-            let { collaborator } = r;
+            let { user } = r;
             return (
               <EventRow
-                key={`timeline-collaborator-row-${index}`}
-                cells={this.renderCells(collaborator)}
+                key={`timeline-user-row-${index}`}
+                cells={this.renderCells(user)}
               />
             );
           })}

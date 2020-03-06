@@ -1,7 +1,7 @@
 export default class TimelineRow {
 
   constructor(object = {}) {
-    this.collaborator = object.collaborator || '';
+    this.user = object.user || '';
     this.events = object.events || [];
   }
 }

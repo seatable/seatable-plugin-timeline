@@ -11,6 +11,7 @@ import { dates } from './utils';
 import moment from 'moment';
 
 import './css/plugin-layout.css';
+import timeLogo from './assets/image/timeline.png';
 
 const propTypes = {
   showDialog: PropTypes.bool
@@ -127,6 +128,8 @@ class App extends React.Component {
 
   getRows = (tableName, viewName) => {
     let { settings, selectedDate, selectedTimelineView } = this.state;
+    let { collaborators } = window.app;
+    let CellType = this.dtable.getCellType();
     let table = this.dtable.getTableByName(tableName);
     let formattedDate = moment(selectedDate);
     let startOfSelectedDate, endOfSelectedDate, rows = [];
@@ -134,40 +137,50 @@ class App extends React.Component {
       startOfSelectedDate = formattedDate.startOf(DATE_UNIT.MONTH).format('YYYY-MM-DD');
       endOfSelectedDate = formattedDate.endOf(DATE_UNIT.MONTH).format('YYYY-MM-DD');
     }
-    let { collaborator_column_name, single_select_column_name, start_time_column_name, end_time_column_name } = settings;
-    if (!collaborator_column_name ||
+    let { user_column_name, single_select_column_name, start_time_column_name, end_time_column_name } = settings;
+    if (!user_column_name ||
         !single_select_column_name ||
         !start_time_column_name ||
         !end_time_column_name) {
       return [];
     }
+    let userColumn = this.dtable.getColumnByName(table, user_column_name);
     let singleSelectColumn = this.dtable.getColumnByName(table, single_select_column_name);
     let options = singleSelectColumn && singleSelectColumn.data ? singleSelectColumn.data.options : [];
+    let { type: userColumnType } = userColumn;
     this.dtable.forEachRow(tableName, viewName, (row) => {
-      let collaborator = row[collaborator_column_name];
+      let user = row[user_column_name];
       let label = row[single_select_column_name];
       let option = options.find(item => item.name === label);
       let bgColor = option.color;
       let start = row[start_time_column_name];
       let end = row[end_time_column_name];
       let isCurrentRange = moment(start).isBetween(startOfSelectedDate, endOfSelectedDate);
-      if (collaborator) {
-        collaborator.forEach((item) => {
-          let index = rows.findIndex(r => r.collaborator === item);
-          let event = new Event({row, label, bgColor, start, end});
-          event.row = row;
-          if (index > -1 && isCurrentRange) {
-            rows[index].events.push(event);
-          } else if (index < 0){
-            rows.push(new TimelineRow({
-              collaborator: item,
-              events: isCurrentRange ? [event] : []
-            }));
-          }
-        });
+      if (user) {
+        if (userColumnType === CellType.TEXT) {
+          this.updateRows(rows, user, row, label, bgColor, start, end, isCurrentRange);
+        } else if (userColumnType === CellType.COLLABORATOR) {
+          user.forEach((item) => {
+            let collaborator = collaborators.find(c => c.email === item) || {};
+            this.updateRows(rows, collaborator.name, row, label, bgColor, start, end, isCurrentRange);
+          });
+        }
       }
     });
     return rows;
+  }
+
+  updateRows = (rows, user, row, label, bgColor, start, end, isCurrentRange) => {
+    let index = rows.findIndex(r => r.user === user);
+    let event = new Event({row, label, bgColor, start, end});
+    if (index > -1 && isCurrentRange) {
+      rows[index].events.push(event);
+    } else if (index < 0){
+      rows.push(new TimelineRow({
+        user,
+        events: isCurrentRange ? [event] : []
+      }));
+    }
   }
 
   render() {
@@ -182,7 +195,10 @@ class App extends React.Component {
     let selectedView = this.getSelectedView(selectedTable) || views[0];
     let { name: viewName } = selectedView;
     let CellType = this.dtable.getCellType();
-    let collaboratorColumns = this.dtable.getColumnsByType(selectedTable, CellType.COLLABORATOR);
+    let userColumns = [
+      ...this.dtable.getColumnsByType(selectedTable, CellType.COLLABORATOR),
+      ...this.dtable.getColumnsByType(selectedTable, CellType.TEXT)
+    ];
     let singleSelectColumns = this.dtable.getColumnsByType(selectedTable, CellType.SINGLE_SELECT);
     let dateColumns = this.dtable.getColumnsByType(selectedTable, CellType.DATE);
     let rows = this.getRows(tableName, viewName);
@@ -192,7 +208,7 @@ class App extends React.Component {
     return (
       <Modal isOpen={true} toggle={this.onPluginToggle} className="dtable-plugin plugin-container" size='lg'>
         <ModalHeader className="plugin-header" close={this.renderBtnGroups()}>
-          <i className="dtable-font dtable-icon-leave"></i>
+          <img className="plugin-logo" src={timeLogo} />
           <span>{'Timeline'}</span>
         </ModalHeader>
         <ModalBody className="plugin-body position-relative">
@@ -207,7 +223,7 @@ class App extends React.Component {
               tables={tables}
               selectedTable={selectedTable}
               views={views}
-              collaboratorColumns={collaboratorColumns}
+              userColumns={userColumns}
               singleSelectColumns={singleSelectColumns}
               dateColumns={dateColumns}
               settings={settings}

@@ -21,12 +21,12 @@ class Timeline extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isShowCollaborators: true
+      isShowUsers: true
     };
   }
 
-  onShowCollaboratorsToggle = () => {
-    this.setState({isShowCollaborators: !this.state.isShowCollaborators});
+  onShowUsersToggle = () => {
+    this.setState({isShowUsers: !this.state.isShowUsers});
   }
 
   onNavigate = (action) => {
@@ -69,18 +69,18 @@ class Timeline extends React.Component {
   }
 
   render() {
-    let { isShowCollaborators } = this.state;
+    let { isShowUsers } = this.state;
     let { rows, selectedDate } = this.props;
     let isToday = this.isToday();
     let days = dates.getDaysInMonth(selectedDate);
     let startDateOfMonth = moment(selectedDate).startOf(DATE_UNIT.MONTH).format('YYYY-MM-DD');
     let minWidth = days.length * COLUMN_WIDTH;
     let rightPaneWrapperStyle = {
-      marginLeft: isShowCollaborators && 180
+      marginLeft: isShowUsers && 180
     }
     return (
       <div className="timeline-container position-relative">
-        {isShowCollaborators &&
+        {isShowUsers &&
           <div className="left-pane-wrapper position-absolute" style={{zIndex: zIndexs.LEFT_PANE_WRAPPER}}>
             <div className="blank-zone"></div>
             <ViewportLeft
@@ -95,8 +95,8 @@ class Timeline extends React.Component {
             isToday={isToday}
             days={days}
             selectedDate={selectedDate}
-            isShowCollaborators={isShowCollaborators}
-            onShowCollaboratorsToggle={this.onShowCollaboratorsToggle}
+            isShowUsers={isShowUsers}
+            onShowUsersToggle={this.onShowUsersToggle}
             onNavigate={this.onNavigate}
           />
           <Month

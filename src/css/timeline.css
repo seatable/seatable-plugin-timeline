@@ -233,7 +233,7 @@
 
 .viewport-right .no-events {
   width: 100%;
-  min-height: 400px;
+  height: 100%;
 }
 
 .today-mark-line {
