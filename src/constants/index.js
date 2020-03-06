@@ -21,6 +21,8 @@ const ROW_HEIGHT = 50;
 
 const COLUMN_WIDTH = 40;
 
+const DEFAULT_BG_COLOR = '#3b88fd';
+
 export {
   SETTING_KEY,
   VIEW_TYPE,
@@ -29,4 +31,5 @@ export {
   zIndexs,
   ROW_HEIGHT,
   COLUMN_WIDTH,
+  DEFAULT_BG_COLOR
 };

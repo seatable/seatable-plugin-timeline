@@ -43,6 +43,7 @@ class Timeline extends React.Component {
     } else if (action === NAVIGATE.TODAY) {
       selectedDate = dates.getToday('YYYY-MM-DD');
     }
+    this.resetScroll();
     this.props.onNavigate(selectedDate);
   }
 
@@ -60,12 +61,20 @@ class Timeline extends React.Component {
     return false;
   }
 
+  resetScroll = () => {
+    if (this.gridView && this.viewportLeft) {
+      this.gridView.setGridViewScroll({scrollLeft: 0, scrollTop: 0});
+      this.gridView.setViewportRightScroll({scrollLeft: 0, scrollTop: 0});
+      this.viewportLeft.setViewportLeftScroll({scrollLeft: 0, scrollTop: 0});
+    }
+  }
+
   onViewportLeftScroll = ({scrollLeft, scrollTop}) => {
-    this.gridView && this.gridView.setScroll({scrollLeft, scrollTop});
+    this.gridView && this.gridView.setViewportRightScroll({scrollLeft, scrollTop});
   }
 
   onViewportRightScroll = ({scrollLeft, scrollTop}) => {
-    this.viewportLeft && this.viewportLeft.setScroll({scrollLeft, scrollTop});
+    this.viewportLeft && this.viewportLeft.setViewportLeftScroll({scrollLeft, scrollTop});
   }
 
   render() {
@@ -74,10 +83,11 @@ class Timeline extends React.Component {
     let isToday = this.isToday();
     let days = dates.getDaysInMonth(selectedDate);
     let startDateOfMonth = moment(selectedDate).startOf(DATE_UNIT.MONTH).format('YYYY-MM-DD');
-    let minWidth = days.length * COLUMN_WIDTH;
+    let endDateOfMonth = moment(selectedDate).endOf(DATE_UNIT.MONTH).format('YYYY-MM-DD');
+    let width = days.length * COLUMN_WIDTH;
     let rightPaneWrapperStyle = {
       marginLeft: isShowUsers && 180
-    }
+    };
     return (
       <div className="timeline-container position-relative">
         {isShowUsers &&
@@ -104,9 +114,10 @@ class Timeline extends React.Component {
             isToday={isToday}
             days={days}
             rows={rows}
-            minWidth={minWidth}
+            width={width}
             selectedDate={selectedDate}
             startDateOfMonth={startDateOfMonth}
+            endDateOfMonth={endDateOfMonth}
             onViewportRightScroll={this.onViewportRightScroll}
           />
         </div>

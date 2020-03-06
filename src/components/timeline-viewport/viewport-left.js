@@ -12,22 +12,23 @@ const propTypes = {
 class ViewportLeft extends React.Component {
 
   renderCells = (user) => {
-    let cell = <EventCell
-      key={`timeline-left-event-cell-${user}`}
-      formatter={UserFormatter}
-      value={user}
-    />
-    return [cell];
+    return [
+      <EventCell
+        key={`timeline-left-event-cell-${user}`}
+        formatter={UserFormatter}
+        value={user}
+      />
+    ];
   }
 
   onViewportLeftScroll = (event) => {
     let scrollLeft = event.target.scrollLeft;
     let scrollTop = event.target.scrollTop;
-    this.setScroll({scrollLeft, scrollTop});
+    this.setViewportLeftScroll({scrollLeft, scrollTop});
     this.props.onViewportLeftScroll({scrollLeft, scrollTop});
   }
 
-  setScroll = ({scrollLeft, scrollTop}) => {
+  setViewportLeftScroll = ({scrollLeft, scrollTop}) => {
     this.viewportLeft.scrollLeft = scrollLeft;
     this.viewportLeft.scrollTop = scrollTop;
   }

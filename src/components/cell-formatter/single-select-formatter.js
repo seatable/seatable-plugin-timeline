@@ -7,12 +7,14 @@ const propTypes = {
   bgColor: PropTypes.string,
   width: PropTypes.number,
   left: PropTypes.number,
+  start: PropTypes.string,
+  end: PropTypes.string,
 };
 
 class SingleSelectFormatter extends React.Component {
 
   render() {
-    let { label, bgColor, width, left } = this.props;
+    let { label, bgColor, width, left, start, end } = this.props;
     let style = {
       backgroundColor: bgColor,
       width,
@@ -21,7 +23,7 @@ class SingleSelectFormatter extends React.Component {
     };
     return (
       <div className="cell-formatter grid-cell-type-single-select position-absolute" style={style}>
-        <span className="d-inline-block" title={label}>{label}</span>
+        <span className="d-inline-block" title={`${label}(${start} - ${end})`}>{label}</span>
       </div>
     );
   }

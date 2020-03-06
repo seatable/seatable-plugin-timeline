@@ -6,7 +6,7 @@ import Timeline from './timeline';
 import TimelineSetting from './components/timeline-setting';
 import TimelineRow from './model/timeline-row';
 import Event from './model/event';
-import { SETTING_KEY, VIEW_TYPE, DATE_UNIT } from './constants';
+import { SETTING_KEY, VIEW_TYPE, DATE_UNIT, DEFAULT_BG_COLOR } from './constants';
 import { dates } from './utils';
 import moment from 'moment';
 
@@ -139,7 +139,6 @@ class App extends React.Component {
     }
     let { user_column_name, single_select_column_name, start_time_column_name, end_time_column_name } = settings;
     if (!user_column_name ||
-        !single_select_column_name ||
         !start_time_column_name ||
         !end_time_column_name) {
       return [];
@@ -151,11 +150,12 @@ class App extends React.Component {
     this.dtable.forEachRow(tableName, viewName, (row) => {
       let user = row[user_column_name];
       let label = row[single_select_column_name];
-      let option = options.find(item => item.name === label);
-      let bgColor = option.color;
+      let option = options.find(item => item.name === label) || {};
+      let bgColor = option.color || DEFAULT_BG_COLOR;
       let start = row[start_time_column_name];
       let end = row[end_time_column_name];
-      let isCurrentRange = moment(start).isBetween(startOfSelectedDate, endOfSelectedDate);
+      let isCurrentRange = moment(start).isBetween(startOfSelectedDate, endOfSelectedDate) ||
+        moment(end).isBetween(startOfSelectedDate, endOfSelectedDate);
       if (user) {
         if (userColumnType === CellType.TEXT) {
           this.updateRows(rows, user, row, label, bgColor, start, end, isCurrentRange);
@@ -208,7 +208,7 @@ class App extends React.Component {
     return (
       <Modal isOpen={true} toggle={this.onPluginToggle} className="dtable-plugin plugin-container" size='lg'>
         <ModalHeader className="plugin-header" close={this.renderBtnGroups()}>
-          <img className="plugin-logo" src={timeLogo} />
+          <img className="plugin-logo" src={timeLogo} alt="" />
           <span>{'Timeline'}</span>
         </ModalHeader>
         <ModalBody className="plugin-body position-relative">

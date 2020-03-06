@@ -1,6 +1,6 @@
 {
-  "name": "seatable-plugin-timeline",
+  "name": "Timeline",
   "version": "0.0.1",
-  "display_name": "seatable-plugin-timeline",
+  "display_name": "Timeline",
   "description": "The plugin to show timeline"
 }

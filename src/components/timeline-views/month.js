@@ -8,9 +8,10 @@ const propTypes = {
   isToday: PropTypes.bool,
   days: PropTypes.array,
   rows: PropTypes.array,
-  minWidth: PropTypes.number,
+  width: PropTypes.number,
   selectedDate: PropTypes.string,
   startDateOfMonth: PropTypes.string,
+  endDateOfMonth: PropTypes.string,
 };
 
 class Month extends React.Component {
@@ -20,19 +21,24 @@ class Month extends React.Component {
     this.dayOfToday = dates.getToday('D');
   }
 
-  setScroll = ({scrollLeft, scrollTop}) => {
-    this.viewportRight.setScroll({scrollLeft, scrollTop});
+  setGridViewScroll = ({scrollLeft, scrollTop}) => {
+    this.gridView.scrollLeft = scrollLeft;
+    this.gridView.scrollTop = scrollTop;
+  }
+
+  setViewportRightScroll = ({scrollLeft, scrollTop}) => {
+    this.viewportRight.setViewportRightScroll({scrollLeft, scrollTop});
   }
 
   render() {
-    let { isToday, days, rows, minWidth, selectedDate, startDateOfMonth } = this.props;
+    let { isToday, days, rows, width, selectedDate, startDateOfMonth, endDateOfMonth } = this.props;
     return (
       <div className="timeline-month-view" ref={ref => this.gridView = ref}>
         <TimelineHeader
           isToday={isToday}
           days={days}
           rows={rows}
-          minWidth={minWidth}
+          width={width}
           dayOfToday={this.dayOfToday}
         />
         <ViewportRight
@@ -41,8 +47,9 @@ class Month extends React.Component {
           days={days}
           rows={rows}
           selectedDate={selectedDate}
-          minWidth={minWidth}
+          width={width}
           startDateOfMonth={startDateOfMonth}
+          endDateOfMonth={endDateOfMonth}
           dayOfToday={this.dayOfToday}
           onViewportRightScroll={this.props.onViewportRightScroll}
         />

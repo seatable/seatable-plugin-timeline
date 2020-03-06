@@ -13,7 +13,8 @@ const propTypes = {
   rows: PropTypes.array,
   selectedDate: PropTypes.string,
   startDateOfMonth: PropTypes.string,
-  minWidth: PropTypes.number,
+  endDateOfMonth: PropTypes.string,
+  width: PropTypes.number,
   dayOfToday: PropTypes.string,
   onViewportRightScroll: PropTypes.func,
 };
@@ -52,16 +53,18 @@ class ViewportRight extends React.Component {
   }
 
   renderEventCells = (row) => {
-    let { startDateOfMonth } = this.props;
+    let { startDateOfMonth, endDateOfMonth } = this.props;
     let { user, events } = row;
     if (!Array.isArray(events)) {
       return [];
     }
     return events.map((e, index) => {
-      let { label, bgColor, start, end }  = e;
-      let duration = moment(end).diff(moment(start), 'days');
+      let { label, bgColor, start, end } = e;
+      let calcStart = moment(start).isBefore(startDateOfMonth) ? startDateOfMonth : start;
+      let calcEnd = moment(end).isAfter(endDateOfMonth) ? moment(endDateOfMonth).add(1, 'days').format('YYYY-MM-DD') : end;
+      let duration = moment(calcEnd).diff(moment(calcStart), 'days');
       let width = duration * COLUMN_WIDTH;
-      let left = moment(start).diff(moment(startDateOfMonth), 'days') * COLUMN_WIDTH;
+      let left = moment(calcStart).diff(moment(startDateOfMonth), 'days') * COLUMN_WIDTH;
       if (duration < 1) {
         return null;
       }
@@ -71,6 +74,8 @@ class ViewportRight extends React.Component {
           bgColor={bgColor}
           width={width}
           left={left}
+          start={start}
+          end={end}
         />
       </div>
     });
@@ -101,18 +106,18 @@ class ViewportRight extends React.Component {
   onViewportRightScroll = (event) => {
     let scrollLeft = event.target.scrollLeft;
     let scrollTop = event.target.scrollTop;
-    this.setScroll({scrollLeft, scrollTop});
+    this.setViewportRightScroll({scrollLeft, scrollTop});
     this.props.onViewportRightScroll({scrollLeft, scrollTop});
   }
 
-  setScroll = ({scrollLeft, scrollTop}) => {
+  setViewportRightScroll = ({scrollLeft, scrollTop}) => {
     this.viewportRight.scrollLeft = scrollLeft;
     this.viewportRight.scrollTop = scrollTop;
   }
 
   render() {
-    let { isToday, rows, minWidth } = this.props;
-    let viewportRightStyle = {minWidth};
+    let { isToday, rows, width } = this.props;
+    let viewportRightStyle = {width};
 
     return (
       <div className="viewport-right position-relative" ref={ref => this.viewportRight = ref} style={viewportRightStyle} onScroll={this.onViewportRightScroll}>
