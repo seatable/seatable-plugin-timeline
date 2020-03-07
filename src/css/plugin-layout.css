@@ -1,0 +1,52 @@
+.dtable-plugin.plugin-container {
+  max-width: 90%;
+  position: absolute;
+  margin-left: 50%;
+  transform: translateX(-50%) !important;
+  top: 0;
+  bottom: 0;
+}
+
+.plugin-container .plugin-header {
+  align-items: center;
+  padding: 10px 1rem;
+}
+
+.plugin-container .modal-title {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.plugin-container .modal-title .plugin-logo {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.plugin-container .modal-content {
+  height: 100%;
+  overflow: hidden;
+}
+
+.plugin-container .plugin-body {
+  padding: 0;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.plugin-container .btn-setting,
+.plugin-container .btn-close {
+  height: 24px;
+  width: 24px;
+  text-align: center;
+  cursor: pointer;
+  color: #000;
+  opacity: 0.5;
+  font-weight: 700;
+}
+
+.plugin-container .plugin-timeline-setting {
+  top: 0;
+  right: 0;
+}
