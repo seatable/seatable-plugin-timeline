@@ -1,57 +1,53 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import TimelineHeader from '../header/timeline-header';
-import ViewportRight from '../timeline-viewport/viewport-right';
-import { dates } from '../../utils';
+import HeaderMonthDays from '../header/header-month-days';
+import ViewportRight from '../timeline-body/viewport-right';
 
 const propTypes = {
   isToday: PropTypes.bool,
-  days: PropTypes.array,
-  rows: PropTypes.array,
-  width: PropTypes.number,
+  isShowUsers: PropTypes.bool,
+  changedSelectedByScroll: PropTypes.bool,
+  selectedView: PropTypes.string,
   selectedDate: PropTypes.string,
-  startDateOfMonth: PropTypes.string,
-  endDateOfMonth: PropTypes.string,
+  rows: PropTypes.array,
+  updateSelectedDate: PropTypes.func,
+  onCanvasRightScroll: PropTypes.func,
 };
 
 class Month extends React.Component {
-  
-  constructor(props) {
-    super(props);
-    this.dayOfToday = dates.getToday('D');
+
+  setCanvasRightScroll = (scrollTop) => {
+    this.viewportRight.setCanvasRightScroll(scrollTop);
   }
 
-  setGridViewScroll = ({scrollLeft, scrollTop}) => {
-    this.gridView.scrollLeft = scrollLeft;
-    this.gridView.scrollTop = scrollTop;
+  renderHeaderDays = (props) => {
+    let { isToday, overscanDays, rows } = props;
+    return <HeaderMonthDays
+      isToday={isToday}
+      overscanDays={overscanDays}
+      rows={rows}
+    />
   }
 
-  setViewportRightScroll = ({scrollLeft, scrollTop}) => {
-    this.viewportRight.setViewportRightScroll({scrollLeft, scrollTop});
+  updateScroll = (selectedDate) => {
+    this.viewportRight.updateScroll({selectedDate});
   }
 
   render() {
-    let { isToday, days, rows, width, selectedDate, startDateOfMonth, endDateOfMonth } = this.props;
+    let { isToday, isShowUsers, changedSelectedByScroll, rows, selectedView, selectedDate, updateSelectedDate, onCanvasRightScroll } = this.props;
     return (
-      <div className="timeline-month-view" ref={ref => this.gridView = ref}>
-        <TimelineHeader
-          isToday={isToday}
-          days={days}
-          rows={rows}
-          width={width}
-          dayOfToday={this.dayOfToday}
-        />
+      <div className="timeline-month-view">
         <ViewportRight
           ref={node => this.viewportRight = node}
           isToday={isToday}
-          days={days}
-          rows={rows}
+          isShowUsers={isShowUsers}
+          changedSelectedByScroll={changedSelectedByScroll}
+          selectedView={selectedView}
           selectedDate={selectedDate}
-          width={width}
-          startDateOfMonth={startDateOfMonth}
-          endDateOfMonth={endDateOfMonth}
-          dayOfToday={this.dayOfToday}
-          onViewportRightScroll={this.props.onViewportRightScroll}
+          rows={rows}
+          renderHeaderDays={this.renderHeaderDays}
+          updateSelectedDate={updateSelectedDate}
+          onCanvasRightScroll={onCanvasRightScroll}
         />
       </div>
     );

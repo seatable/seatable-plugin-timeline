@@ -7,7 +7,7 @@ export function getToday(format) {
 
 export function getDateWithUnit(date, unit) {
   let formattedDate = moment(date);
-  if (!formattedDate) return '';
+  if (!formattedDate.isValid()) return '';
   switch(unit) {
     case DATE_UNIT.YEAR: {
       return formattedDate.year();
@@ -35,6 +35,19 @@ export function getDaysInMonth(date) {
   for (let i = 1; i < daysCount; i++) {
     startDate = startDate.add(1, DATE_UNIT.DAY);
     days.push(startDate.format('YYYY-MM-DD'));
+  }
+  return days;
+}
+
+export function getDaysInRange(startDate, endDate) {
+  let formattedStartDate = moment(startDate);
+  let formattedEndDate = moment(endDate);
+  if (!formattedStartDate.isValid() || !formattedEndDate.isValid()) return [];
+  let daysCount = formattedEndDate.diff(formattedStartDate, 'days');
+  let days = [];
+  for (let i = 0; i < daysCount; i++) {
+    days.push(formattedStartDate.format('YYYY-MM-DD'));
+    formattedStartDate.add(1, 'day');
   }
   return days;
 }

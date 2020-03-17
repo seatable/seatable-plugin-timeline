@@ -30,7 +30,7 @@ class TimelineToolbar extends React.Component {
     let year = dates.getDateWithUnit(selectedDate, DATE_UNIT.YEAR);
     let month = dates.getDateWithUnit(selectedDate, DATE_UNIT.MONTH);
     return (
-      <div className="timeline-toolbar d-flex align-items-center justify-content-sm-between">
+      <div className="timeline-toolbar d-flex align-items-center justify-content-between">
         <div className="toolbar-left d-flex align-items-center">
           <div className="toggle-drawer-btn" onClick={onShowUsersToggle}>
             <i className={`dtable-font ${isShowUsers ? `dtable-icon-retract-com` : `dtable-icon-open-com`}`}></i>

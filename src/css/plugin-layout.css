@@ -1,5 +1,6 @@
 .dtable-plugin.plugin-container {
-  max-width: 90%;
+  width: 90%;
+  max-width: 1398px;
   position: absolute;
   margin-left: 50%;
   transform: translateX(-50%) !important;

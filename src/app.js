@@ -6,9 +6,7 @@ import Timeline from './timeline';
 import TimelineSetting from './components/timeline-setting';
 import TimelineRow from './model/timeline-row';
 import Event from './model/event';
-import { SETTING_KEY, VIEW_TYPE, DATE_UNIT, DEFAULT_BG_COLOR } from './constants';
-import { dates } from './utils';
-import moment from 'moment';
+import { SETTING_KEY, DEFAULT_BG_COLOR } from './constants';
 
 import './css/plugin-layout.css';
 import timeLogo from './assets/image/timeline.png';
@@ -26,8 +24,6 @@ class App extends React.Component {
       showDialog: props.showDialog || false,
       isShowTimelineSetting: false,
       settings: {},
-      selectedDate: dates.getToday('YYYY-MM-DD'),
-      selectedTimelineView: VIEW_TYPE.MONTH,
     };
     this.dtable = null;
   }
@@ -117,26 +113,17 @@ class App extends React.Component {
     return this.dtable.getViewByName(table, settings[SETTING_KEY.VIEW_NAME]);
   }
 
-  onNavigate = (selectedDate) => {
-    this.setState({selectedDate});
-  }
-
   getViews = (table) => {
     let { name } = table || {};
     return this.dtable.getTableViews(name);
   }
 
   getRows = (tableName, viewName) => {
-    let { settings, selectedDate, selectedTimelineView } = this.state;
+    let { settings } = this.state;
     let { collaborators } = window.app;
     let CellType = this.dtable.getCellType();
     let table = this.dtable.getTableByName(tableName);
-    let formattedDate = moment(selectedDate);
-    let startOfSelectedDate, endOfSelectedDate, rows = [];
-    if (selectedTimelineView === VIEW_TYPE.MONTH) {
-      startOfSelectedDate = formattedDate.startOf(DATE_UNIT.MONTH).format('YYYY-MM-DD');
-      endOfSelectedDate = formattedDate.endOf(DATE_UNIT.MONTH).format('YYYY-MM-DD');
-    }
+    let rows = [];
     let { user_column_name, single_select_column_name, start_time_column_name, end_time_column_name } = settings;
     if (!user_column_name ||
         !start_time_column_name ||
@@ -154,15 +141,13 @@ class App extends React.Component {
       let bgColor = option.color || DEFAULT_BG_COLOR;
       let start = row[start_time_column_name];
       let end = row[end_time_column_name];
-      let isCurrentRange = moment(start).isBetween(startOfSelectedDate, endOfSelectedDate) ||
-        moment(end).isBetween(startOfSelectedDate, endOfSelectedDate);
       if (user) {
         if (userColumnType === CellType.TEXT) {
-          this.updateRows(rows, user, row, label, bgColor, start, end, isCurrentRange);
+          this.updateRows(rows, user, row, label, bgColor, start, end);
         } else if (userColumnType === CellType.COLLABORATOR) {
           user.forEach((item) => {
             let collaborator = collaborators.find(c => c.email === item) || {};
-            this.updateRows(rows, collaborator.name, row, label, bgColor, start, end, isCurrentRange);
+            this.updateRows(rows, collaborator.name, row, label, bgColor, start, end);
           });
         }
       }
@@ -170,21 +155,21 @@ class App extends React.Component {
     return rows;
   }
 
-  updateRows = (rows, user, row, label, bgColor, start, end, isCurrentRange) => {
+  updateRows = (rows, user, row, label, bgColor, start, end) => {
     let index = rows.findIndex(r => r.user === user);
     let event = new Event({row, label, bgColor, start, end});
-    if (index > -1 && isCurrentRange) {
+    if (index > -1) {
       rows[index].events.push(event);
-    } else if (index < 0){
+    } else {
       rows.push(new TimelineRow({
         user,
-        events: isCurrentRange ? [event] : []
+        events: [event]
       }));
     }
   }
 
   render() {
-    let { isLoading, showDialog, isShowTimelineSetting, settings, selectedDate, selectedTimelineView } = this.state;
+    let { isLoading, showDialog, isShowTimelineSetting, settings } = this.state;
     if (isLoading || !showDialog) {
       return '';
     }
@@ -214,9 +199,6 @@ class App extends React.Component {
         <ModalBody className="plugin-body position-relative">
           <Timeline
             rows={rows}
-            selectedDate={selectedDate}
-            selectedTimelineView={selectedTimelineView}
-            onNavigate={this.onNavigate}
           />
           {isShowTimelineSetting &&
             <TimelineSetting
