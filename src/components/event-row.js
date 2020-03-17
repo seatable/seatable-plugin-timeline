@@ -9,9 +9,9 @@ const propTypes = {
 class EventRow extends React.Component {
 
   render() {
-    let { cells } = this.props;
+    let { cells, style } = this.props;
     return (
-      <div className="timeline-row position-relative" style={{height: ROW_HEIGHT}}>
+      <div className="timeline-row position-relative" style={{height: ROW_HEIGHT, ...style}}>
         {cells}
       </div>
     );

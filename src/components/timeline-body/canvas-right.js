@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import moment from 'moment';
 import EventRow from '../event-row';
 import { dates } from '../../utils';
-import { ROW_HEIGHT, COLUMN_WIDTH, zIndexs } from '../../constants';
+import { ROW_HEIGHT, COLUMN_WIDTH, DATE_UNIT, zIndexs } from '../../constants';
 import SingleSelectFormatter from '../../components/cell-formatter/single-select-formatter';
 
 const propTypes = {
@@ -15,7 +15,6 @@ const propTypes = {
   startDateOfMonth: PropTypes.string,
   endDateOfMonth: PropTypes.string,
   width: PropTypes.number,
-  dayOfToday: PropTypes.string,
   onViewportRightScroll: PropTypes.func,
 };
 
@@ -53,18 +52,16 @@ class ViewportRight extends React.Component {
   }
 
   renderEventCells = (row) => {
-    let { startDateOfMonth, endDateOfMonth } = this.props;
+    let { overscanDays } = this.props;
     let { user, events } = row;
-    if (!Array.isArray(events)) {
-      return [];
-    }
-    return events.map((e, index) => {
+    let startDate = overscanDays[0];
+    let endDate = overscanDays[overscanDays.length - 1];
+    let displayEvents = this.getEventsInRange(events, startDate, endDate);
+    return displayEvents.map((e, index) => {
       let { label, bgColor, start, end } = e;
-      let calcStart = moment(start).isBefore(startDateOfMonth) ? startDateOfMonth : start;
-      let calcEnd = moment(end).isAfter(endDateOfMonth) ? moment(endDateOfMonth).add(1, 'days').format('YYYY-MM-DD') : end;
-      let duration = moment(calcEnd).diff(moment(calcStart), 'days');
+      let duration = moment(end).diff(moment(start), 'days');
       let width = duration * COLUMN_WIDTH;
-      let left = moment(calcStart).diff(moment(startDateOfMonth), 'days') * COLUMN_WIDTH;
+      let left = moment(start).diff(moment(startDate), 'days') * COLUMN_WIDTH;
       if (duration < 1) {
         return null;
       }
@@ -82,18 +79,33 @@ class ViewportRight extends React.Component {
   }
 
   renderBgCells = () => {
-    let { days } = this.props;
-    return days.map((d) => {
+    let { overscanDays } = this.props;
+    return overscanDays.map((d) => {
       let week = dates.getDate2Week(d);
+      let isEndOfMonth = moment(d).endOf(DATE_UNIT.MONTH).format('YYYY-MM-DD') === d;
       return (
-        <div key={`timeline-day-bg-${d}`} className={classnames({'timeline-day-bg': true, 'sun-or-sat-day': week === 'S'})} style={{width: COLUMN_WIDTH}}></div>
+        <div
+          key={`timeline-day-bg-${d}`}
+          name={d}
+          className={classnames({'timeline-day-bg': true, 'sun-or-sat-day': week === 'S', 'd-inline-block': true, 'end-of-month': isEndOfMonth})}
+          style={{width: COLUMN_WIDTH}}
+        ></div>
       );
     });
   }
 
+  getEventsInRange = (events, startDate, endDate) => {
+    if (!Array.isArray(events)) {
+      return [];
+    }
+    return events.filter(e => moment(e.start).isBetween(startDate, endDate) ||
+      moment(e.end).isBetween(startDate, endDate)
+    );
+  }
+
   getTodayMarkLineStyle = () => {
-    let { rows, dayOfToday } = this.props;
-    let left = (dayOfToday - 1) * COLUMN_WIDTH + COLUMN_WIDTH / 2;
+    let { rows, overscanDays } = this.props;
+    let left = dates.getDaysInRange(overscanDays[0], moment().format('YYYY-MM-DD')).length * COLUMN_WIDTH + COLUMN_WIDTH / 2;
     let height = rows.length * ROW_HEIGHT;
     return {
       top: 0,
@@ -115,16 +127,30 @@ class ViewportRight extends React.Component {
     this.viewportRight.scrollTop = scrollTop;
   }
 
-  render() {
-    let { isToday, rows, width } = this.props;
-    let viewportRightStyle = {width};
+  onCanvasRightScroll = (evt) => {
+    evt.stopPropagation();
+    this.props.onCanvasRightScroll(evt.target.scrollTop);
+  }
 
+  setCanvasRightScroll = (scrollTop) => {
+    this.canvasRight.scrollTop = scrollTop;
+  }
+
+  render() {
+    let { isToday, rows, startOffset, endOffset, overscanDays } = this.props;
+    let canvasRightStyle = {
+      width: overscanDays.length * COLUMN_WIDTH + startOffset + endOffset,
+      paddingLeft: startOffset,
+      paddingRight: endOffset,
+    };
     return (
-      <div className="viewport-right position-relative" ref={ref => this.viewportRight = ref} style={viewportRightStyle} onScroll={this.onViewportRightScroll}>
-        {this.renderEventRows()}
-        {(isToday && rows && rows.length > 0) && 
-          <div className="today-mark-line position-absolute" style={this.getTodayMarkLineStyle()}></div>
-        }
+      <div className="canvas-right" ref={ref => this.canvasRight = ref} style={canvasRightStyle} onScroll={this.onCanvasRightScroll}>
+        <div className="position-relative" style={{width: '100%', height: '100%'}}>
+          {this.renderEventRows()}
+          {(isToday && rows && rows.length > 0) && 
+            <div className="today-mark-line position-absolute" style={this.getTodayMarkLineStyle()}></div>
+          }
+        </div>
       </div>
     );
   }
