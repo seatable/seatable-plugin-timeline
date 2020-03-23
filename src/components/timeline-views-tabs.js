@@ -4,6 +4,8 @@ import classnames from 'classnames';
 import ModalPortal from './dialog/modal-portal';
 import NewViewDialog from './dialog/new-view-dialog';
 import DropdownMenu from './dropdownmenu';
+import intl from 'react-intl-universal';
+import '../locale';
 
 const propTypes = {
   views: PropTypes.array,
@@ -123,7 +125,7 @@ class TimelineViewsTabs extends React.Component {
                                 <React.Fragment>
                                   <button className="dropdown-item" onClick={this.props.onDeleteView.bind(this, _id)}>
                                     <i className="item-icon dtable-font dtable-icon-delete"></i>
-                                    <span className="item-text">{'删除'}</span>
+                                    <span className="item-text">{intl.get('Delete')}</span>
                                   </button>
                                 </React.Fragment>
                               }

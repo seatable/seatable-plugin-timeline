@@ -7,6 +7,8 @@ import EventCell from '../event-cell';
 import { dates } from '../../utils';
 import { ROW_HEIGHT, COLUMN_WIDTH, DATE_UNIT, zIndexs } from '../../constants';
 import SingleSelectFormatter from '../../components/cell-formatter/single-select-formatter';
+import intl from 'react-intl-universal';
+import '../../locale';
 
 const propTypes = {
   isToday: PropTypes.bool,
@@ -24,7 +26,7 @@ class ViewportRight extends React.Component {
   renderEventRows = () => {
     let { rows } = this.props;
     if (!rows || rows.length === 0) {
-      return <div className="no-events d-flex align-items-center justify-content-center">暂无相关记录。</div>
+      return <div className="no-events d-flex align-items-center justify-content-center">{intl.get('There_are_no_records')}</div>
     }
     return (
       <React.Fragment>
