@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Alert, Button } from 'reactstrap';
 
 const propTypes = {
-  onNewTimelineViewConfirm: PropTypes.func,
-  onNewTimelineViewCancel: PropTypes.func,
+  onNewViewConfirm: PropTypes.func,
+  onNewViewCancel: PropTypes.func,
 };
 
 class NewViewDialog extends React.Component {
@@ -25,7 +25,7 @@ class NewViewDialog extends React.Component {
   }
 
   toggle = () => {
-    this.props.onNewTimelineViewCancel();
+    this.props.onNewViewCancel();
   }
   
   handleSubmit = () => {
@@ -35,8 +35,8 @@ class NewViewDialog extends React.Component {
       this.setState({errMessage: 'Name is required'});
       return;
     }
-    this.props.onNewTimelineViewConfirm(viewName);
-    this.props.onNewTimelineViewCancel();
+    this.props.onNewViewConfirm(viewName);
+    this.props.onNewViewCancel();
   }
 
   render() {

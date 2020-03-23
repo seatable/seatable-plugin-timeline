@@ -2,15 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import ModalPortal from './dialog/modal-portal';
-import ViewDropdownMenu from './dropdown-menu/view-dropdownmenu';
+import NewViewDialog from './dialog/new-view-dialog';
+import DropdownMenu from './dropdownmenu';
 
 const propTypes = {
   views: PropTypes.array,
   selectedViewIdx: PropTypes.number,
-  onDeleteTimelineView: PropTypes.func,
+  onSelectView: PropTypes.func,
+  onDeleteView: PropTypes.func,
+  onAddView: PropTypes.func,
 };
 
-class TimelineViewTabs extends React.Component {
+class TimelineViewsTabs extends React.Component {
 
   constructor(props) {
     super(props);
@@ -19,7 +22,8 @@ class TimelineViewTabs extends React.Component {
       dropdownMenuPosition: {
         top: 0,
         left: 0
-      }
+      },
+      isShowNewViewDialog: false,
     };
     this.views = [];
   }
@@ -27,9 +31,9 @@ class TimelineViewTabs extends React.Component {
   componentDidMount() {
     let { selectedViewIdx } = this.props;
     let { left } = this.views[selectedViewIdx].getBoundingClientRect();
-    let { offsetWidth } = this.viewsTabsScrll;
+    let { offsetWidth } = this.viewsTabsScroll;
     if (left > offsetWidth) {
-      this.viewsTabsScrll.scrollLeft = left - offsetWidth;
+      this.viewsTabsScroll.scrollLeft = left - offsetWidth;
     }
     document.addEventListener('click', this.onHideViewDropdown);
   }
@@ -58,18 +62,32 @@ class TimelineViewTabs extends React.Component {
     this.views[idx] = viewItem;
   }
 
-  setTimelineViewTabsScroll = () => {
-    let { offsetWidth, scrollWidth } = this.viewsTabsScrll;
-    this.viewsTabsScrll.scrollLeft = scrollWidth - offsetWidth;
+  setTimelineViewsTabsScroll = () => {
+    if (!this.viewsTabsScroll) return;
+    let { offsetWidth, scrollWidth } = this.viewsTabsScroll;
+    this.viewsTabsScroll.scrollLeft = scrollWidth - offsetWidth;
+  }
+
+  onNewViewToggle = () => {
+    this.setState({isShowNewViewDialog: !this.state.isShowNewViewDialog});
+  }
+
+  onNewViewCancel = () => {
+    this.setState({isShowNewViewDialog: false});
+  }
+
+  onAddView = (viewName) => {
+    this.props.onAddView(viewName);
+    this.onNewViewToggle();
   }
 
   render() {
     let { views, selectedViewIdx } = this.props;
-    let { isShowViewDropdown, dropdownMenuPosition } = this.state;
+    let { isShowViewDropdown, dropdownMenuPosition, isShowNewViewDialog } = this.state;
     let viewsLength = views.length;
     return (
       <div className="timeline-views-tabs d-flex">
-        <div className="views-tabs-scroll" ref={ref => this.viewsTabsScrll = ref}>
+        <div className="views-tabs-scroll" ref={ref => this.viewsTabsScroll = ref}>
           <div className="views d-inline-flex">
             {views.map((v, i) => {
               let { _id, name } = v;
@@ -85,7 +103,7 @@ class TimelineViewTabs extends React.Component {
                   <div
                     className="view-item-content d-flex align-items-center justify-content-center position-relative"
                     ref={this.setViewItem(i)}
-                    onClick={this.props.onSelectTimelineView.bind(this, _id)}
+                    onClick={this.props.onSelectView.bind(this, _id)}
                   >
                     <div className="view-name">{name}</div>
                     {isActiveView &&
@@ -97,11 +115,11 @@ class TimelineViewTabs extends React.Component {
                         <i className="dtable-font dtable-icon-drop-down"></i>
                         {isShowViewDropdown &&
                           <ModalPortal>
-                            <ViewDropdownMenu
+                            <DropdownMenu
                               dropdownMenuPosition={dropdownMenuPosition}
                               options={viewsLength > 1 &&
                                 <React.Fragment>
-                                  <button className="dropdown-item" onClick={this.props.onDeleteTimelineView.bind(this, _id)}>
+                                  <button className="dropdown-item" onClick={this.props.onDeleteView.bind(this, _id)}>
                                     <i className="item-icon dtable-font dtable-icon-delete"></i>
                                     <span className="item-text">{'删除'}</span>
                                   </button>
@@ -118,11 +136,20 @@ class TimelineViewTabs extends React.Component {
             })}
           </div>
         </div>
+        <div className="btn-add-view d-flex align-items-center" onClick={this.onNewViewToggle}>
+          <i className="dtable-font dtable-icon-add-table"></i>
+        </div>
+        {isShowNewViewDialog &&
+          <NewViewDialog
+            onNewViewConfirm={this.onAddView}
+            onNewViewCancel={this.onNewViewCancel}
+          />
+        }
       </div>
     );
   }
 }
 
-TimelineViewTabs.propTypes = propTypes;
+TimelineViewsTabs.propTypes = propTypes;
 
-export default TimelineViewTabs;
+export default TimelineViewsTabs;

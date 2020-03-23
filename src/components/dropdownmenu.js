@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { zIndexs } from '../../constants'
+import { zIndexs } from '../constants'
 
-import '../../css/dropdown-menu.css';
+import '../css/dropdown-menu.css';
 
 const propTypes = {
   dropdownMenuPosition: PropTypes.object,
   options: PropTypes.node,
 }
 
-class ViewDropdownMenu extends React.Component {
+class DropdownMenu extends React.Component {
 
   render() {
     let { dropdownMenuPosition, options } = this.props;
@@ -25,6 +25,6 @@ class ViewDropdownMenu extends React.Component {
   }
 }
 
-ViewDropdownMenu.propTypes = propTypes;
+DropdownMenu.propTypes = propTypes;
 
-export default ViewDropdownMenu;
+export default DropdownMenu;

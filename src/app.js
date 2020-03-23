@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import DTable from 'dtable-sdk';
-import TimelineViewTabs from './components/timeline-view-tabs';
+import TimelineViewsTabs from './components/timeline-views-tabs';
 import Timeline from './timeline';
 import TimelineSetting from './components/timeline-setting';
 import View from './model/view';
@@ -10,7 +10,6 @@ import TimelineRow from './model/timeline-row';
 import Event from './model/event';
 import { PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR } from './constants';
 import { generatorViewId } from './utils';
-import NewViewDialog from './components/dialog/new-view-dialog';
 
 import './css/plugin-layout.css';
 import timeLogo from './assets/image/timeline.png';
@@ -23,7 +22,7 @@ const DEFAULT_PLUGIN_SETTINGS = {
       settings: {}
     }
   ]
-}
+};
 
 const KEY_SELECTED_VIEW_IDS = `${PLUGIN_NAME}-selectedViewIds`;
 
@@ -41,7 +40,6 @@ class App extends React.Component {
       isShowTimelineSetting: false,
       plugin_settings: {},
       selectedViewIdx: 0,
-      isShowNewTimelineViewDialog: false,
     };
     this.dtable = null;
   }
@@ -215,15 +213,7 @@ class App extends React.Component {
     }
   }
 
-  onNewTimelineViewToggle = () => {
-    this.setState({isShowNewTimelineViewDialog: !this.state.isShowNewTimelineViewDialog});
-  }
-
-  onNewTimelineViewCancel = () => {
-    this.setState({isShowNewTimelineViewDialog: false});
-  }
-
-  onAddTimelineView = (viewName) => {
+  onAddView = (viewName) => {
     let { plugin_settings } = this.state;
     let { views: updatedViews } = plugin_settings;
     let selectedViewIdx = updatedViews.length;
@@ -240,11 +230,11 @@ class App extends React.Component {
     }, () => {
       this.dtable.updatePluginSettings(PLUGIN_NAME, plugin_settings);
       this.storeSelectedViewId(updatedViews[selectedViewIdx]._id);
-      this.timelineViewTabs && this.timelineViewTabs.setTimelineViewTabsScroll();
+      this.viewsTabs && this.viewsTabs.setTimelineViewsTabsScroll();
     });
   }
 
-  onDeleteTimelineView = (viewId) => {
+  onDeleteView = (viewId) => {
     let { plugin_settings, selectedViewIdx } = this.state;
     let { views: updatedViews } = plugin_settings;
     let viewIdx = updatedViews.findIndex(v => v._id === viewId);
@@ -265,7 +255,7 @@ class App extends React.Component {
     }
   }
 
-  onSelectTimelineView = (viewId) => {
+  onSelectView = (viewId) => {
     let { plugin_settings } = this.state;
     let { views: updatedViews } = plugin_settings;
     let viewIdx = updatedViews.findIndex(v => v._id === viewId);
@@ -294,7 +284,7 @@ class App extends React.Component {
   }
 
   render() {
-    let { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx, isShowNewTimelineViewDialog } = this.state;
+    let { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx } = this.state;
     if (isLoading || !showDialog) {
       return '';
     }
@@ -319,51 +309,41 @@ class App extends React.Component {
     console.log(rows);
     console.log(`----------- Timeline plugin logs end -----------`);
     return (
-      <React.Fragment>
-        <Modal isOpen={true} toggle={this.onPluginToggle} className="dtable-plugin plugin-container" size='lg'>
-          <ModalHeader className="plugin-header" close={this.renderBtnGroups()}>
-            <div className="logo-title d-flex align-items-center">
-              <img className="plugin-logo" src={timeLogo} alt="" />
-              <span className="plugin-title">{'Timeline'}</span>
-            </div>
-            <TimelineViewTabs
-              ref={ref => this.timelineViewTabs = ref}
-              views={timelineViews}
-              selectedViewIdx={selectedViewIdx}
-              onDeleteTimelineView={this.onDeleteTimelineView}
-              onSelectTimelineView={this.onSelectTimelineView}
-            />
-            <div className="btn-add-view d-flex align-items-center" onClick={this.onNewTimelineViewToggle}>
-              <i className="dtable-font dtable-icon-add-table"></i>
-            </div>
-          </ModalHeader>
-          <ModalBody className="plugin-body position-relative">
-            <Timeline
-              rows={rows}
-              onTimelineSettingToggle={this.onTimelineSettingToggle}
-            />
-            {isShowTimelineSetting &&
-              <TimelineSetting
-                tables={tables}
-                selectedTable={selectedTable}
-                views={views}
-                userColumns={userColumns}
-                singleSelectColumns={singleSelectColumns}
-                dateColumns={dateColumns}
-                settings={settings || {}}
-                onModifyTimelineSettings={this.onModifyTimelineSettings}
-                onHideTimelineSetting={this.onHideTimelineSetting}
-              />
-            }
-          </ModalBody>
-        </Modal>
-        {isShowNewTimelineViewDialog &&
-          <NewViewDialog
-            onNewTimelineViewConfirm={this.onAddTimelineView}
-            onNewTimelineViewCancel={this.onNewTimelineViewCancel}
+      <Modal isOpen={true} toggle={this.onPluginToggle} className="dtable-plugin plugin-container" size='lg'>
+        <ModalHeader className="plugin-header" close={this.renderBtnGroups()}>
+          <div className="logo-title d-flex align-items-center">
+            <img className="plugin-logo" src={timeLogo} alt="" />
+            <span className="plugin-title">{'Timeline'}</span>
+          </div>
+          <TimelineViewsTabs
+            ref={ref => this.viewsTabs = ref}
+            views={timelineViews}
+            selectedViewIdx={selectedViewIdx}
+            onAddView={this.onAddView}
+            onDeleteView={this.onDeleteView}
+            onSelectView={this.onSelectView}
           />
-        }
-      </React.Fragment>
+        </ModalHeader>
+        <ModalBody className="plugin-body position-relative">
+          <Timeline
+            rows={rows}
+            onTimelineSettingToggle={this.onTimelineSettingToggle}
+          />
+          {isShowTimelineSetting &&
+            <TimelineSetting
+              tables={tables}
+              selectedTable={selectedTable}
+              views={views}
+              userColumns={userColumns}
+              singleSelectColumns={singleSelectColumns}
+              dateColumns={dateColumns}
+              settings={settings || {}}
+              onModifyTimelineSettings={this.onModifyTimelineSettings}
+              onHideTimelineSetting={this.onHideTimelineSetting}
+            />
+          }
+        </ModalBody>
+      </Modal>
     );
   }
 }
