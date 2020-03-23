@@ -1,4 +1,6 @@
 .plugin-timeline-setting {
+  top: 0;
+  right: 0;
   width: 300px;
   height: 100%;
   box-shadow: 0px 2px 10px 3px rgba(0, 0, 0, 0.2);
@@ -15,10 +17,15 @@
 }
 
 .plugin-timeline-setting .setting-header-title {
+  flex: 1;
   padding: 10px 0;
   font-size: 1rem;
   font-weight: 700;
   border-bottom: 1px solid #e2e2e2;
+}
+
+.plugin-timeline-setting .btn-close {
+  margin-right: -4px;
 }
 
 .plugin-timeline-setting .setting-body {

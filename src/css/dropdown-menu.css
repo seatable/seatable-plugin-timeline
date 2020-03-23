@@ -1,0 +1,23 @@
+.dropdown-menu {
+  font-weight: 400;
+}
+
+.dropdown-menu .no-options {
+  height: 40px;
+  color: #c2c2c2;
+}
+
+.dropdown-menu .dropdown-item:hover {
+  color: #fff;
+  background-color: #20a0ff;
+}
+
+.dropdown-menu .dropdown-item .item-icon {
+  font-size: 14px;
+  margin-right: 10px;
+  color: #8c8c8c;
+}
+
+.dropdown-menu .dropdown-item:hover .item-icon {
+  color: #fff;
+}

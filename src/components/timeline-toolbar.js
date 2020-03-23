@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { dates } from '../utils';
 import { DATE_UNIT, NAVIGATE } from '../constants';
+import intl from 'react-intl-universal';
+import '../locale';
 
 const propTypes = {
   selectedDate: PropTypes.string,
@@ -10,6 +12,7 @@ const propTypes = {
   isToday: PropTypes.bool,
   onShowUsersToggle: PropTypes.func,
   onNavigate: PropTypes.func,
+  onTimelineSettingToggle: PropTypes.func,
 };
 
 class TimelineToolbar extends React.Component {
@@ -26,7 +29,7 @@ class TimelineToolbar extends React.Component {
   }
 
   render() {
-    let { selectedDate, onShowUsersToggle, isShowUsers, isToday, onNavigate } = this.props;
+    let { selectedDate, onShowUsersToggle, isShowUsers, isToday, onNavigate, onTimelineSettingToggle } = this.props;
     let year = dates.getDateWithUnit(selectedDate, DATE_UNIT.YEAR);
     let month = dates.getDateWithUnit(selectedDate, DATE_UNIT.MONTH);
     return (
@@ -35,16 +38,16 @@ class TimelineToolbar extends React.Component {
           <div className="toggle-drawer-btn" onClick={onShowUsersToggle}>
             <i className={`dtable-font ${isShowUsers ? `dtable-icon-retract-com` : `dtable-icon-open-com`}`}></i>
           </div>
-          <div className="current-date">{`${year}年${month}月`}</div>
+          <div className="current-date">{intl.get('Year_Month', {year, month})}</div>
         </div>
         <div className="toolbar-right d-flex align-items-center">
           <div className="btn-select-view">
             <Dropdown group isOpen={this.state.isSelectViewDropdownOpen} size="sm" toggle={this.onSelectViewToggle}>
               <DropdownToggle caret>
-                月
+                {intl.get('Month')}
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem>月</DropdownItem>
+                <DropdownItem>{intl.get('Month')}</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -57,7 +60,13 @@ class TimelineToolbar extends React.Component {
               <i className="dtable-font dtable-icon-right"></i>
             </span>
           </div>
-          <div className={`btn-today ${isToday && `btn-today-disabled`}`} onClick={!isToday ? onNavigate.bind(this, NAVIGATE.TODAY) : undefined}>今天</div>
+          <div
+            className={`btn-today ${isToday && `btn-today-disabled`}`}
+            onClick={!isToday ? onNavigate.bind(this, NAVIGATE.TODAY) : undefined}
+          >{intl.get('Today')}</div>
+          <div className="btn-setting" id="btn_setting" onClick={onTimelineSettingToggle}>
+            <i className="dtable-font dtable-icon-settings"></i>
+          </div>
         </div>
       </div>
     );

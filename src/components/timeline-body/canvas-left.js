@@ -14,8 +14,7 @@ class CanvasLeft extends React.Component {
     return [
       <EventCell
         key={`timeline-left-event-cell-${user}`}
-        formatter={UserFormatter}
-        value={user}
+        formatter={<UserFormatter value={user} />}
       />
     ];
   }

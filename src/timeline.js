@@ -11,6 +11,7 @@ import './css/timeline.css';
 
 const propTypes = {
   rows: PropTypes.array,
+  onTimelineSettingToggle: PropTypes.func,
 };
 
 class Timeline extends React.Component {
@@ -99,6 +100,7 @@ class Timeline extends React.Component {
             isShowUsers={isShowUsers}
             onShowUsersToggle={this.onShowUsersToggle}
             onNavigate={this.onNavigate}
+            onTimelineSettingToggle={this.props.onTimelineSettingToggle}
           />
           <Month
             ref={node => this.timelineView = node}
