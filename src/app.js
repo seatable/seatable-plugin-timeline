@@ -17,7 +17,7 @@ import timeLogo from './assets/image/timeline.png';
 const DEFAULT_PLUGIN_SETTINGS = {
   views: [
     {
-      _vid: '0000',
+      _id: '0000',
       name: 'Default View',
       settings: {}
     }

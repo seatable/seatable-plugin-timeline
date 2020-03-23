@@ -65,7 +65,9 @@ class TimelineViewsTabs extends React.Component {
   setTimelineViewsTabsScroll = () => {
     if (!this.viewsTabsScroll) return;
     let { offsetWidth, scrollWidth } = this.viewsTabsScroll;
-    this.viewsTabsScroll.scrollLeft = scrollWidth - offsetWidth;
+    if (scrollWidth > offsetWidth) {
+      this.viewsTabsScroll.scrollLeft = scrollWidth - offsetWidth;
+    }
   }
 
   onNewViewToggle = () => {
