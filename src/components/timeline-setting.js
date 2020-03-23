@@ -13,6 +13,7 @@ const propTypes = {
   dateColumns: PropTypes.array,
   settings: PropTypes.object,
   onModifyTimelineSettings: PropTypes.func,
+  onHideTimelineSetting: PropTypes.func,
 };
 
 class TimelineSetting extends React.Component {
@@ -48,12 +49,13 @@ class TimelineSetting extends React.Component {
   };
 
   render() {
-    let { tables, views, userColumns, singleSelectColumns, dateColumns } = this.props;
+    let { tables, views, userColumns, singleSelectColumns, dateColumns, onHideTimelineSetting } = this.props;
     return (
-      <div className="plugin-timeline-setting position-absolute" style={{zIndex: zIndexs.TIMELINE_SETTING}}>
+      <div className="plugin-timeline-setting position-absolute" style={{zIndex: zIndexs.TIMELINE_SETTING}} ref={ref => this.timelineSetting = ref}>
         <div className="setting-container">
-          <div className="setting-header">
+          <div className="setting-header d-flex align-items-center">
             <div className="setting-header-title">设置</div>
+            <div className="dtable-font dtable-icon-x btn-close" onClick={onHideTimelineSetting}></div>
           </div>
           <div className="setting-body">
             <div className="setting-list">

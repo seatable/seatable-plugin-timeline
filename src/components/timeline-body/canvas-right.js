@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import moment from 'moment';
 import EventRow from '../event-row';
+import EventCell from '../event-cell';
 import { dates } from '../../utils';
 import { ROW_HEIGHT, COLUMN_WIDTH, DATE_UNIT, zIndexs } from '../../constants';
 import SingleSelectFormatter from '../../components/cell-formatter/single-select-formatter';
@@ -65,16 +66,13 @@ class ViewportRight extends React.Component {
       if (duration < 1) {
         return null;
       }
-      return <div key={`timeline-event-cell-${user}-${index}`} className="timeline-event-cell">
-        <SingleSelectFormatter
-          label={label}
-          bgColor={bgColor}
-          width={width}
-          left={left}
-          start={start}
-          end={end}
+      return (
+        <EventCell
+          key={`timeline-event-cell-${user}-${index}`}
+          style={{left, zIndex: zIndexs.EVENT_CELL, width}}
+          formatter={<SingleSelectFormatter label={label} bgColor={bgColor} start={start} end={end} />}
         />
-      </div>
+      );
     });
   }
 

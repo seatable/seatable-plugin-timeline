@@ -2,17 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const propTypes = {
-  formatter: PropTypes.func,
-  value: PropTypes.string,
+  formatter: PropTypes.node,
+  style: PropTypes.object,
 };
 
 class EventCell extends React.Component {
   render() {
-    let { formatter: Formatter, value } = this.props;
-    let cellContent = <Formatter value={value} />
+    let { formatter, style } = this.props;
+    let eventCellStyle = {
+      ...style
+    };
     return (
-      <div className="timeline-event-cell">
-        {cellContent}
+      <div className="timeline-event-cell d-flex align-items-center" style={eventCellStyle}>
+        {formatter}
       </div>
     )
   }

@@ -10,6 +10,7 @@ const propTypes = {
   isToday: PropTypes.bool,
   onShowUsersToggle: PropTypes.func,
   onNavigate: PropTypes.func,
+  onTimelineSettingToggle: PropTypes.func,
 };
 
 class TimelineToolbar extends React.Component {
@@ -26,7 +27,7 @@ class TimelineToolbar extends React.Component {
   }
 
   render() {
-    let { selectedDate, onShowUsersToggle, isShowUsers, isToday, onNavigate } = this.props;
+    let { selectedDate, onShowUsersToggle, isShowUsers, isToday, onNavigate, onTimelineSettingToggle } = this.props;
     let year = dates.getDateWithUnit(selectedDate, DATE_UNIT.YEAR);
     let month = dates.getDateWithUnit(selectedDate, DATE_UNIT.MONTH);
     return (
@@ -58,6 +59,9 @@ class TimelineToolbar extends React.Component {
             </span>
           </div>
           <div className={`btn-today ${isToday && `btn-today-disabled`}`} onClick={!isToday ? onNavigate.bind(this, NAVIGATE.TODAY) : undefined}>今天</div>
+          <div className="btn-setting" id="btn_setting" onClick={onTimelineSettingToggle}>
+            <i className="dtable-font dtable-icon-settings"></i>
+          </div>
         </div>
       </div>
     );
