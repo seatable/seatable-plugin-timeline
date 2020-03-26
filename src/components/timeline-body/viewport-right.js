@@ -7,7 +7,6 @@ import { dates } from '../../utils';
 import { COLUMN_WIDTH, DATE_UNIT, VIEW_TYPE } from '../../constants';
 
 const propTypes = {
-  isToday: PropTypes.bool,
   isShowUsers: PropTypes.bool,
   changedSelectedByScroll: PropTypes.bool,
   selectedView: PropTypes.string,
@@ -142,7 +141,7 @@ class ViewportRight extends React.Component {
 
   render() {
     let { overscanStartIndex, overscanEndIndex, amountDays } = this.state;
-    let { selectedDate, isToday, rows, renderHeaderDays } = this.props;
+    let { selectedDate, rows, renderHeaderDays } = this.props;
     let startOffset = overscanStartIndex * COLUMN_WIDTH;
     let endOffset = (amountDays.length - overscanEndIndex) * COLUMN_WIDTH;
     let overscanDays = amountDays.slice(overscanStartIndex, overscanEndIndex);
@@ -150,7 +149,6 @@ class ViewportRight extends React.Component {
     return (
       <div className="viewport-right" ref={ref => this.viewportRight = ref} onScroll={this.onScroll}>
         <TimelineHeader
-          isToday={isToday}
           selectedDate={selectedDate}
           overscanDays={overscanDays}
           rows={rows}
@@ -160,7 +158,6 @@ class ViewportRight extends React.Component {
         />
         <CanvasRight
           ref={node => this.canvasRight = node}
-          isToday={isToday}
           overscanDays={overscanDays}
           rows={rows}
           selectedDate={selectedDate}

@@ -5,7 +5,6 @@ import { dates } from '../../utils';
 import { DATE_UNIT, COLUMN_WIDTH } from '../../constants';
 
 const propTypes = {
-  isToday: PropTypes.bool,
   overscanDays: PropTypes.array,
   rows: PropTypes.array,
 };
@@ -13,7 +12,7 @@ const propTypes = {
 class HeaderMonthDays extends React.Component {
 
   render() {
-    let { isToday, overscanDays, rows } = this.props;
+    let { overscanDays, rows } = this.props;
     let todayMarkLeft = dates.getDaysInRange(overscanDays[0], moment().format('YYYY-MM-DD')).length * COLUMN_WIDTH + (COLUMN_WIDTH - 6) / 2;
     return (
       <div className="header-month-days position-relative d-inline-flex">
@@ -27,7 +26,7 @@ class HeaderMonthDays extends React.Component {
             </div>
           );
         })}
-        {(isToday && rows && rows.length > 0) &&
+        {(Array.isArray(rows) && rows.length > 0) &&
           <div className="today-mark position-absolute" style={{left: todayMarkLeft}}></div>
         }
       </div>

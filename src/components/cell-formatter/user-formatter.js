@@ -10,8 +10,8 @@ class UserFormatter extends React.Component {
   render() {
     let { value } = this.props;
     return (
-      <div className="cell-formatter grid-cell-type-user">
-        <span className="d-inline-block">{value}</span>
+      <div className="cell-formatter grid-cell-type-user d-flex align-items-center">
+        <span className="d-inline-block" title={value}>{value}</span>
       </div>
     );
   }

@@ -11,7 +11,6 @@ import intl from 'react-intl-universal';
 import '../../locale';
 
 const propTypes = {
-  isToday: PropTypes.bool,
   days: PropTypes.array,
   rows: PropTypes.array,
   selectedDate: PropTypes.string,
@@ -62,6 +61,12 @@ class ViewportRight extends React.Component {
     let displayEvents = this.getEventsInRange(events, startDate, endDate);
     return displayEvents.map((e, index) => {
       let { label, bgColor, start, end } = e;
+      if (moment(start).isBefore(startDate)) {
+        start = startDate;
+      }
+      if (moment(end).isAfter(endDate)) {
+        end = endDate;
+      }
       let duration = moment(end).diff(moment(start), 'days');
       let width = duration * COLUMN_WIDTH;
       let left = moment(start).diff(moment(startDate), 'days') * COLUMN_WIDTH;
@@ -95,11 +100,13 @@ class ViewportRight extends React.Component {
   }
 
   getEventsInRange = (events, startDate, endDate) => {
+    let { selectedDate } = this.props;
     if (!Array.isArray(events)) {
       return [];
     }
-    return events.filter(e => moment(e.start).isBetween(startDate, endDate) ||
-      moment(e.end).isBetween(startDate, endDate)
+    return events.filter(e => dates.isDateInRange(e.start, startDate, endDate) ||
+      dates.isDateInRange(e.end, startDate, endDate) ||
+      dates.isDateInRange(selectedDate, e.start, e.end)
     );
   }
 
@@ -137,7 +144,7 @@ class ViewportRight extends React.Component {
   }
 
   render() {
-    let { isToday, rows, startOffset, endOffset, overscanDays } = this.props;
+    let { rows, startOffset, endOffset, overscanDays } = this.props;
     let canvasRightStyle = {
       width: overscanDays.length * COLUMN_WIDTH + startOffset + endOffset,
       paddingLeft: startOffset,
@@ -147,7 +154,7 @@ class ViewportRight extends React.Component {
       <div className="canvas-right" ref={ref => this.canvasRight = ref} style={canvasRightStyle} onScroll={this.onCanvasRightScroll}>
         <div className="position-relative" style={{width: '100%', height: '100%'}}>
           {this.renderEventRows()}
-          {(isToday && rows && rows.length > 0) && 
+          {(Array.isArray(rows) && rows.length > 0) && 
             <div className="today-mark-line position-absolute" style={this.getTodayMarkLineStyle()}></div>
           }
         </div>

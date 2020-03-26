@@ -81,3 +81,8 @@ export function getDate2Week(date) {
     }
   }
 }
+
+export function isDateInRange(targetDate, startDate, endDate) {
+  return moment(targetDate).isBetween(startDate, endDate) || 
+    targetDate === startDate || targetDate === endDate;
+}

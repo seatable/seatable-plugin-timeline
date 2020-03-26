@@ -41,39 +41,35 @@ class App extends React.Component {
       plugin_settings: {},
       selectedViewIdx: 0,
     };
-    this.dtable = null;
+    this.dtable = new DTable();
   }
 
   componentDidMount() {
-    this.dtable = new DTable();
-    this.init();
+    this.initPluginDTableData();
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({showDialog: nextProps.showDialog});
   }
 
-  async init() {
+  async initPluginDTableData() {
     if (window.app === undefined) {
+      // local develop
       window.app = {};
-      await this.dtable.init(window.dtableConfig);
-      let relatedUsersRes = await this.getRelatedUsers(this.dtable.dtableStore);
-      window.app.collaborators = relatedUsersRes.data.user_list;
-      this.dtable.subscribe('dtable-connect', () => {this.onDTableConnect();});
-      this.dtable.subscribe('remote-data-changed', () => {this.onDTableChanged();});
-      await this.dtable.syncWithServer();
-      this.resetData();
-    } else {
-      this.dtable.initInBrowser(window.app.dtableStore);
-      let relatedUsersRes = await this.getRelatedUsers(this.dtable.dtableStore);
-      window.app.collaborators = relatedUsersRes.data.user_list;
-      this.dtable.subscribe('remote-data-changed', () => {this.onDTableChanged();});
       await this.dtable.init(window.dtablePluginConfig);
-      this.resetData();
+      await this.dtable.syncWithServer();
+      let relatedUsersRes = await this.getRelatedUsersFromServer(this.dtable.dtableStore);
+      window.app.collaborators = relatedUsersRes.data.user_list;
+      this.dtable.subscribe('dtable-connect', () => { this.onDTableConnect(); });
+    } else {
+      // integrated to dtable app
+      this.dtable.initInBrowser(window.app.dtableStore);
     }
+    this.dtable.subscribe('remote-data-changed', () => { this.onDTableChanged(); });
+    this.resetData();
   }
 
-  async getRelatedUsers(dtableStore) {
+  async getRelatedUsersFromServer(dtableStore) {
     return dtableStore.dtableAPI.getTableRelatedUsers();
   }
 
@@ -83,13 +79,6 @@ class App extends React.Component {
 
   onDTableChanged = () => {
     this.resetData();
-  }
-
-  getDtableUuid = () => {
-    if (window.dtable) {
-      return window.dtable.dtableUuid;
-    }
-    return window.dtableConfig.dtableUuid;
   }
 
   resetData = () => {
@@ -111,6 +100,13 @@ class App extends React.Component {
       selectedViewIdx,
       isShowTimelineSetting
     });
+  }
+
+  getDtableUuid = () => {
+    if (window.dtable) {
+      return window.dtable.dtableUuid;
+    }
+    return window.dtablePluginConfig.dtableUuid;
   }
 
   onTimelineSettingToggle = () => {
@@ -164,8 +160,17 @@ class App extends React.Component {
     return this.dtable.getTableViews(name);
   }
 
+  getRelatedUsersFromLocal = () => {
+    let { collaborators, state } = window.app;
+    if (!collaborators) {
+      // dtable app
+      return state && state.collaborators;
+    }
+    return collaborators; // local develop
+  }
+
   getRows = (tableName, viewName, settings = {}) => {
-    let { collaborators } = window.app;
+    let collaborators = this.getRelatedUsersFromLocal()
     let CellType = this.dtable.getCellType();
     let table = this.dtable.getTableByName(tableName);
     let rows = [];

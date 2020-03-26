@@ -11,6 +11,8 @@ export const generatorViewId = (views) => {
   let view_id, isUnique = false;
   while (!isUnique) {
     view_id = generatorBase64Code(4);
+
+    // eslint-disable-next-line
     isUnique = views.every(item => {return item._id !== view_id;});
     if (isUnique) {
       break;

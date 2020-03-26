@@ -4,7 +4,6 @@ import HeaderMonthDays from '../header/header-month-days';
 import ViewportRight from '../timeline-body/viewport-right';
 
 const propTypes = {
-  isToday: PropTypes.bool,
   isShowUsers: PropTypes.bool,
   changedSelectedByScroll: PropTypes.bool,
   selectedView: PropTypes.string,
@@ -21,9 +20,8 @@ class Month extends React.Component {
   }
 
   renderHeaderDays = (props) => {
-    let { isToday, overscanDays, rows } = props;
+    let { overscanDays, rows } = props;
     return <HeaderMonthDays
-      isToday={isToday}
       overscanDays={overscanDays}
       rows={rows}
     />
@@ -34,12 +32,11 @@ class Month extends React.Component {
   }
 
   render() {
-    let { isToday, isShowUsers, changedSelectedByScroll, rows, selectedView, selectedDate, updateSelectedDate, onCanvasRightScroll } = this.props;
+    let { isShowUsers, changedSelectedByScroll, rows, selectedView, selectedDate, updateSelectedDate, onCanvasRightScroll } = this.props;
     return (
       <div className="timeline-month-view">
         <ViewportRight
           ref={node => this.viewportRight = node}
-          isToday={isToday}
           isShowUsers={isShowUsers}
           changedSelectedByScroll={changedSelectedByScroll}
           selectedView={selectedView}

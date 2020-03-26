@@ -104,7 +104,6 @@ class Timeline extends React.Component {
           />
           <Month
             ref={node => this.timelineView = node}
-            isToday={isToday}
             isShowUsers={isShowUsers}
             changedSelectedByScroll={changedSelectedByScroll}
             selectedView={selectedView}

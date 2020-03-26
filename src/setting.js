@@ -6,14 +6,5 @@ const config = {
   lang: "en"
 }
 
-const { APIToken, server, workspaceID, dtableName, lang } = config;
-
-const dtableConfig = {
-  APIToken,
-  server: server.replace(/\/+$/, ""),
-  workspaceID,
-  dtableName,
-  lang,
-};
-
-window.dtableConfig = dtableConfig;
+const dtablePluginConfig = Object.assign({}, config, {server: config.server.replace(/\/+$/, "")});
+window.dtablePluginConfig = dtablePluginConfig;
