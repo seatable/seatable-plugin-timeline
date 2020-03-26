@@ -103,8 +103,10 @@ class App extends React.Component {
   }
 
   getDtableUuid = () => {
-    return window && window.dtablePluginConfig &&
-      window.dtablePluginConfig.dtableUuid;
+    if (window.dtable) {
+      return window.dtable.dtableUuid;
+    }
+    return window.dtablePluginConfig.dtableUuid;
   }
 
   onTimelineSettingToggle = () => {
