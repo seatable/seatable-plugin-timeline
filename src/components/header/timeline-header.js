@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { COLUMN_WIDTH } from '../../constants';
 
 const propTypes = {
-  isToday: PropTypes.bool,
   rows: PropTypes.array,
   overscanDays: PropTypes.array,
 };
@@ -11,7 +10,7 @@ const propTypes = {
 class TimelineHeader extends React.Component {
 
   render() {
-    let { isToday, overscanDays, rows, startOffset, endOffset, renderHeaderDays} = this.props;
+    let { overscanDays, rows, startOffset, endOffset, renderHeaderDays} = this.props;
     let headerStyle = {
       width: overscanDays.length * COLUMN_WIDTH + startOffset + endOffset,
       paddingLeft: startOffset,
@@ -19,7 +18,7 @@ class TimelineHeader extends React.Component {
     };
     return (
       <div className="timeline-header" style={headerStyle}>
-        {renderHeaderDays({isToday, overscanDays, rows, startOffset, endOffset})}
+        {renderHeaderDays({overscanDays, rows, startOffset, endOffset})}
       </div>
     );
   }
