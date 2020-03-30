@@ -88,6 +88,7 @@ class App extends React.Component {
   }
 
   resetData = () => {
+    let { isShowTimelineSetting } = this.state;
     let plugin_settings = this.dtable.getPluginSettings(PLUGIN_NAME) || {};
     if (!plugin_settings || Object.keys(plugin_settings).length === 0) {
       plugin_settings = DEFAULT_PLUGIN_SETTINGS;
@@ -98,7 +99,9 @@ class App extends React.Component {
     let selectedViewId = selectedViewIds[dtableUuid];
     let selectedViewIdx = views.findIndex(v => v._id === selectedViewId);
     selectedViewIdx = selectedViewIdx > 0 ? selectedViewIdx : 0;
-    let isShowTimelineSetting = !this.isValidViewSettings(views[selectedViewIdx].settings);
+    if (!isShowTimelineSetting) {
+      isShowTimelineSetting = !this.isValidViewSettings(views[selectedViewIdx].settings);
+    }
     this.setState({
       isLoading: false,
       showDialog: true,
@@ -232,8 +235,8 @@ class App extends React.Component {
       selectedViewIdx,
       isShowTimelineSetting
     }, () => {
-      this.dtable.updatePluginSettings(PLUGIN_NAME, plugin_settings);
       this.storeSelectedViewId(updatedViews[selectedViewIdx]._id);
+      this.dtable.updatePluginSettings(PLUGIN_NAME, plugin_settings);
       this.viewsTabs && this.viewsTabs.setTimelineViewsTabsScroll();
     });
   }
@@ -265,8 +268,8 @@ class App extends React.Component {
         selectedViewIdx,
         isShowTimelineSetting
       }, () => {
-        this.dtable.updatePluginSettings(PLUGIN_NAME, plugin_settings);
         this.storeSelectedViewId(updatedViews[selectedViewIdx]._id);
+        this.dtable.updatePluginSettings(PLUGIN_NAME, plugin_settings);
       });
     }
   }
