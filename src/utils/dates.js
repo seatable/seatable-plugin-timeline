@@ -39,23 +39,6 @@ export function getDatesInMonth(date) {
   return dates;
 }
 
-export function getDatesInYear(date) {
-  let formattedDate = moment(date, 'YYYY-MM-DD', true);
-  if (!formattedDate.isValid()) {
-    return [];
-  }
-  let year = formattedDate.format('YYYY');
-  let dates = [];
-  for (let i = 0; i < 12; i++) {
-    let month = i + 1;
-    if (month < 10) {
-      month = `0${month}`;
-    }
-    dates.push(`${year}-${month}-01`)
-  }
-  return dates;
-}
-
 export function getDatesInRange(startDate, endDate, unit = 'day') {
   let formattedStartDate = moment(startDate);
   let formattedEndDate = moment(endDate);
