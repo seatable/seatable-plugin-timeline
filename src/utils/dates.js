@@ -60,12 +60,12 @@ export function getDatesInRange(startDate, endDate, unit = 'day') {
   let formattedStartDate = moment(startDate);
   let formattedEndDate = moment(endDate);
   if (!formattedStartDate.isValid() || !formattedEndDate.isValid()) return [];
-  let days = [];
+  let dates = [];
   while(formattedStartDate.isSameOrBefore(formattedEndDate)) {
-    days.push(formattedStartDate.format('YYYY-MM-DD'));
+    dates.push(formattedStartDate.format('YYYY-MM-DD'));
     formattedStartDate.add(1, unit);
   }
-  return days;
+  return dates;
 }
 
 export function getDate2Week(date) {

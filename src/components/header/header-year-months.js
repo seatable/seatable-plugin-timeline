@@ -19,8 +19,8 @@ class HeaderYearMonths extends React.Component {
         {overscanDates.map((d) => {
           let month = dates.getDate2Month(d);
           return (
-            <div className="day-item d-flex flex-column" name={d} key={`day-item-${d}`}>
-              <span key={`month-${d}`} className="week d-flex align-items-center justify-content-center">{month}</span>
+            <div className="month-item d-flex flex-column" name={d} key={`day-item-${d}`}>
+              <span key={`month-${d}`} className="month d-flex align-items-center justify-content-center">{month}</span>
             </div>
           );
         })}
