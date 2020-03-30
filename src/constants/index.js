@@ -1,16 +1,14 @@
 import * as SETTING_KEY from './setting-key';
 import * as zIndexs from './zIndexs';
+import {
+  DATE_UNIT,
+} from './dates';
 
 const PLUGIN_NAME = 'timeline';
 
-const VIEW_TYPE = {
-  MONTH: 'month',
-}
-
-const DATE_UNIT = {
+const GRID_VIEWS = {
   YEAR: 'year',
   MONTH: 'month',
-  DAY: 'day',
 }
 
 const NAVIGATE = {
@@ -28,11 +26,11 @@ const DEFAULT_BG_COLOR = '#3b88fd';
 export {
   PLUGIN_NAME,
   SETTING_KEY,
-  VIEW_TYPE,
+  GRID_VIEWS,
   DATE_UNIT,
   NAVIGATE,
   zIndexs,
   ROW_HEIGHT,
   COLUMN_WIDTH,
-  DEFAULT_BG_COLOR
+  DEFAULT_BG_COLOR,
 };

@@ -18,7 +18,7 @@ class DropdownMenu extends React.Component {
       ...dropdownMenuPosition,
     };
     return (
-      <div className="dropdown-menu large show" style={dropdownMenuStyle}>
+      <div className="timeline-dropdown-menu dropdown-menu large show" style={dropdownMenuStyle}>
         {options || <div className="no-options d-flex align-items-center justify-content-center">No options</div>}
       </div>
     );

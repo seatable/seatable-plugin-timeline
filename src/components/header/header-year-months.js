@@ -9,20 +9,18 @@ const propTypes = {
   rows: PropTypes.array,
 };
 
-class HeaderMonthDays extends React.Component {
+class HeaderYearMonths extends React.Component {
 
   render() {
     let { overscanDates, rows } = this.props;
-    let todayMarkLeft = overscanDates.indexOf(moment().format('YYYY-MM-DD', DATE_UNIT.DAY)) * COLUMN_WIDTH + (COLUMN_WIDTH - 6) / 2;
+    let todayMarkLeft = overscanDates.indexOf(moment().startOf(DATE_UNIT.MONTH).format('YYYY-MM-DD')) * COLUMN_WIDTH + (COLUMN_WIDTH - 6) / 2;
     return (
-      <div className="header-month-days position-relative d-inline-flex">
+      <div className="header-year-months position-relative d-inline-flex align-items-end">
         {overscanDates.map((d) => {
-          let week = dates.getDate2Week(d);
-          let day = dates.getDateWithUnit(d, DATE_UNIT.DAY);
+          let month = dates.getDate2Month(d);
           return (
             <div className="day-item d-flex flex-column" name={d} key={`day-item-${d}`}>
-              <span key={`week-${d}`} className="week d-flex align-items-center justify-content-center">{week}</span>
-              <span key={`day-${d}`} className="day d-flex align-items-center justify-content-center">{day}</span>
+              <span key={`month-${d}`} className="week d-flex align-items-center justify-content-center">{month}</span>
             </div>
           );
         })}
@@ -34,6 +32,6 @@ class HeaderMonthDays extends React.Component {
   }
 }
 
-HeaderMonthDays.propTypes = propTypes;
+HeaderYearMonths.propTypes = propTypes;
 
-export default HeaderMonthDays;
+export default HeaderYearMonths;

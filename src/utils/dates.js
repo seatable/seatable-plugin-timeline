@@ -24,30 +24,46 @@ export function getDateWithUnit(date, unit) {
   }
 }
 
-export function getDaysInMonth(date) {
+export function getDatesInMonth(date) {
   let formattedDate = moment(date, 'YYYY-MM-DD', true);
   if (!formattedDate.isValid()) {
     return [];
   }
   let daysCount = formattedDate.daysInMonth();
   let startDate = formattedDate.startOf(DATE_UNIT.MONTH);
-  let days = [startDate.format('YYYY-MM-DD')];
+  let dates = [startDate.format('YYYY-MM-DD')];
   for (let i = 1; i < daysCount; i++) {
     startDate = startDate.add(1, DATE_UNIT.DAY);
-    days.push(startDate.format('YYYY-MM-DD'));
+    dates.push(startDate.format('YYYY-MM-DD'));
   }
-  return days;
+  return dates;
 }
 
-export function getDaysInRange(startDate, endDate) {
+export function getDatesInYear(date) {
+  let formattedDate = moment(date, 'YYYY-MM-DD', true);
+  if (!formattedDate.isValid()) {
+    return [];
+  }
+  let year = formattedDate.format('YYYY');
+  let dates = [];
+  for (let i = 0; i < 12; i++) {
+    let month = i + 1;
+    if (month < 10) {
+      month = `0${month}`;
+    }
+    dates.push(`${year}-${month}-01`)
+  }
+  return dates;
+}
+
+export function getDatesInRange(startDate, endDate, unit = 'day') {
   let formattedStartDate = moment(startDate);
   let formattedEndDate = moment(endDate);
   if (!formattedStartDate.isValid() || !formattedEndDate.isValid()) return [];
-  let daysCount = formattedEndDate.diff(formattedStartDate, 'days');
   let days = [];
-  for (let i = 0; i < daysCount; i++) {
+  while(formattedStartDate.isSameOrBefore(formattedEndDate)) {
     days.push(formattedStartDate.format('YYYY-MM-DD'));
-    formattedStartDate.add(1, 'day');
+    formattedStartDate.add(1, unit);
   }
   return days;
 }
@@ -80,6 +96,10 @@ export function getDate2Week(date) {
       return '';
     }
   }
+}
+
+export function getDate2Month(date) {
+  return moment(date).format('MMM');
 }
 
 export function isDateInRange(targetDate, startDate, endDate) {

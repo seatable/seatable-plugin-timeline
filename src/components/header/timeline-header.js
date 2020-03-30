@@ -4,21 +4,21 @@ import { COLUMN_WIDTH } from '../../constants';
 
 const propTypes = {
   rows: PropTypes.array,
-  overscanDays: PropTypes.array,
+  overscanDates: PropTypes.array,
 };
 
 class TimelineHeader extends React.Component {
 
   render() {
-    let { overscanDays, rows, startOffset, endOffset, renderHeaderDays} = this.props;
+    let { overscanDates, rows, startOffset, endOffset, renderHeaderDates} = this.props;
     let headerStyle = {
-      width: overscanDays.length * COLUMN_WIDTH + startOffset + endOffset,
+      width: overscanDates.length * COLUMN_WIDTH + startOffset + endOffset,
       paddingLeft: startOffset,
       paddingRight: endOffset
     };
     return (
       <div className="timeline-header" style={headerStyle}>
-        {renderHeaderDays({overscanDays, rows, startOffset, endOffset})}
+        {renderHeaderDates({overscanDates, rows, startOffset, endOffset})}
       </div>
     );
   }
