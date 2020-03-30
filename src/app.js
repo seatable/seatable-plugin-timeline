@@ -9,7 +9,7 @@ import View from './model/view';
 import TimelineRow from './model/timeline-row';
 import Event from './model/event';
 import { PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR } from './constants';
-import { generatorViewId } from './utils';
+import { generatorViewId, getDtableUuid } from './utils';
 
 import './css/plugin-layout.css';
 import timeLogo from './assets/image/timeline.png';
@@ -52,6 +52,11 @@ class App extends React.Component {
     this.setState({showDialog: nextProps.showDialog});
   }
 
+  componentWillUnmount() {
+    this.unsubscribeLocalDtableChanged();
+    this.unsubscribeRemoteDtableChanged();
+  }
+
   async initPluginDTableData() {
     if (window.app === undefined) {
       // local develop
@@ -65,7 +70,8 @@ class App extends React.Component {
       // integrated to dtable app
       this.dtable.initInBrowser(window.app.dtableStore);
     }
-    this.dtable.subscribe('remote-data-changed', () => { this.onDTableChanged(); });
+    this.unsubscribeLocalDtableChanged = this.dtable.subscribe('local-dtable-changed', () => { this.onDTableChanged(); });
+    this.unsubscribeRemoteDtableChanged = this.dtable.subscribe('remote-dtable-changed', () => { this.onDTableChanged(); });
     this.resetData();
   }
 
@@ -82,17 +88,20 @@ class App extends React.Component {
   }
 
   resetData = () => {
+    let { isShowTimelineSetting } = this.state;
     let plugin_settings = this.dtable.getPluginSettings(PLUGIN_NAME) || {};
     if (!plugin_settings || Object.keys(plugin_settings).length === 0) {
       plugin_settings = DEFAULT_PLUGIN_SETTINGS;
     }
     let { views } = plugin_settings;
-    let dtableUuid = this.getDtableUuid();
+    let dtableUuid = getDtableUuid();
     let selectedViewIds = this.getSelectedViewIds(KEY_SELECTED_VIEW_IDS) || {};
     let selectedViewId = selectedViewIds[dtableUuid];
     let selectedViewIdx = views.findIndex(v => v._id === selectedViewId);
     selectedViewIdx = selectedViewIdx > 0 ? selectedViewIdx : 0;
-    let isShowTimelineSetting = !this.isValidViewSettings(views[selectedViewIdx].settings);
+    if (!isShowTimelineSetting) {
+      isShowTimelineSetting = !this.isValidViewSettings(views[selectedViewIdx].settings);
+    }
     this.setState({
       isLoading: false,
       showDialog: true,
@@ -100,13 +109,6 @@ class App extends React.Component {
       selectedViewIdx,
       isShowTimelineSetting
     });
-  }
-
-  getDtableUuid = () => {
-    if (window.dtable) {
-      return window.dtable.dtableUuid;
-    }
-    return window.dtablePluginConfig.dtableUuid;
   }
 
   onTimelineSettingToggle = () => {
@@ -233,9 +235,21 @@ class App extends React.Component {
       selectedViewIdx,
       isShowTimelineSetting
     }, () => {
-      this.dtable.updatePluginSettings(PLUGIN_NAME, plugin_settings);
       this.storeSelectedViewId(updatedViews[selectedViewIdx]._id);
+      this.dtable.updatePluginSettings(PLUGIN_NAME, plugin_settings);
       this.viewsTabs && this.viewsTabs.setTimelineViewsTabsScroll();
+    });
+  }
+
+  onRenameView = (viewName) => {
+    let { plugin_settings, selectedViewIdx } = this.state;
+    let updatedView = plugin_settings.views[selectedViewIdx];
+    updatedView = Object.assign({}, updatedView, {name: viewName});
+    plugin_settings.views[selectedViewIdx] = updatedView;
+    this.setState({
+      plugin_settings
+    }, () => {
+      this.dtable.updatePluginSettings(PLUGIN_NAME, plugin_settings);
     });
   }
 
@@ -254,8 +268,8 @@ class App extends React.Component {
         selectedViewIdx,
         isShowTimelineSetting
       }, () => {
-        this.dtable.updatePluginSettings(PLUGIN_NAME, plugin_settings);
         this.storeSelectedViewId(updatedViews[selectedViewIdx]._id);
+        this.dtable.updatePluginSettings(PLUGIN_NAME, plugin_settings);
       });
     }
   }
@@ -273,7 +287,7 @@ class App extends React.Component {
   }
 
   storeSelectedViewId = (viewId) => {
-    let dtableUuid = this.getDtableUuid();
+    let dtableUuid = getDtableUuid();
     let selectedViewIds = this.getSelectedViewIds(KEY_SELECTED_VIEW_IDS);
     selectedViewIds[dtableUuid] = viewId;
     window.localStorage.setItem(KEY_SELECTED_VIEW_IDS, JSON.stringify(selectedViewIds));
@@ -325,6 +339,7 @@ class App extends React.Component {
             views={timelineViews}
             selectedViewIdx={selectedViewIdx}
             onAddView={this.onAddView}
+            onRenameView={this.onRenameView}
             onDeleteView={this.onDeleteView}
             onSelectView={this.onSelectView}
           />
@@ -332,6 +347,7 @@ class App extends React.Component {
         <ModalBody className="plugin-body position-relative">
           <Timeline
             rows={rows}
+            selectedTimelineView={selectedTimelineView}
             onTimelineSettingToggle={this.onTimelineSettingToggle}
           />
           {isShowTimelineSetting &&

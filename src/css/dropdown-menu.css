@@ -1,23 +1,23 @@
-.dropdown-menu {
-  font-weight: 400;
+.timeline-modal-portal .dropdown-menu {
+  font-weight: normal;
 }
 
-.dropdown-menu .no-options {
+.timeline-modal-portal .dropdown-menu .no-options {
   height: 40px;
   color: #c2c2c2;
 }
 
-.dropdown-menu .dropdown-item:hover {
+.timeline-modal-portal .dropdown-item:hover {
   color: #fff;
   background-color: #20a0ff;
 }
 
-.dropdown-menu .dropdown-item .item-icon {
+.timeline-modal-portal .dropdown-item .item-icon {
   font-size: 14px;
   margin-right: 10px;
   color: #8c8c8c;
 }
 
-.dropdown-menu .dropdown-item:hover .item-icon {
+.timeline-modal-portal .dropdown-item:hover .item-icon {
   color: #fff;
 }

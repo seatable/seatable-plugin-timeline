@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import ModalPortal from './dialog/modal-portal';
 import NewViewDialog from './dialog/new-view-dialog';
+import RenameViewDialog from './dialog/rename-view-dialog';
 import DropdownMenu from './dropdownmenu';
 import intl from 'react-intl-universal';
 import '../locale';
@@ -13,6 +14,7 @@ const propTypes = {
   onSelectView: PropTypes.func,
   onDeleteView: PropTypes.func,
   onAddView: PropTypes.func,
+  onRenameView: PropTypes.func,
 };
 
 class TimelineViewsTabs extends React.Component {
@@ -26,6 +28,7 @@ class TimelineViewsTabs extends React.Component {
         left: 0
       },
       isShowNewViewDialog: false,
+      isShowRenameViewDialog: false,
     };
     this.views = [];
   }
@@ -85,10 +88,19 @@ class TimelineViewsTabs extends React.Component {
     this.onNewViewToggle();
   }
 
+  onRenameViewToggle = () => {
+    this.setState({isShowRenameViewDialog: !this.state.isShowRenameViewDialog});
+  }
+
+  hideRenameViewDialog = () => {
+    this.setState({isShowRenameViewDialog: false});
+  }
+
   render() {
     let { views, selectedViewIdx } = this.props;
-    let { isShowViewDropdown, dropdownMenuPosition, isShowNewViewDialog } = this.state;
+    let { isShowViewDropdown, dropdownMenuPosition, isShowNewViewDialog, isShowRenameViewDialog } = this.state;
     let viewsLength = views.length;
+    let selectedGridView = views[selectedViewIdx] || {};
     return (
       <div className="timeline-views-tabs d-flex">
         <div className="views-tabs-scroll" ref={ref => this.viewsTabsScroll = ref}>
@@ -123,9 +135,13 @@ class TimelineViewsTabs extends React.Component {
                               dropdownMenuPosition={dropdownMenuPosition}
                               options={viewsLength > 1 &&
                                 <React.Fragment>
+                                  <button className="dropdown-item" onClick={this.onRenameViewToggle}>
+                                    <i className="item-icon dtable-font dtable-icon-rename"></i>
+                                    <span className="item-text">{intl.get('Rename_View')}</span>
+                                  </button>
                                   <button className="dropdown-item" onClick={this.props.onDeleteView.bind(this, _id)}>
                                     <i className="item-icon dtable-font dtable-icon-delete"></i>
-                                    <span className="item-text">{intl.get('Delete')}</span>
+                                    <span className="item-text">{intl.get('Delete_View')}</span>
                                   </button>
                                 </React.Fragment>
                               }
@@ -147,6 +163,13 @@ class TimelineViewsTabs extends React.Component {
           <NewViewDialog
             onNewViewConfirm={this.onAddView}
             onNewViewCancel={this.onNewViewCancel}
+          />
+        }
+        {isShowRenameViewDialog &&
+          <RenameViewDialog
+            viewName={selectedGridView.name}
+            onRenameView={this.props.onRenameView}
+            hideRenameViewDialog={this.hideRenameViewDialog}
           />
         }
       </div>

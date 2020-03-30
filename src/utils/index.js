@@ -1,7 +1,8 @@
 import * as dates from './dates';
-import { generatorViewId } from './common-utils';
+import { generatorViewId, getDtableUuid } from './common-utils';
 
 export {
   dates,
   generatorViewId,
+  getDtableUuid
 };

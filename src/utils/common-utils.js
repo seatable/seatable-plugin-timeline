@@ -20,3 +20,10 @@ export const generatorViewId = (views) => {
   }
   return view_id;
 };
+
+export const getDtableUuid = () => {
+  if (window.dtable) {
+    return window.dtable.dtableUuid;
+  }
+  return window.dtablePluginConfig.dtableUuid;
+}

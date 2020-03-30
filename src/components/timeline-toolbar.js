@@ -2,17 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { dates } from '../utils';
-import { DATE_UNIT, NAVIGATE } from '../constants';
+import { DATE_UNIT, NAVIGATE, GRID_VIEWS } from '../constants';
 import intl from 'react-intl-universal';
 import '../locale';
 
 const propTypes = {
+  selectedGridView: PropTypes.string,
   selectedDate: PropTypes.string,
   isShowUsers: PropTypes.bool,
   isToday: PropTypes.bool,
   onShowUsersToggle: PropTypes.func,
   onNavigate: PropTypes.func,
   onTimelineSettingToggle: PropTypes.func,
+  onSelectGridView: PropTypes.func,
 };
 
 class TimelineToolbar extends React.Component {
@@ -28,26 +30,53 @@ class TimelineToolbar extends React.Component {
     this.setState({isSelectViewDropdownOpen: !this.state.isSelectViewDropdownOpen});
   }
 
-  render() {
-    let { selectedDate, onShowUsersToggle, isShowUsers, isToday, onNavigate, onTimelineSettingToggle } = this.props;
+  getDisplaySelectedDate = () => {
+    let { selectedGridView, selectedDate } = this.props;
     let year = dates.getDateWithUnit(selectedDate, DATE_UNIT.YEAR);
-    let month = dates.getDateWithUnit(selectedDate, DATE_UNIT.MONTH);
+    switch (selectedGridView) {
+      case GRID_VIEWS.YEAR: {
+        return intl.get('Selected_Date_Year', {year});
+      }
+      default: {
+        let month = dates.getDateWithUnit(selectedDate, DATE_UNIT.MONTH);
+        return intl.get('Selected_Date_Year_Month', {year, month});
+      }
+    }
+  }
+
+  getDisplaySelectedGridView = () => {
+    let { selectedGridView } = this.props;
+    switch (selectedGridView) {
+      case GRID_VIEWS.YEAR: {
+        return intl.get('Year');
+      }
+      default: {
+        return intl.get('Month');
+      }
+    }
+  }
+
+  render() {
+    let { onShowUsersToggle, isShowUsers, isToday, onNavigate, onTimelineSettingToggle } = this.props;
+    let displaySelectedDate = this.getDisplaySelectedDate();
+    let displaySelectedGridView = this.getDisplaySelectedGridView();
     return (
       <div className="timeline-toolbar d-flex align-items-center justify-content-between">
         <div className="toolbar-left d-flex align-items-center">
           <div className="toggle-drawer-btn" onClick={onShowUsersToggle}>
             <i className={`dtable-font ${isShowUsers ? `dtable-icon-retract-com` : `dtable-icon-open-com`}`}></i>
           </div>
-          <div className="current-date">{intl.get('Year_Month', {year, month})}</div>
+          <div className="selected-date">{displaySelectedDate}</div>
         </div>
         <div className="toolbar-right d-flex align-items-center">
           <div className="btn-select-view">
             <Dropdown group isOpen={this.state.isSelectViewDropdownOpen} size="sm" toggle={this.onSelectViewToggle}>
               <DropdownToggle caret>
-                {intl.get('Month')}
+                {displaySelectedGridView}
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem>{intl.get('Month')}</DropdownItem>
+                <DropdownItem onClick={this.props.onSelectGridView.bind(this, GRID_VIEWS.YEAR)}>{intl.get('Year')}</DropdownItem>
+                <DropdownItem onClick={this.props.onSelectGridView.bind(this, GRID_VIEWS.MONTH)}>{intl.get('Month')}</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>

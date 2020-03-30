@@ -25,7 +25,11 @@
   font-weight: 700;
  }
 
-.timeline-toolbar .current-date {
+.timeline-toolbar .dropdown-menu {
+  min-width: 80px;
+}
+
+.timeline-toolbar .selected-date {
   margin-left: 10px;
   font-size: 16px;
   color: #333;
@@ -161,6 +165,7 @@
   border-bottom: 1px solid #e2e2e2;
 }
 
+.timeline-header .month-item,
 .timeline-header .day-item {
   width: 40px;
   font-size: 14px;
@@ -175,6 +180,12 @@
 .timeline-header .header-month-days .day {
   color: #666;
   line-height: 1;
+}
+
+.timeline-header .header-year-months {
+  height: 50px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e2e2e2;
 }
 
 .timeline-header .today-mark {
@@ -223,7 +234,8 @@
   padding: 0 1rem;
 }
 
-.timeline-month-view {
+.timeline-month-view,
+.timeline-year-view {
   height: 100%;
 }
 
@@ -279,7 +291,7 @@
   background-color: rgba(245, 245, 245, 0.7);
 }
 
-.timeline-day-bg.end-of-month {
+.timeline-day-bg.end-of-range {
   border-right: 1px solid #e2e2e2;
 }
 
