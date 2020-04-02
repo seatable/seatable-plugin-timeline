@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import HeaderYearMonths from '../header/header-year-months';
+import HeaderDays from '../header/header-days';
 import ViewportRight from '../timeline-body/viewport-right';
 
 const propTypes = {
@@ -13,7 +13,7 @@ const propTypes = {
   onCanvasRightScroll: PropTypes.func,
 };
 
-class Year extends React.Component {
+class Day extends React.Component {
 
   setCanvasRightScroll = (scrollTop) => {
     this.viewportRight.setCanvasRightScroll(scrollTop);
@@ -25,7 +25,7 @@ class Year extends React.Component {
 
   renderHeaderDates = (props) => {
     let { overscanDates, rows, columnWidth } = props;
-    return <HeaderYearMonths
+    return <HeaderDays
       overscanDates={overscanDates}
       rows={rows}
       columnWidth={columnWidth}
@@ -35,7 +35,7 @@ class Year extends React.Component {
   render() {
     let { isShowUsers, changedSelectedByScroll, rows, selectedGridView, selectedDate, updateSelectedDate, onCanvasRightScroll } = this.props;
     return (
-      <div className="timeline-year-view">
+      <div className="timeline-day-view">
         <ViewportRight
           ref={node => this.viewportRight = node}
           isShowUsers={isShowUsers}
@@ -52,6 +52,6 @@ class Year extends React.Component {
   }
 }
 
-Year.propTypes = propTypes;
+Day.propTypes = propTypes;
 
-export default Year;
+export default Day;

@@ -15,6 +15,10 @@
   padding: 6px;
 }
 
+.toolbar-lef {
+  flex: 1;
+}
+
 .timeline-toolbar .toggle-drawer-btn {
   height: 24px;
   width: 24px;
@@ -49,6 +53,10 @@
 .timeline-toolbar .btn-select-view button {
   color: #666;
   border-color: transparent;
+}
+
+.timeline-toolbar .toolbar-right {
+  padding-left: .5rem;
 }
 
 .timeline-toolbar .toolbar-right * {
@@ -159,29 +167,33 @@
   user-select: none;
 }
 
-.timeline-header .header-month-days {
+.timeline-header .header-days {
   height: 50px;
   padding-bottom: 10px;
   border-bottom: 1px solid #e2e2e2;
 }
 
-.timeline-header .month-item,
-.timeline-header .day-item {
+.timeline-header .date-item {
   width: 40px;
   font-size: 14px;
 }
 
-.timeline-header .header-month-days .week {
+.timeline-header .header-months .month {
+  justify-content: flex-start !important;
+}
+
+.timeline-header .header-days .week {
   height: 26px;
   color: #444;
   line-height: 1;
 }
 
-.timeline-header .header-month-days .day {
+.timeline-header .header-days .day {
   color: #666;
   line-height: 1;
 }
 
+.timeline-header .header-months,
 .timeline-header .header-year-months {
   height: 50px;
   padding-bottom: 10px;
@@ -234,6 +246,7 @@
   padding: 0 1rem;
 }
 
+.timeline-day-view,
 .timeline-month-view,
 .timeline-year-view {
   height: 100%;
