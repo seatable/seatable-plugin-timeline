@@ -9,6 +9,7 @@ const PLUGIN_NAME = 'timeline';
 const GRID_VIEWS = {
   YEAR: 'year',
   MONTH: 'month',
+  DAY: 'day',
 }
 
 const NAVIGATE = {
@@ -18,8 +19,6 @@ const NAVIGATE = {
 }
 
 const ROW_HEIGHT = 32;
-
-const COLUMN_WIDTH = 40;
 
 const DEFAULT_BG_COLOR = '#3b88fd';
 
@@ -31,6 +30,5 @@ export {
   NAVIGATE,
   zIndexs,
   ROW_HEIGHT,
-  COLUMN_WIDTH,
   DEFAULT_BG_COLOR,
 };

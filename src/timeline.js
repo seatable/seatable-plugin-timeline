@@ -58,7 +58,7 @@ class Timeline extends React.Component {
     let dtableUuid = getDtableUuid();
     let localGridViews = this.getSelectedGridViews();
     let localGridView = localGridViews[`${dtableUuid}-${viewId}`];
-    return localGridView || GRID_VIEWS.MONTH;
+    return localGridView || GRID_VIEWS.DAY;
   }
 
   onShowUsersToggle = () => {
@@ -113,7 +113,7 @@ class Timeline extends React.Component {
   }
 
   getGridViews = () => {
-    const views = [GRID_VIEWS.YEAR, GRID_VIEWS.MONTH];
+    const views = [GRID_VIEWS.YEAR, GRID_VIEWS.MONTH, GRID_VIEWS.DAY];
     let viewObject = {};
     Array.isArray(views) && views.forEach((v) => {
       viewObject[v] = VIEWS[v];

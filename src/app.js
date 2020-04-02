@@ -72,7 +72,7 @@ class App extends React.Component {
     }
     this.unsubscribeLocalDtableChanged = this.dtable.subscribe('local-dtable-changed', () => { this.onDTableChanged(); });
     this.unsubscribeRemoteDtableChanged = this.dtable.subscribe('remote-dtable-changed', () => { this.onDTableChanged(); });
-    this.resetData();
+    this.resetData(true);
   }
 
   async getRelatedUsersFromServer(dtableStore) {
@@ -87,8 +87,8 @@ class App extends React.Component {
     this.resetData();
   }
 
-  resetData = () => {
-    let { isShowTimelineSetting } = this.state;
+  resetData = (init = false) => {
+    let { showDialog, isShowTimelineSetting } = this.state;
     let plugin_settings = this.dtable.getPluginSettings(PLUGIN_NAME) || {};
     if (!plugin_settings || Object.keys(plugin_settings).length === 0) {
       plugin_settings = DEFAULT_PLUGIN_SETTINGS;
@@ -99,12 +99,13 @@ class App extends React.Component {
     let selectedViewId = selectedViewIds[dtableUuid];
     let selectedViewIdx = views.findIndex(v => v._id === selectedViewId);
     selectedViewIdx = selectedViewIdx > 0 ? selectedViewIdx : 0;
-    if (!isShowTimelineSetting) {
+    if (init) {
       isShowTimelineSetting = !this.isValidViewSettings(views[selectedViewIdx].settings);
+      showDialog = true;
     }
     this.setState({
       isLoading: false,
-      showDialog: true,
+      showDialog,
       plugin_settings,
       selectedViewIdx,
       isShowTimelineSetting

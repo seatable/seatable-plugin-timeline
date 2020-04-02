@@ -34,12 +34,13 @@ class TimelineToolbar extends React.Component {
     let { selectedGridView, selectedDate } = this.props;
     let year = dates.getDateWithUnit(selectedDate, DATE_UNIT.YEAR);
     switch (selectedGridView) {
-      case GRID_VIEWS.YEAR: {
-        return intl.get('Selected_Date_Year', {year});
+      case GRID_VIEWS.YEAR:
+      case GRID_VIEWS.MONTH: {
+        return year;
       }
       default: {
         let month = dates.getDateWithUnit(selectedDate, DATE_UNIT.MONTH);
-        return intl.get('Selected_Date_Year_Month', {year, month});
+        return `${year}-${month}`;
       }
     }
   }
@@ -48,10 +49,13 @@ class TimelineToolbar extends React.Component {
     let { selectedGridView } = this.props;
     switch (selectedGridView) {
       case GRID_VIEWS.YEAR: {
-        return intl.get('Year');
+        return intl.get('Grid_view_year');
+      }
+      case GRID_VIEWS.MONTH: {
+        return intl.get('Grid_view_month');
       }
       default: {
-        return intl.get('Month');
+        return intl.get('Grid_view_day');
       }
     }
   }
@@ -75,8 +79,9 @@ class TimelineToolbar extends React.Component {
                 {displaySelectedGridView}
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem onClick={this.props.onSelectGridView.bind(this, GRID_VIEWS.YEAR)}>{intl.get('Year')}</DropdownItem>
-                <DropdownItem onClick={this.props.onSelectGridView.bind(this, GRID_VIEWS.MONTH)}>{intl.get('Month')}</DropdownItem>
+                <DropdownItem onClick={this.props.onSelectGridView.bind(this, GRID_VIEWS.YEAR)}>{intl.get('Grid_view_year')}</DropdownItem>
+                <DropdownItem onClick={this.props.onSelectGridView.bind(this, GRID_VIEWS.MONTH)}>{intl.get('Grid_view_month')}</DropdownItem>
+                <DropdownItem onClick={this.props.onSelectGridView.bind(this, GRID_VIEWS.DAY)}>{intl.get('Grid_view_day')}</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>

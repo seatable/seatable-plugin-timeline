@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import HeaderMonthDays from '../header/header-month-days';
+import HeaderMonths from '../header/header-months';
 import ViewportRight from '../timeline-body/viewport-right';
+
 
 const propTypes = {
   isShowUsers: PropTypes.bool,
@@ -24,10 +25,11 @@ class Month extends React.Component {
   }
 
   renderHeaderDates = (props) => {
-    let { overscanDates, rows } = props;
-    return <HeaderMonthDays
+    let { overscanDates, rows, columnWidth } = props;
+    return <HeaderMonths
       overscanDates={overscanDates}
       rows={rows}
+      columnWidth={columnWidth}
     />
   }
 

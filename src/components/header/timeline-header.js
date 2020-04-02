@@ -1,24 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { COLUMN_WIDTH } from '../../constants';
 
 const propTypes = {
+  selectedGridView: PropTypes.string,
   rows: PropTypes.array,
   overscanDates: PropTypes.array,
+  columnWidth: PropTypes.number,
+  startOffset: PropTypes.number,
+  endOffset: PropTypes.number,
+  renderHeaderDates: PropTypes.func,
 };
 
 class TimelineHeader extends React.Component {
 
   render() {
-    let { overscanDates, rows, startOffset, endOffset, renderHeaderDates} = this.props;
+    let { overscanDates, rows, columnWidth, startOffset, endOffset, renderHeaderDates } = this.props;
     let headerStyle = {
-      width: overscanDates.length * COLUMN_WIDTH + startOffset + endOffset,
+      width: overscanDates.length * columnWidth + startOffset + endOffset,
       paddingLeft: startOffset,
       paddingRight: endOffset
     };
     return (
       <div className="timeline-header" style={headerStyle}>
-        {renderHeaderDates({overscanDates, rows, startOffset, endOffset})}
+        {renderHeaderDates({overscanDates, rows, columnWidth, startOffset, endOffset})}
       </div>
     );
   }
