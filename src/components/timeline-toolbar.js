@@ -34,7 +34,8 @@ class TimelineToolbar extends React.Component {
     let { selectedGridView, selectedDate } = this.props;
     let year = dates.getDateWithUnit(selectedDate, DATE_UNIT.YEAR);
     switch (selectedGridView) {
-      case GRID_VIEWS.YEAR: {
+      case GRID_VIEWS.YEAR:
+      case GRID_VIEWS.MONTH: {
         return year;
       }
       default: {

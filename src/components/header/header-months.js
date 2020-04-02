@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import TodayMark from './today-mark';
 import { DATE_UNIT } from '../../constants';
+import { dates } from '../../utils';
+import intl from 'react-intl-universal';
+import '../../locale';
 
 const propTypes = {
   overscanDates: PropTypes.array,
@@ -36,7 +39,7 @@ class HeaderMonths extends React.Component {
           let dateItemWidth = (moment(d).endOf(DATE_UNIT.MONTH).diff(d, DATE_UNIT.DAY) + 1) * columnWidth;
           let displayDate;
           if (moment(d).startOf(DATE_UNIT.MONTH).format('YYYY-MM-DD') === d) {
-            displayDate = `${moment(d).format('D')}-${moment(d).endOf(DATE_UNIT.MONTH).format('D')}`;
+            displayDate = intl.get(dates.getDate2Month(d));
           }
           return (
             <div className="date-item d-flex flex-column" name={d} key={`date-item-${d}`} style={{width: dateItemWidth}}>

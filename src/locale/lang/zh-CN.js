@@ -18,6 +18,18 @@ const zh_CN = {
   "Color_Column": "颜色标签字段",
   "Start_Date": "开始日期",
   "End_Date": "结束日期",
+  "Jan": "一月",
+  "Feb": "二月",
+  "Mar": "三月",
+  "Apr": "四月",
+  "May": "五月",
+  "Jun": "六月",
+  "Jul": "七月",
+  "Aug": "八月",
+  "Sep": "九月",
+  "Oct": "十月",
+  "Nov": "十一",
+  "Dec": "十二",
 };
 
 export default zh_CN; 

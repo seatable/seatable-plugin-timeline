@@ -18,6 +18,18 @@ const en = {
   "Color_Column": "Color Column",
   "Start_Date": "Start Date",
   "End_Date": "End Date",
+  "Jan": "Jan",
+  "Feb": "Feb",
+  "Mar": "Mar",
+  "Apr": "Apr",
+  "May": "May",
+  "Jun": "Jun",
+  "Jul": "Jul",
+  "Aug": "Aug",
+  "Sep": "Sep",
+  "Oct": "Oct",
+  "Nov": "Nov",
+  "Dec": "Dec",
 };
 
 export default en; 
