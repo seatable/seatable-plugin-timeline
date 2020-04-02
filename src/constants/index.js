@@ -20,15 +20,6 @@ const NAVIGATE = {
 
 const ROW_HEIGHT = 32;
 
-const COLUMN_WIDTH = 40;
-
-const DAY_ITEM_WIDTH = 40;
-
-const MONTH_ITEM_WIDTH = 300;
-
-const YEAR_MONTH_ITEM_WIDTH = 40;
-
-
 const DEFAULT_BG_COLOR = '#3b88fd';
 
 export {
@@ -39,9 +30,5 @@ export {
   NAVIGATE,
   zIndexs,
   ROW_HEIGHT,
-  COLUMN_WIDTH,
-  DAY_ITEM_WIDTH,
-  MONTH_ITEM_WIDTH,
-  YEAR_MONTH_ITEM_WIDTH,
   DEFAULT_BG_COLOR,
 };

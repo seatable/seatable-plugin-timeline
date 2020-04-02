@@ -15,10 +15,6 @@
   padding: 6px;
 }
 
-.toolbar-lef {
-  flex: 1;
-}
-
 .timeline-toolbar .toggle-drawer-btn {
   height: 24px;
   width: 24px;
@@ -53,10 +49,6 @@
 .timeline-toolbar .btn-select-view button {
   color: #666;
   border-color: transparent;
-}
-
-.timeline-toolbar .toolbar-right {
-  padding-left: .5rem;
 }
 
 .timeline-toolbar .toolbar-right * {

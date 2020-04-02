@@ -2,6 +2,9 @@ import moment from 'moment';
 import * as dates from './dates';
 import { DATE_UNIT, GRID_VIEWS } from '../constants';
 
+const GENERAL_COLUMN_WIDTH = 40;
+const MONTH_COLUMN_WIDTH = 10;
+
 export const getGridState = (selectedGridView, selectedDate, viewportRightWidth) => {
   let columnWidth = getColumnWidth(selectedGridView);
   let visibleDatesCount = Math.ceil(viewportRightWidth / columnWidth);
@@ -94,10 +97,10 @@ export const getCalcDateUnit = (selectedGridView) => {
 export const getColumnWidth = (selectedGridView) => {
   switch (selectedGridView) {
     case GRID_VIEWS.MONTH: {
-      return 10;
+      return MONTH_COLUMN_WIDTH;
     }
     default: {
-      return 40;
+      return GENERAL_COLUMN_WIDTH;
     }
   }
 }
