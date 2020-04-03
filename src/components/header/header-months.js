@@ -2,10 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import TodayMark from './today-mark';
-import { DATE_UNIT } from '../../constants';
+import { DATE_UNIT, DATE_FORMAT } from '../../constants';
 import { dates } from '../../utils';
-import intl from 'react-intl-universal';
-import '../../locale';
 
 const propTypes = {
   overscanDates: PropTypes.array,
@@ -15,31 +13,20 @@ const propTypes = {
 
 class HeaderMonths extends React.Component {
 
-  getMonthDates = () => {
-    let { overscanDates } = this.props;
-    let exsitMonth, dates = []
-    Array.isArray(overscanDates) && overscanDates.forEach((d) => {
-      let startOfMonth = moment(d).startOf(DATE_UNIT.MONTH).format('YYYY-MM-DD')
-      if (exsitMonth !== startOfMonth) {
-        dates.push(d);
-        exsitMonth = startOfMonth;
-      }
-    });
-    return dates;
-  }
-
   render() {
     let { overscanDates, rows, columnWidth } = this.props;
-    let todayIndex = overscanDates.indexOf(moment().format('YYYY-MM-DD'));
+    let todayIndex = overscanDates.indexOf(moment().format(DATE_FORMAT.YEAR_MONTH_DAY));
     let todayMarkLeft = todayIndex * columnWidth + (columnWidth - 6) / 2;
-    let monthDates = this.getMonthDates();
+    let monthDates = dates.getUniqueDates(overscanDates, DATE_UNIT.MONTH, DATE_FORMAT.YEAR_MONTH);
     return (
       <div className="header-months position-relative d-inline-flex align-items-end">
         {monthDates.map(d => {
-          let dateItemWidth = (moment(d).endOf(DATE_UNIT.MONTH).diff(d, DATE_UNIT.DAY) + 1) * columnWidth;
+          let startOfMonth = moment(d).startOf(DATE_UNIT.MONTH);
+          let endOfMonth = moment(d).endOf(DATE_UNIT.MONTH);
+          let dateItemWidth = (endOfMonth.diff(d, DATE_UNIT.DAY) + 1) * columnWidth;
           let displayDate;
-          if (moment(d).startOf(DATE_UNIT.MONTH).format('YYYY-MM-DD') === d) {
-            displayDate = intl.get(dates.getDate2Month(d));
+          if (moment(d).startOf(DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY) === d) {
+            displayDate = `${startOfMonth.format('D')} \u2192 ${endOfMonth.format('D')}`;
           }
           return (
             <div className="date-item d-flex flex-column" name={d} key={`date-item-${d}`} style={{width: dateItemWidth}}>

@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { DATE_UNIT } from '../constants';
+import { DATE_UNIT, DATE_FORMAT } from '../constants';
 
 export function getToday(format) {
   return moment().format(format);
@@ -25,16 +25,16 @@ export function getDateWithUnit(date, unit) {
 }
 
 export function getDatesInMonth(date) {
-  let formattedDate = moment(date, 'YYYY-MM-DD', true);
+  let formattedDate = moment(date, DATE_FORMAT.YEAR_MONTH_DAY, true);
   if (!formattedDate.isValid()) {
     return [];
   }
   let daysCount = formattedDate.daysInMonth();
   let startDate = formattedDate.startOf(DATE_UNIT.MONTH);
-  let dates = [startDate.format('YYYY-MM-DD')];
+  let dates = [startDate.format(DATE_FORMAT.YEAR_MONTH_DAY)];
   for (let i = 1; i < daysCount; i++) {
     startDate = startDate.add(1, DATE_UNIT.DAY);
-    dates.push(startDate.format('YYYY-MM-DD'));
+    dates.push(startDate.format(DATE_FORMAT.YEAR_MONTH_DAY));
   }
   return dates;
 }
@@ -45,7 +45,7 @@ export function getDatesInRange(startDate, endDate, unit = 'day') {
   if (!formattedStartDate.isValid() || !formattedEndDate.isValid()) return [];
   let dates = [];
   while(formattedStartDate.isSameOrBefore(formattedEndDate)) {
-    dates.push(formattedStartDate.format('YYYY-MM-DD'));
+    dates.push(formattedStartDate.format(DATE_FORMAT.YEAR_MONTH_DAY));
     formattedStartDate.add(1, unit);
   }
   return dates;
@@ -88,4 +88,21 @@ export function getDate2Month(date) {
 export function isDateInRange(targetDate, startDate, endDate) {
   return moment(targetDate).isBetween(startDate, endDate) || 
     targetDate === startDate || targetDate === endDate;
+}
+
+export function getUniqueDates(dates, unit, format) {
+  let exsitFormattedDate, uniqueDates = []
+  Array.isArray(dates) && dates.forEach((d) => {
+    let formattedDate = moment(d);
+    if (unit === DATE_UNIT.YEAR) {
+      formattedDate = formattedDate.format(format);
+    } else {
+      formattedDate = formattedDate.startOf(unit).format(format);
+    }
+    if (exsitFormattedDate !== formattedDate) {
+      uniqueDates.push(d);
+      exsitFormattedDate = formattedDate;
+    }
+  });
+  return uniqueDates;
 }

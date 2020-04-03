@@ -96,6 +96,12 @@ class TimelineViewsTabs extends React.Component {
     this.setState({isShowRenameViewDialog: false});
   }
 
+  onSelectView = (id, index) => {
+    let { selectedViewIdx } = this.props;
+    if (index === selectedViewIdx) return;
+    this.props.onSelectView(id);
+  }
+
   render() {
     let { views, selectedViewIdx } = this.props;
     let { isShowViewDropdown, dropdownMenuPosition, isShowNewViewDialog, isShowRenameViewDialog } = this.state;
@@ -119,7 +125,7 @@ class TimelineViewsTabs extends React.Component {
                   <div
                     className="view-item-content d-flex align-items-center justify-content-center position-relative"
                     ref={this.setViewItem(i)}
-                    onClick={this.props.onSelectView.bind(this, _id)}
+                    onClick={this.onSelectView.bind(this, _id, i)}
                   >
                     <div className="view-name">{name}</div>
                     {isActiveView &&

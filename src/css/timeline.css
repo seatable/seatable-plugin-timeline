@@ -11,8 +11,30 @@
 }
 
 .timeline-toolbar {
-  height: 36px;
+  /* top: 0;
+  left: 0; */
+  /* width: 100%;
+  height: 36px; */
+  /* padding: 6px; */
+}
+
+.timeline-toolbar .toolbar-left,
+.timeline-toolbar .toolbar-right {
+  top: 0;
   padding: 6px;
+  background-color: #fff;
+}
+
+.timeline-toolbar .toolbar-left {
+  height: 86px;
+  left: 0;
+  border-right: 1px solid #e2e2e2;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+.timeline-toolbar .toolbar-right {
+  right: 0;
+  height: 36px;
 }
 
 .timeline-toolbar .toggle-drawer-btn {
@@ -157,6 +179,14 @@
 .timeline-header * {
   -webkit-user-select: none;
   user-select: none;
+}
+
+.timeline-header .header-years {
+  height: 36px;
+}
+
+.timeline-header .year-item {
+  font-size: 16px;
 }
 
 .timeline-header .header-days {

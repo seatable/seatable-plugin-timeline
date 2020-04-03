@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import HeaderYears from '../header/header-years';
 import HeaderYearMonths from '../header/header-year-months';
 import ViewportRight from '../timeline-body/viewport-right';
+import { dates } from '../../utils';
+import { DATE_UNIT, DATE_FORMAT } from '../../constants';
 
 const propTypes = {
   isShowUsers: PropTypes.bool,
@@ -21,6 +24,15 @@ class Year extends React.Component {
 
   updateScroll = (selectedDate) => {
     this.viewportRight.updateScroll({selectedDate});
+  }
+
+  renderHeaderYears = (props) => {
+    let { overscanDates, columnWidth } = props;
+    return <HeaderYears
+      selectedGridView={this.props.selectedGridView}
+      yearDates={dates.getUniqueDates(overscanDates, DATE_UNIT.YEAR, DATE_FORMAT.YEAR)}
+      columnWidth={columnWidth}
+    />
   }
 
   renderHeaderDates = (props) => {
@@ -43,6 +55,7 @@ class Year extends React.Component {
           selectedGridView={selectedGridView}
           selectedDate={selectedDate}
           rows={rows}
+          renderHeaderYears={this.renderHeaderYears}
           renderHeaderDates={this.renderHeaderDates}
           updateSelectedDate={updateSelectedDate}
           onCanvasRightScroll={onCanvasRightScroll}

@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import { dates } from '../utils';
-import { DATE_UNIT, NAVIGATE, GRID_VIEWS } from '../constants';
+import { NAVIGATE, GRID_VIEWS, TOOLBAR_LEFT_WIDTH, zIndexs } from '../constants';
 import intl from 'react-intl-universal';
 import '../locale';
 
@@ -30,21 +29,6 @@ class TimelineToolbar extends React.Component {
     this.setState({isSelectViewDropdownOpen: !this.state.isSelectViewDropdownOpen});
   }
 
-  getDisplaySelectedDate = () => {
-    let { selectedGridView, selectedDate } = this.props;
-    let year = dates.getDateWithUnit(selectedDate, DATE_UNIT.YEAR);
-    switch (selectedGridView) {
-      case GRID_VIEWS.YEAR:
-      case GRID_VIEWS.MONTH: {
-        return year;
-      }
-      default: {
-        let month = dates.getDateWithUnit(selectedDate, DATE_UNIT.MONTH);
-        return `${year}-${month}`;
-      }
-    }
-  }
-
   getDisplaySelectedGridView = () => {
     let { selectedGridView } = this.props;
     switch (selectedGridView) {
@@ -62,17 +46,15 @@ class TimelineToolbar extends React.Component {
 
   render() {
     let { onShowUsersToggle, isShowUsers, isToday, onNavigate, onTimelineSettingToggle } = this.props;
-    let displaySelectedDate = this.getDisplaySelectedDate();
     let displaySelectedGridView = this.getDisplaySelectedGridView();
     return (
       <div className="timeline-toolbar d-flex align-items-center justify-content-between">
-        <div className="toolbar-left d-flex align-items-center">
+        <div className="toolbar-left d-flex justify-content-center position-absolute" style={{width: TOOLBAR_LEFT_WIDTH, zIndex: zIndexs.TOOLBAR}}>
           <div className="toggle-drawer-btn" onClick={onShowUsersToggle}>
             <i className={`dtable-font ${isShowUsers ? `dtable-icon-retract-com` : `dtable-icon-open-com`}`}></i>
           </div>
-          <div className="selected-date">{displaySelectedDate}</div>
         </div>
-        <div className="toolbar-right d-flex align-items-center">
+        <div className="toolbar-right d-flex align-items-center position-absolute" style={{zIndex: zIndexs.TOOLBAR}}>
           <div className="btn-select-view">
             <Dropdown group isOpen={this.state.isSelectViewDropdownOpen} size="sm" toggle={this.onSelectViewToggle}>
               <DropdownToggle caret>

@@ -329,7 +329,7 @@ class App extends React.Component {
     console.log(rows);
     console.log(`----------- Timeline plugin logs end -----------`);
     return (
-      <Modal isOpen={true} toggle={this.onPluginToggle} className="dtable-plugin plugin-container" size='lg'>
+      <Modal isOpen={true} toggle={this.onPluginToggle} className="dtable-plugin timeline" size='lg'>
         <ModalHeader className="plugin-header" close={this.renderBtnGroups()}>
           <div className="logo-title d-flex align-items-center">
             <img className="plugin-logo" src={timeLogo} alt="" />
