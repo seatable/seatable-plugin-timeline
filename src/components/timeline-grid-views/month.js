@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import HeaderYears from '../header/header-years';
-import HeaderMonths from '../header/header-months';
+import HeaderDaysRange from '../header/header-days-range';
 import ViewportRight from '../timeline-body/viewport-right';
 import { dates } from '../../utils';
 import { DATE_UNIT, DATE_FORMAT } from '../../constants';
@@ -11,6 +11,7 @@ const propTypes = {
   changedSelectedByScroll: PropTypes.bool,
   selectedGridView: PropTypes.string,
   selectedDate: PropTypes.string,
+  headerHeight: PropTypes.number,
   rows: PropTypes.array,
   updateSelectedDate: PropTypes.func,
   onCanvasRightScroll: PropTypes.func,
@@ -37,7 +38,7 @@ class Month extends React.Component {
 
   renderHeaderDates = (props) => {
     let { overscanDates, rows, columnWidth } = props;
-    return <HeaderMonths
+    return <HeaderDaysRange
       overscanDates={overscanDates}
       rows={rows}
       columnWidth={columnWidth}
@@ -45,7 +46,7 @@ class Month extends React.Component {
   }
 
   render() {
-    let { isShowUsers, changedSelectedByScroll, rows, selectedGridView, selectedDate, updateSelectedDate, onCanvasRightScroll } = this.props;
+    let { isShowUsers, changedSelectedByScroll, headerHeight, rows, selectedGridView, selectedDate, updateSelectedDate, onCanvasRightScroll } = this.props;
     return (
       <div className="timeline-month-view">
         <ViewportRight
@@ -54,6 +55,7 @@ class Month extends React.Component {
           changedSelectedByScroll={changedSelectedByScroll}
           selectedGridView={selectedGridView}
           selectedDate={selectedDate}
+          headerHeight={headerHeight}
           rows={rows}
           renderHeaderYears={this.renderHeaderYears}
           renderHeaderDates={this.renderHeaderDates}

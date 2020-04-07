@@ -16,7 +16,10 @@ class HeaderDays extends React.Component {
   render() {
     let { overscanDates, rows, columnWidth } = this.props;
     let todayIndex = overscanDates.indexOf(moment().format(DATE_FORMAT.YEAR_MONTH_DAY));
-    let todayMarkLeft = todayIndex * columnWidth + (columnWidth - 6) / 2;
+    let todayMarkStyle = {
+      left: todayIndex * columnWidth + (columnWidth - 6) / 2,
+      top: 41
+    };
     return (
       <div className="header-days position-relative d-inline-flex">
         {overscanDates.map((d) => {
@@ -30,7 +33,7 @@ class HeaderDays extends React.Component {
           );
         })}
         {(todayIndex > -1 && Array.isArray(rows) && rows.length > 0) &&
-          <TodayMark style={{left: todayMarkLeft}} />
+          <TodayMark style={todayMarkStyle} />
         }
       </div>
     );

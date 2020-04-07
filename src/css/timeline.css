@@ -18,10 +18,7 @@
 }
 
 .timeline-toolbar .toolbar-left {
-  height: 86px;
   left: 0;
-  border-right: 1px solid #e2e2e2;
-  border-bottom: 1px solid #e2e2e2;
 }
 
 .timeline-toolbar .toolbar-right {
@@ -162,6 +159,10 @@
   cursor: default;
 }
 
+.timeline-header {
+  border-bottom: 1px solid #e2e2e2;
+}
+
 .timeline-header * {
   -webkit-user-select: none;
   user-select: none;
@@ -186,7 +187,7 @@
   font-size: 14px;
 }
 
-.timeline-header .header-months .month {
+.timeline-header .header-days-range .days-range-item {
   justify-content: flex-start !important;
 }
 
@@ -201,11 +202,10 @@
   line-height: 1;
 }
 
-.timeline-header .header-months,
+.timeline-header .header-days-range,
 .timeline-header .header-year-months {
-  height: 50px;
+  height: 32px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #e2e2e2;
 }
 
 .timeline-header .today-mark {
@@ -228,7 +228,6 @@
 
 .left-pane-wrapper .blank-zone {
   width: 100%;
-  height: 86px;
   border-bottom: 1px solid #e2e2e2;
 }
 

@@ -23,7 +23,6 @@ const ROW_HEIGHT = 32;
 
 const DEFAULT_BG_COLOR = '#3b88fd';
 
-const TOOLBAR_LEFT_WIDTH = 40;
 
 export {
   PLUGIN_NAME,
@@ -34,6 +33,5 @@ export {
   NAVIGATE,
   zIndexs,
   ROW_HEIGHT,
-  TOOLBAR_LEFT_WIDTH,
   DEFAULT_BG_COLOR,
 };

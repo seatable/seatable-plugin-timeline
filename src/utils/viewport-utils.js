@@ -13,18 +13,18 @@ export const getGridState = (selectedGridView, selectedDate, viewportRightWidth)
   switch (selectedGridView) {
     case GRID_VIEWS.YEAR: {
       unit = DATE_UNIT.MONTH;
-      visibleStartDate= moment(selectedDate).startOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      visibleStartDate= moment(selectedDate).startOf(DATE_UNIT.YEAR).add(-1, DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY);
       break;
     }
     case GRID_VIEWS.MONTH: {
       unit = DATE_UNIT.DAY;
-      visibleStartDate= moment(selectedDate).startOf(DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      visibleStartDate= moment(selectedDate).startOf(DATE_UNIT.MONTH).add(-4, DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
       break;
     }
     default: {
       // default view: Day.
       unit = DATE_UNIT.DAY;
-      visibleStartDate = moment(selectedDate).add(-Math.ceil(visibleDatesCount / 3), DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      visibleStartDate = moment(selectedDate).add(-(Math.ceil(visibleDatesCount / 3 + 1)), DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
       break;
     }
   }
