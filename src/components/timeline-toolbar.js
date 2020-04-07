@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import { NAVIGATE, GRID_VIEWS, TOOLBAR_LEFT_WIDTH, zIndexs } from '../constants';
+import { NAVIGATE, GRID_VIEWS, zIndexs } from '../constants';
 import intl from 'react-intl-universal';
 import '../locale';
 
@@ -49,7 +49,7 @@ class TimelineToolbar extends React.Component {
     let displaySelectedGridView = this.getDisplaySelectedGridView();
     return (
       <div className="timeline-toolbar d-flex align-items-center justify-content-between">
-        <div className="toolbar-left d-flex justify-content-center position-absolute" style={{width: TOOLBAR_LEFT_WIDTH, zIndex: zIndexs.TOOLBAR}}>
+        <div className="toolbar-left d-flex justify-content-center position-absolute" style={{width: 40, zIndex: zIndexs.TOOLBAR}}>
           <div className="toggle-drawer-btn" onClick={onShowUsersToggle}>
             <i className={`dtable-font ${isShowUsers ? `dtable-icon-retract-com` : `dtable-icon-open-com`}`}></i>
           </div>

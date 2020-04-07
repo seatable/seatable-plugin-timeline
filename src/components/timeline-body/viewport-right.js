@@ -10,13 +10,13 @@ import { getGridState,
   getScanItems,
   getColumnWidth
 } from '../../utils/viewport-utils';
-import { TOOLBAR_LEFT_WIDTH } from '../../constants';
 
 const propTypes = {
   isShowUsers: PropTypes.bool,
   changedSelectedByScroll: PropTypes.bool,
   selectedGridView: PropTypes.string,
   selectedDate: PropTypes.string,
+  headerHeight: PropTypes.number,
   rows: PropTypes.array,
   renderHeaderDates: PropTypes.func,
   updateSelectedDate: PropTypes.func,
@@ -102,7 +102,7 @@ class ViewportRight extends React.Component {
       viewportRightWidth,
       columnWidth,
       fract,
-      ...getGridDatesBoundaries(visibleStartDate, visibleDatesCount, unit, overScanItems, gridScanItems)
+      ...getGridDatesBoundaries(visibleStartDate, visibleDatesCount, overScanItems, gridScanItems, unit)
     });
   }
 
@@ -123,7 +123,7 @@ class ViewportRight extends React.Component {
     let visibleEndIndex = amountDates.indexOf(visibleEndDate);
     let overscanStartIndex = amountDates.indexOf(overscanStartDate);
     let overscanEndIndex = amountDates.indexOf(overscanEndDate);
-    scrollLeft = scrollLeft || (visibleStartIndex + (fract || 0)) * columnWidth - TOOLBAR_LEFT_WIDTH;
+    scrollLeft = scrollLeft || (visibleStartIndex + (fract || 0)) * columnWidth;
     this.setState({
       visibleStartIndex,
       visibleEndIndex,
@@ -141,7 +141,7 @@ class ViewportRight extends React.Component {
 
   render() {
     let { overscanStartIndex, overscanEndIndex, amountDates } = this.state;
-    let { selectedGridView, selectedDate, rows, renderHeaderYears, renderHeaderDates } = this.props;
+    let { selectedGridView, selectedDate, headerHeight, rows, renderHeaderYears, renderHeaderDates } = this.props;
     let columnWidth = getColumnWidth(selectedGridView);
     let startOffset = overscanStartIndex * columnWidth;
     let endOffset = (amountDates.length - overscanEndIndex) * columnWidth;
@@ -153,6 +153,7 @@ class ViewportRight extends React.Component {
           selectedGridView={selectedGridView}
           selectedDate={selectedDate}
           overscanDates={overscanDates}
+          headerHeight={headerHeight}
           rows={rows}
           renderHeaderYears={renderHeaderYears}
           renderHeaderDates={renderHeaderDates}

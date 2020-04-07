@@ -18,7 +18,10 @@ class HeaderYearMonths extends React.Component {
   render() {
     let { overscanDates, rows, columnWidth } = this.props;
     let todayIndex = overscanDates.indexOf(moment().startOf(DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY));
-    let todayMarkLeft = todayIndex * columnWidth + (columnWidth - 6) / 2;
+    let todayMarkStyle = {
+      left: todayIndex * columnWidth + (columnWidth - 6) / 2,
+      top: 23
+    };
     return (
       <div className="header-year-months position-relative d-inline-flex align-items-end">
         {overscanDates.map((d) => {
@@ -30,7 +33,7 @@ class HeaderYearMonths extends React.Component {
           );
         })}
         {(todayIndex > -1 && Array.isArray(rows) && rows.length > 0) &&
-          <TodayMark style={{left: todayMarkLeft}} />
+          <TodayMark style={todayMarkStyle} />
         }
       </div>
     );

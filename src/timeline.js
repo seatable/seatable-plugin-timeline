@@ -134,12 +134,15 @@ class Timeline extends React.Component {
     let rightPaneWrapperStyle = {
       marginLeft: isShowUsers && 180
     };
-
+    let headerHeight = selectedGridView === GRID_VIEWS.DAY ? 86 : 68; // header-years + header-days
+    let blankZoneStyle = {
+      height: headerHeight
+    };
     return (
       <div className="timeline-container position-relative">
         {isShowUsers &&
           <div className="left-pane-wrapper position-absolute" style={{zIndex: zIndexs.LEFT_PANE_WRAPPER}}>
-            <div className="blank-zone"></div>
+            <div className="blank-zone" style={blankZoneStyle}></div>
             <ViewportLeft
               ref={node => this.viewportLeft = node}
               rows={rows}
@@ -164,6 +167,7 @@ class Timeline extends React.Component {
             changedSelectedByScroll={changedSelectedByScroll}
             selectedGridView={selectedGridView}
             selectedDate={selectedDate}
+            headerHeight={headerHeight}
             rows={rows}
             updateSelectedDate={this.updateSelectedDate}
             onCanvasRightScroll={this.onCanvasRightScroll}

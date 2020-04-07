@@ -30,6 +30,7 @@ const zh_CN = {
   "Oct": "十月",
   "Nov": "十一",
   "Dec": "十二",
+  "days_range": "{startOfMonthDay} - {endOfMonthDay} 日"
 };
 
 export default zh_CN; 
