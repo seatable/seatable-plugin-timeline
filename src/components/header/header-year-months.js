@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import TodayMark from './today-mark';
 import { dates } from '../../utils';
-import { DATE_UNIT } from '../../constants';
+import { DATE_UNIT, DATE_FORMAT } from '../../constants';
 import intl from 'react-intl-universal';
 import '../../locale';
 
@@ -17,7 +17,7 @@ class HeaderYearMonths extends React.Component {
 
   render() {
     let { overscanDates, rows, columnWidth } = this.props;
-    let todayIndex = overscanDates.indexOf(moment().startOf(DATE_UNIT.MONTH).format('YYYY-MM-DD'));
+    let todayIndex = overscanDates.indexOf(moment().startOf(DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY));
     let todayMarkLeft = todayIndex * columnWidth + (columnWidth - 6) / 2;
     return (
       <div className="header-year-months position-relative d-inline-flex align-items-end">

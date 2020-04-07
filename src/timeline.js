@@ -5,7 +5,7 @@ import TimelineToolbar from './components/timeline-toolbar';
 import ViewportLeft from './components/timeline-body/viewport-left';
 import VIEWS from './components/timeline-grid-views';
 import { dates, getDtableUuid } from './utils';
-import { PLUGIN_NAME, NAVIGATE, GRID_VIEWS, zIndexs } from './constants';
+import { PLUGIN_NAME, NAVIGATE, GRID_VIEWS, zIndexs, DATE_FORMAT } from './constants';
 
 import './css/timeline.css';
 
@@ -24,7 +24,7 @@ class Timeline extends React.Component {
     this.state = {
       isShowUsers: true,
       selectedGridView: this.getSelectedGridView(props.selectedTimelineView._id),
-      selectedDate: dates.getToday('YYYY-MM-DD'),
+      selectedDate: dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY),
       changedSelectedByScroll: false,
     };
   }
@@ -34,7 +34,7 @@ class Timeline extends React.Component {
       if (this.props.selectedTimelineView !== nextProps.selectedTimelineView) {
         this.setState({
           selectedGridView: this.getSelectedGridView(nextProps.selectedTimelineView._id),
-          selectedDate: dates.getToday('YYYY-MM-DD'),
+          selectedDate: dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY),
         });
       }
     }
@@ -58,7 +58,7 @@ class Timeline extends React.Component {
     let dtableUuid = getDtableUuid();
     let localGridViews = this.getSelectedGridViews();
     let localGridView = localGridViews[`${dtableUuid}-${viewId}`];
-    return localGridView || GRID_VIEWS.DAY;
+    return localGridView || GRID_VIEWS.MONTH;
   }
 
   onShowUsersToggle = () => {
@@ -72,12 +72,12 @@ class Timeline extends React.Component {
 
   onNavigate = (action) => {
     let { selectedDate, selectedGridView } = this.state;
-    let todayDate = dates.getToday('YYYY-MM-DD');
+    let todayDate = dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY);
     selectedDate = selectedDate || todayDate;
     if (action === NAVIGATE.PREVIOUS) {
-      selectedDate = moment(selectedDate).subtract(1, selectedGridView).format('YYYY-MM-DD');
+      selectedDate = moment(selectedDate).subtract(1, selectedGridView).format(DATE_FORMAT.YEAR_MONTH_DAY);
     } else if (action === NAVIGATE.NEXT) {
-      selectedDate = moment(selectedDate).add(1, selectedGridView).format('YYYY-MM-DD');
+      selectedDate = moment(selectedDate).add(1, selectedGridView).format(DATE_FORMAT.YEAR_MONTH_DAY);
     } else if (action === NAVIGATE.TODAY) {
       selectedDate = todayDate;
     }
@@ -93,13 +93,13 @@ class Timeline extends React.Component {
     let today = moment();
     let yearOfSelectedDate = moment(selectedDate).year();
     let yearOfToday = today.year();
-    if (selectedGridView === GRID_VIEWS.MONTH) {
+    if (selectedGridView === GRID_VIEWS.YEAR) {
+      return yearOfSelectedDate === yearOfToday;
+    } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
       let monthOfSelectedDate = moment(selectedDate).month();
       let monthOfToday = today.month();
       return yearOfSelectedDate === yearOfToday &&
         monthOfSelectedDate === monthOfToday;
-    } else if (selectedGridView === GRID_VIEWS.YEAR) {
-      return yearOfSelectedDate === yearOfToday;
     }
     return false;
   }
@@ -147,7 +147,7 @@ class Timeline extends React.Component {
             />
           </div>
         }
-        <div className="right-pane-wrapper" style={rightPaneWrapperStyle}>
+        <div className="right-pane-wrapper position-relative" style={rightPaneWrapperStyle}>
           <TimelineToolbar
             selectedGridView={selectedGridView}
             isToday={isToday}

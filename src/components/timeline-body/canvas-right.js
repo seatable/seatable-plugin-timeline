@@ -5,8 +5,7 @@ import moment from 'moment';
 import EventRow from '../event-row';
 import EventCell from '../event-cell';
 import { dates } from '../../utils';
-import { getCalcDateUnit } from '../../utils/viewport-utils';
-import { ROW_HEIGHT, DATE_UNIT, zIndexs, GRID_VIEWS } from '../../constants';
+import { ROW_HEIGHT, DATE_UNIT, DATE_FORMAT, zIndexs, GRID_VIEWS } from '../../constants';
 import SingleSelectFormatter from '../../components/cell-formatter/single-select-formatter';
 import intl from 'react-intl-universal';
 import '../../locale';
@@ -24,7 +23,7 @@ const propTypes = {
 
 class ViewportRight extends React.Component {
 
-  renderEventRows = (dateUnit) => {
+  renderEventRows = () => {
     let { rows } = this.props;
     if (!rows || rows.length === 0) {
       return <div className="no-events d-flex align-items-center justify-content-center">{intl.get('There_are_no_records')}</div>
@@ -46,7 +45,7 @@ class ViewportRight extends React.Component {
             return (
               <EventRow
                 key={`timeline-events-row-${index}`}
-                cells={this.renderEventCells(r, dateUnit)}
+                cells={this.renderEventCells(r)}
               />
             );
           })}
@@ -55,16 +54,15 @@ class ViewportRight extends React.Component {
     );
   }
 
-  renderEventCells = (row, dateUnit) => {
-    let { overscanDates, columnWidth } = this.props;
+  renderEventCells = (row) => {
+    let { overscanDates } = this.props;
     let { user, events } = row;
     let overscanStartDate = overscanDates[0];
     let overscanEndDate = overscanDates[overscanDates.length - 1];
-    let displayEvents = this.getEventsInRange(events, overscanStartDate, overscanEndDate, dateUnit);
+    let displayEvents = this.getEventsInRange(events, overscanStartDate, overscanEndDate);
     return displayEvents.map((e, index) => {
       let { label, bgColor, start, end } = e;
-      let duration = moment(end).diff(moment(start), dateUnit);
-      let width = duration * columnWidth;
+      let width = this.getEventWidth(start, end);
       let left = this.getEventLeft(overscanStartDate, start);
       return (
         <EventCell
@@ -93,23 +91,40 @@ class ViewportRight extends React.Component {
     });
   }
 
-  getEventsInRange = (events, startDate, endDate, dateUnit) => {
-    let { selectedDate } = this.props;
+  getEventsInRange = (events, startDate, endDate) => {
+    let { selectedGridView, selectedDate } = this.props;
     if (!Array.isArray(events)) {
       return [];
     }
-    return events.filter(e => moment(e.end).diff(moment(e.start), dateUnit) > 0 &&
-      (dates.isDateInRange(e.start, startDate, endDate) ||
-      dates.isDateInRange(e.end, startDate, endDate) ||
-      dates.isDateInRange(selectedDate, e.start, e.end))
-    );
+    return events.filter(e => {
+      let isValidEvent = true;
+      if (selectedGridView === GRID_VIEWS.YEAR) {
+        isValidEvent = moment(e.end).diff(e.start, DATE_UNIT.MONTH) > 0;
+      } else {
+        isValidEvent = moment(e.end).isSameOrAfter(e.start);
+      }
+      return isValidEvent && (dates.isDateInRange(e.start, startDate, endDate) ||
+        dates.isDateInRange(e.end, startDate, endDate) ||
+        dates.isDateInRange(selectedDate, e.start, e.end));
+    });
+  }
+
+  getEventWidth = (startDate, endDate) => {
+    let { selectedGridView, columnWidth } = this.props;
+    let duration = 0;
+    if (selectedGridView === GRID_VIEWS.YEAR) {
+      duration = moment(endDate).diff(moment(startDate), DATE_UNIT.MONTH) + 1;
+    } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
+      duration = moment(endDate).diff(moment(startDate), DATE_UNIT.DAY) + 1;
+    }
+    return duration * columnWidth;
   }
 
   getEventLeft = (overscanStartDate, startDate) => {
     let { selectedGridView, columnWidth } = this.props;
     if (selectedGridView === GRID_VIEWS.YEAR) {
-      let formattedOverscanStartDate = moment(overscanStartDate).format('YYYY-MM');
-      let formattedStartDate = moment(startDate).format('YYYY-MM');
+      let formattedOverscanStartDate = moment(overscanStartDate).format(DATE_FORMAT.YEAR_MONTH);
+      let formattedStartDate = moment(startDate).format(DATE_FORMAT.YEAR_MONTH);
       return moment(formattedStartDate).diff(formattedOverscanStartDate, DATE_UNIT.MONTH) * columnWidth;
     } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
       return moment(startDate).diff(overscanStartDate, DATE_UNIT.DAY) * columnWidth;
@@ -121,11 +136,11 @@ class ViewportRight extends React.Component {
     let today = moment();
     if (!Array.isArray(rows) || rows.length === 0) return null;
     if (selectedGridView === GRID_VIEWS.YEAR) {
-      today = today.startOf(DATE_UNIT.MONTH).format('YYYY-MM-DD');
+      today = today.startOf(DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY);
     } else if (selectedGridView === GRID_VIEWS.MONTH) {
-      today = today.format('YYYY-MM-DD');
+      today = today.format(DATE_FORMAT.YEAR_MONTH_DAY);
     } else {
-      today = today.format('YYYY-MM-DD');
+      today = today.format(DATE_FORMAT.YEAR_MONTH_DAY);
     }
     let todayIndex = overscanDates.indexOf(today);
     if (todayIndex < 0) return null;
@@ -152,9 +167,9 @@ class ViewportRight extends React.Component {
   isEndOfRange = (date) => {
     let { selectedGridView } = this.props;
     if (selectedGridView === GRID_VIEWS.YEAR) {
-      return moment(date).endOf(DATE_UNIT.YEAR).format('YYYY-MM') === moment(date).format('YYYY-MM');
+      return moment(date).endOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH) === moment(date).format(DATE_FORMAT.YEAR_MONTH);
     } else if (selectedGridView === GRID_VIEWS.DAY || GRID_VIEWS.MONTH) {
-      return moment(date).endOf(DATE_UNIT.MONTH).format('YYYY-MM-DD') === date;
+      return moment(date).endOf(DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY) === date;
     }
     return false;
   }
@@ -181,8 +196,7 @@ class ViewportRight extends React.Component {
   }
 
   render() {
-    let { selectedGridView, columnWidth, startOffset, endOffset, overscanDates } = this.props;
-    let dateUnit = getCalcDateUnit(selectedGridView);
+    let { columnWidth, startOffset, endOffset, overscanDates } = this.props;
     let canvasRightStyle = {
       width: overscanDates.length * columnWidth + startOffset + endOffset,
       paddingLeft: startOffset,
@@ -191,7 +205,7 @@ class ViewportRight extends React.Component {
     return (
       <div className="canvas-right" ref={ref => this.canvasRight = ref} style={canvasRightStyle} onScroll={this.onCanvasRightScroll}>
         <div className="position-relative" style={{width: '100%', height: '100%'}}>
-          {this.renderEventRows(dateUnit)}
+          {this.renderEventRows()}
           {this.renderTodayMarkLine()}
         </div>
       </div>

@@ -10,6 +10,7 @@ import { getGridState,
   getScanItems,
   getColumnWidth
 } from '../../utils/viewport-utils';
+import { TOOLBAR_LEFT_WIDTH } from '../../constants';
 
 const propTypes = {
   isShowUsers: PropTypes.bool,
@@ -122,7 +123,7 @@ class ViewportRight extends React.Component {
     let visibleEndIndex = amountDates.indexOf(visibleEndDate);
     let overscanStartIndex = amountDates.indexOf(overscanStartDate);
     let overscanEndIndex = amountDates.indexOf(overscanEndDate);
-    scrollLeft = scrollLeft || (visibleStartIndex + (fract || 0)) * columnWidth;
+    scrollLeft = scrollLeft || (visibleStartIndex + (fract || 0)) * columnWidth - TOOLBAR_LEFT_WIDTH;
     this.setState({
       visibleStartIndex,
       visibleEndIndex,
@@ -140,7 +141,7 @@ class ViewportRight extends React.Component {
 
   render() {
     let { overscanStartIndex, overscanEndIndex, amountDates } = this.state;
-    let { selectedGridView, selectedDate, rows, renderHeaderDates } = this.props;
+    let { selectedGridView, selectedDate, rows, renderHeaderYears, renderHeaderDates } = this.props;
     let columnWidth = getColumnWidth(selectedGridView);
     let startOffset = overscanStartIndex * columnWidth;
     let endOffset = (amountDates.length - overscanEndIndex) * columnWidth;
@@ -153,6 +154,7 @@ class ViewportRight extends React.Component {
           selectedDate={selectedDate}
           overscanDates={overscanDates}
           rows={rows}
+          renderHeaderYears={renderHeaderYears}
           renderHeaderDates={renderHeaderDates}
           columnWidth={columnWidth}
           startOffset={startOffset}

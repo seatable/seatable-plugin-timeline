@@ -10,9 +10,23 @@
   box-shadow: rgba(136, 136, 136, 0.3) 5px 0px 5px -2px;
 }
 
-.timeline-toolbar {
-  height: 36px;
+.timeline-toolbar .toolbar-left,
+.timeline-toolbar .toolbar-right {
+  top: 0;
   padding: 6px;
+  background-color: #fff;
+}
+
+.timeline-toolbar .toolbar-left {
+  height: 86px;
+  left: 0;
+  border-right: 1px solid #e2e2e2;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+.timeline-toolbar .toolbar-right {
+  right: 0;
+  height: 36px;
 }
 
 .timeline-toolbar .toggle-drawer-btn {
@@ -27,12 +41,6 @@
 
 .timeline-toolbar .dropdown-menu {
   min-width: 80px;
-}
-
-.timeline-toolbar .selected-date {
-  margin-left: 10px;
-  font-size: 16px;
-  color: #333;
 }
 
 .timeline-toolbar .btn-select-view {
@@ -159,6 +167,14 @@
   user-select: none;
 }
 
+.timeline-header .header-years {
+  height: 36px;
+}
+
+.timeline-header .year-item {
+  font-size: 16px;
+}
+
 .timeline-header .header-days {
   height: 50px;
   padding-bottom: 10px;
@@ -248,43 +264,43 @@
   height: 100%;
 }
 
-.viewport-right {
+.timeline-container .viewport-right {
   height: 100%;
   overflow-y: hidden;
   overflow-x: auto;
 }
 
-.viewport-right .canvas-right {
+.timeline-container .viewport-right .canvas-right {
   height: calc(100% - 86px);
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-.viewport-right .events-content {
+.timeline-container .viewport-right .events-content {
   height: 100%;
   overflow: hidden;
   background-color: #fff;
 }
 
-.viewport-right .no-events {
+.timeline-container .viewport-right .no-events {
   width: 100%;
   height: 100%;
 }
 
-.today-mark-line {
+.timeline-container .today-mark-line {
   content: '';
   width: 1px;
   background-color: #3b88fd;
 }
 
-.viewport-right .events-bg,
-.viewport-right .events-rows {
+.timeline-container .viewport-right .events-bg,
+.timeline-container .viewport-right .events-rows {
   left: 0;
   top: 0;
   width: 100%;
 }
 
-.viewport-right .events-rows {
+.timeline-container .viewport-right .events-rows {
   padding-bottom: 50px;
 }
 
@@ -301,7 +317,7 @@
 }
 
 /* timeline-event-cell */
-.viewport-right .timeline-event-cell {
+.timeline-container .viewport-right .timeline-event-cell {
   position: absolute;
   height: 100%;
   padding: 4px 0;

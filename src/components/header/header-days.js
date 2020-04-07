@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import TodayMark from './today-mark';
 import { dates } from '../../utils';
-import { DATE_UNIT } from '../../constants';
+import { DATE_UNIT, DATE_FORMAT } from '../../constants';
 
 const propTypes = {
   overscanDates: PropTypes.array,
@@ -15,7 +15,7 @@ class HeaderDays extends React.Component {
 
   render() {
     let { overscanDates, rows, columnWidth } = this.props;
-    let todayIndex = overscanDates.indexOf(moment().format('YYYY-MM-DD'));
+    let todayIndex = overscanDates.indexOf(moment().format(DATE_FORMAT.YEAR_MONTH_DAY));
     let todayMarkLeft = todayIndex * columnWidth + (columnWidth - 6) / 2;
     return (
       <div className="header-days position-relative d-inline-flex">

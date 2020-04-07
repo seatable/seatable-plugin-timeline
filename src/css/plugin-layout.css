@@ -1,4 +1,4 @@
-.dtable-plugin.plugin-container {
+.dtable-plugin.timeline {
   width: 90%;
   max-width: 1398px;
   position: absolute;
@@ -8,29 +8,29 @@
   bottom: 0;
 }
 
-.plugin-container .plugin-header {
+.timeline .plugin-header {
   align-items: center;
   padding: 0 1rem;
 }
 
-.plugin-container .modal-title {
+.timeline .modal-title {
   display: flex;
   flex: 1;
   height: 100%;
 }
 
-.plugin-container .logo-title {
+.timeline .logo-title {
   width: calc(180px - 1rem);
   padding: 10px 0;
 }
 
-.plugin-container .modal-title .plugin-logo {
+.timeline .modal-title .plugin-logo {
   width: 24px;
   height: 24px;
   margin-right: 10px;
 }
 
-.plugin-container .timeline-views-tabs {
+.timeline .timeline-views-tabs {
   flex: 1;
   height: 100%;
   font-size: 14px;
@@ -38,47 +38,49 @@
   overflow: hidden;
 }
 
-.plugin-container .views-tabs-scroll {
+.timeline .views-tabs-scroll {
   overflow-x: scroll;
   overflow-y: hidden;
 }
 
-.plugin-container .views-tabs-scroll::-webkit-scrollbar {
+.timeline .views-tabs-scroll::-webkit-scrollbar {
   display: none;
   width: 0;
   height: 0;
 }
 
-.plugin-container .timeline-views-tabs .views {
+.timeline .timeline-views-tabs .views {
   height: 100%;
 }
 
-.plugin-container .view-item {
+.timeline .view-item {
   height: 100%;
   padding: 0 16px;
   flex: 1 0 auto;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
-.plugin-container .view-item .view-item-content {
+.timeline .view-item .view-item-content {
   width: 100%;
   height: 100%;
   border-bottom: 2px solid transparent;
   color: #999;
 }
 
-.plugin-container .view-item .view-item-content:hover {
+.timeline .view-item .view-item-content:hover {
   border-color: #3b88fd;
   color: #444;
   cursor: pointer;
 }
 
-.plugin-container .view-item.active .view-item-content {
+.timeline .view-item.active .view-item-content {
   border-color: #3b88fd;
   color: #444;
   cursor: default;
 }
 
-.plugin-container .btn-view-dropdown {
+.timeline .btn-view-dropdown {
   width: 20px;
   height: 20px;
   margin-left: 5px;
@@ -87,7 +89,7 @@
   cursor: pointer;
 }
 
-.plugin-container .btn-view-dropdown .dtable-icon-drop-down {
+.timeline .btn-view-dropdown .dtable-icon-drop-down {
   display: inline-block;
   height: 18px;
   font-size: 12px;
@@ -96,16 +98,16 @@
   transition: all .1s;
 }
 
-.plugin-container .btn-view-dropdown:hover .dtable-icon-drop-down {
+.timeline .btn-view-dropdown:hover .dtable-icon-drop-down {
   color: #aaa;
 }
 
-.plugin-container .btn-add-view {
+.timeline .btn-add-view {
   width: 24px;
   height: 100%;
 }
 
-.plugin-container .btn-add-view .dtable-icon-add-table {
+.timeline .btn-add-view .dtable-icon-add-table {
   height: 24px;
   width: 24px;
   text-align: center;
@@ -117,23 +119,23 @@
   line-height: 24px;
 }
 
-.plugin-container .modal-content {
+.timeline .modal-content {
   height: 100%;
   overflow: hidden;
 }
 
-.plugin-container .plugin-body {
+.timeline .plugin-body {
   padding: 0;
   overflow: hidden;
   background-color: #fff;
 }
 
-.plugin-container .header-btn-list {
+.timeline .header-btn-list {
   width: 24px;
   height: 100%;
 }
 
-.plugin-container .btn-close {
+.timeline .btn-close {
   height: 24px;
   width: 24px;
   text-align: center;
