@@ -4,7 +4,8 @@ export const TODAY_MARK_LINE = 1;
 
 export const EVENT_CELL = 2;
 
-export const TOOLBAR = 2;
+// the content in toolbar(3) need cover event cell(2). 
+export const TOOLBAR = 3;
 
 export const LEFT_PANE_WRAPPER = 3;
 
