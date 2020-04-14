@@ -21,7 +21,7 @@ class EventCell extends React.Component {
   }
 
   render() {
-    let { id, row, formatter, style } = this.props;
+    let { id, formatter, style } = this.props;
     let eventCellStyle = {
       ...style
     };
