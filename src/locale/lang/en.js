@@ -32,8 +32,7 @@ const en = {
   "Oct": "Oct",
   "Nov": "Nov",
   "Dec": "Dec",
-  "days_range": "Day {startOfMonthDay} - {endOfMonthDay}",
-  "Count": "Count"
+  "days_range": "Day {startOfMonthDay} - {endOfMonthDay}"
 };
 
 export default en; 

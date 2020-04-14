@@ -14,9 +14,6 @@ import {
   TextFormatter,
 } from 'dtable-ui-component';
 import { getValidCollaborators, getValidOptionIds } from '../utils';
-import intl from 'react-intl-universal';
-
-import '../locale';
 
 import '../css/row-expand.css';
 
