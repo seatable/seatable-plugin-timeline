@@ -213,7 +213,7 @@ class App extends React.Component {
       if (record_end_type === RECORD_END_TYPE.RECORD_DURATION) {
         let duration = row[record_duration_column_name];
         if (duration && duration !== 0) {
-          end = moment(start).add(duration - 1, DATE_UNIT.DAY).format('YYYY-MM-DD');
+          end = moment(start).add(Math.ceil(duration) - 1, DATE_UNIT.DAY).format('YYYY-MM-DD');
         }
       } else {
         end = row[end_time_column_name];
