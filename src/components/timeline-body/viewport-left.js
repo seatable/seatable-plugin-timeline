@@ -20,7 +20,7 @@ class ViewportLeft extends React.Component {
   render() {
     let { rows } = this.props;
     return (
-      <div className="viewport-left" ref={ref => this.viewportLeft = ref} onScroll={this.onViewportLeftScroll}>
+      <div className="timeline-viewport-left" ref={ref => this.viewportLeft = ref} onScroll={this.onViewportLeftScroll}>
         <CanvasLeft
           rows={rows}
         />

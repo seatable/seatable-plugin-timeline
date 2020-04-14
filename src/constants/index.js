@@ -23,6 +23,10 @@ const ROW_HEIGHT = 32;
 
 const DEFAULT_BG_COLOR = '#3b88fd';
 
+const RECORD_END_TYPE = {
+  END_TIME: 'end_time',
+  RECORD_DURATION: 'record_duration'
+};
 
 export {
   PLUGIN_NAME,
@@ -34,4 +38,5 @@ export {
   zIndexs,
   ROW_HEIGHT,
   DEFAULT_BG_COLOR,
+  RECORD_END_TYPE,
 };

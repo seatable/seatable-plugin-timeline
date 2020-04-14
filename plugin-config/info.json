@@ -1,6 +1,11 @@
 {
   "name": "timeline",
-  "version": "0.3.4",
-  "display_name": "Timeline",
+  "version": "0.4.0",
+  "display_name": {
+    "de": "",
+    "en": "Timeline",
+    "fr": "",
+    "zh-cn": "时间线"
+  },
   "description": "The plugin to show timeline"
 }

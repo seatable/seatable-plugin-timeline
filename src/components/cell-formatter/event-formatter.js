@@ -8,7 +8,7 @@ const propTypes = {
   end: PropTypes.string,
 };
 
-class SingleSelectFormatter extends React.Component {
+class EventFormatter extends React.Component {
 
   render() {
     let { label, bgColor, start, end } = this.props;
@@ -20,6 +20,6 @@ class SingleSelectFormatter extends React.Component {
   }
 }
 
-SingleSelectFormatter.propTypes = propTypes;
+EventFormatter.propTypes = propTypes;
 
-export default SingleSelectFormatter;
+export default EventFormatter;

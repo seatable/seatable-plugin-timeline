@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import EventRow from '../event-row';
 import EventCell from '../event-cell';
-import UserFormatter from '../cell-formatter/user-formatter';
+import NameFormatter from '../cell-formatter/name-formatter';
 
 const propTypes = {
   rows: PropTypes.array,
@@ -10,11 +10,12 @@ const propTypes = {
 
 class CanvasLeft extends React.Component {
 
-  renderCells = (user) => {
+  renderCells = (name, rowIndex) => {
     return [
       <EventCell
-        key={`timeline-left-event-cell-${user}`}
-        formatter={<UserFormatter value={user} />}
+        key={`timeline-left-event-cell-${name}`}
+        id={`timeline_left_event_cell_${rowIndex}_0`}
+        formatter={<NameFormatter value={name} />}
       />
     ];
   }
@@ -24,11 +25,11 @@ class CanvasLeft extends React.Component {
     return (
       <div className="canvas-left">
         {Array.isArray(rows) && rows.map((r, index) => {
-          let { user } = r;
+          let { name } = r;
           return (
             <EventRow
-              key={`timeline-user-row-${index}`}
-              cells={this.renderCells(user)}
+              key={`timeline-name-row-${index}`}
+              cells={this.renderCells(name, index)}
             />
           );
         })}

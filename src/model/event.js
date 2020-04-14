@@ -6,5 +6,6 @@ export default class Event {
     this.bgColor = object.bgColor || '';
     this.start = object.start || '';
     this.end = object.end || '';
+    this.duration = object.duration || '';
   }
 }

@@ -105,7 +105,6 @@ class TimelineViewsTabs extends React.Component {
   render() {
     let { views, selectedViewIdx } = this.props;
     let { isShowViewDropdown, dropdownMenuPosition, isShowNewViewDialog, isShowRenameViewDialog } = this.state;
-    let viewsLength = views.length;
     let selectedGridView = views[selectedViewIdx] || {};
     return (
       <div className="timeline-views-tabs d-flex">
@@ -139,16 +138,18 @@ class TimelineViewsTabs extends React.Component {
                           <ModalPortal>
                             <DropdownMenu
                               dropdownMenuPosition={dropdownMenuPosition}
-                              options={viewsLength > 1 &&
+                              options={
                                 <React.Fragment>
                                   <button className="dropdown-item" onClick={this.onRenameViewToggle}>
                                     <i className="item-icon dtable-font dtable-icon-rename"></i>
                                     <span className="item-text">{intl.get('Rename_View')}</span>
                                   </button>
-                                  <button className="dropdown-item" onClick={this.props.onDeleteView.bind(this, _id)}>
-                                    <i className="item-icon dtable-font dtable-icon-delete"></i>
-                                    <span className="item-text">{intl.get('Delete_View')}</span>
-                                  </button>
+                                  {i > 0 &&
+                                    <button className="dropdown-item" onClick={this.props.onDeleteView.bind(this, _id)}>
+                                      <i className="item-icon dtable-font dtable-icon-delete"></i>
+                                      <span className="item-text">{intl.get('Delete_View')}</span>
+                                    </button>
+                                  }
                                 </React.Fragment>
                               }
                             />

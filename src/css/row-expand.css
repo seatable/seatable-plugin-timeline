@@ -1,0 +1,60 @@
+.timeline-row-expand {
+  color: #212529;
+}
+
+.timeline-row-expand .row-name {
+  font-weight: bold;
+}
+
+.timeline-row-expand .row-cells-container {
+  margin-right: 74px;
+}
+
+.timeline-row-expand .cells {
+  width: 100%;
+  height: 32px;
+  margin-top: .5rem;
+  padding: .25rem 0;
+  overflow-x: scroll;
+}
+
+.timeline-row-expand .cells::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.timeline-row-expand .cell-item {
+  flex: 1 0 auto;
+  padding: 0 .25rem;
+}
+
+.timeline-row-expand .cell-item:first-child {
+  padding-left: 0;
+}
+
+.timeline-row-expand .row-cell-empty {
+  height: 8px;
+  width: 20px;
+  background-color: #f1f1f1;
+  border-radius: 4px;
+}
+
+.timeline-row-expand .cells-count {
+  width: 74px;
+  height: 100%;
+  top: 0;
+  right: -74px;
+  padding: 0 .5rem;
+  background-color: #fff;
+}
+
+.timeline-row-expand .cells-count-title,
+.timeline-row-expand .cells-count-number {
+  line-height: 1;
+}
+
+.timeline-row-expand .cells-count-title {
+  margin-right: .25rem;
+  color: #999;
+}

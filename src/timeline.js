@@ -13,8 +13,12 @@ const KEY_SELECTED_GRID_VIEWS = `${PLUGIN_NAME}-selectedGridViews`;
 
 const propTypes = {
   rows: PropTypes.array,
+  getColumnByName: PropTypes.func,
+  settings: PropTypes.object,
   selectedTimelineView: PropTypes.object,
   onTimelineSettingToggle: PropTypes.func,
+  onViewportRightScroll: PropTypes.func,
+  onRowExpand: PropTypes.func,
 };
 
 class Timeline extends React.Component {
@@ -128,7 +132,7 @@ class Timeline extends React.Component {
 
   render() {
     let { isShowUsers, selectedGridView, selectedDate, changedSelectedByScroll } = this.state;
-    let { rows } = this.props;
+    let { rows, getColumnByName, settings } = this.props;
     let GridView = this.getGridView(selectedGridView);
     let isToday = this.isToday();
     let rightPaneWrapperStyle = {
@@ -169,8 +173,12 @@ class Timeline extends React.Component {
             selectedDate={selectedDate}
             headerHeight={headerHeight}
             rows={rows}
+            getColumnByName={getColumnByName}
+            settings={settings}
             updateSelectedDate={this.updateSelectedDate}
             onCanvasRightScroll={this.onCanvasRightScroll}
+            onViewportRightScroll={this.props.onViewportRightScroll}
+            onRowExpand={this.props.onRowExpand}
           />
         </div>
       </div>

@@ -18,9 +18,11 @@ const propTypes = {
   selectedDate: PropTypes.string,
   headerHeight: PropTypes.number,
   rows: PropTypes.array,
+  settings: PropTypes.object,
   renderHeaderDates: PropTypes.func,
   updateSelectedDate: PropTypes.func,
   onCanvasRightScroll: PropTypes.func,
+  onViewportRightScroll: PropTypes.func,
 };
 
 class ViewportRight extends React.Component {
@@ -133,6 +135,7 @@ class ViewportRight extends React.Component {
     }, () => {
       this.viewportRight.scrollLeft = scrollLeft;
     });
+    this.props.onViewportRightScroll();
   }
 
   setCanvasRightScroll = (scrollTop) => {
@@ -141,14 +144,14 @@ class ViewportRight extends React.Component {
 
   render() {
     let { overscanStartIndex, overscanEndIndex, amountDates } = this.state;
-    let { selectedGridView, selectedDate, headerHeight, rows, renderHeaderYears, renderHeaderDates } = this.props;
+    let { selectedGridView, selectedDate, headerHeight, rows, settings, renderHeaderYears, renderHeaderDates } = this.props;
     let columnWidth = getColumnWidth(selectedGridView);
     let startOffset = overscanStartIndex * columnWidth;
     let endOffset = (amountDates.length - overscanEndIndex) * columnWidth;
     let overscanDates = amountDates.slice(overscanStartIndex, overscanEndIndex);
 
     return (
-      <div className="viewport-right" ref={ref => this.viewportRight = ref} onScroll={this.onScroll}>
+      <div className="timeline-viewport-right" ref={ref => this.viewportRight = ref} onScroll={this.onScroll}>
         <TimelineHeader
           selectedGridView={selectedGridView}
           selectedDate={selectedDate}
@@ -165,12 +168,14 @@ class ViewportRight extends React.Component {
           ref={node => this.canvasRight = node}
           overscanDates={overscanDates}
           rows={rows}
+          settings={settings}
           selectedGridView={selectedGridView}
           selectedDate={selectedDate}
           columnWidth={columnWidth}
           startOffset={startOffset}
           endOffset={endOffset}
           onCanvasRightScroll={this.props.onCanvasRightScroll}
+          onRowExpand={this.props.onRowExpand}
         />
       </div>
     );

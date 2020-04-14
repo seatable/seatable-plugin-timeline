@@ -1,4 +1,5 @@
 const zh_CN = {
+  "Timeline": "时间线",
   "New_View": "新建视图",
   "Rename_View": "重命名视图",
   "Delete_View": "删除视图",
@@ -18,6 +19,7 @@ const zh_CN = {
   "Color_Column": "颜色标签字段",
   "Start_Date": "开始日期",
   "End_Date": "结束日期",
+  "Record_Duration": "记录时长",
   "Jan": "一月",
   "Feb": "二月",
   "Mar": "三月",
@@ -30,7 +32,8 @@ const zh_CN = {
   "Oct": "十月",
   "Nov": "十一",
   "Dec": "十二",
-  "days_range": "{startOfMonthDay} - {endOfMonthDay} 日"
+  "days_range": "{startOfMonthDay} - {endOfMonthDay} 日",
+  "Count": "总计"
 };
 
 export default zh_CN; 
