@@ -18,7 +18,6 @@ const propTypes = {
   selectedDate: PropTypes.string,
   headerHeight: PropTypes.number,
   rows: PropTypes.array,
-  settings: PropTypes.object,
   renderHeaderDates: PropTypes.func,
   updateSelectedDate: PropTypes.func,
   onCanvasRightScroll: PropTypes.func,
@@ -144,7 +143,7 @@ class ViewportRight extends React.Component {
 
   render() {
     let { overscanStartIndex, overscanEndIndex, amountDates } = this.state;
-    let { selectedGridView, selectedDate, headerHeight, rows, settings, renderHeaderYears, renderHeaderDates } = this.props;
+    let { selectedGridView, selectedDate, headerHeight, rows, renderHeaderYears, renderHeaderDates } = this.props;
     let columnWidth = getColumnWidth(selectedGridView);
     let startOffset = overscanStartIndex * columnWidth;
     let endOffset = (amountDates.length - overscanEndIndex) * columnWidth;
@@ -168,7 +167,6 @@ class ViewportRight extends React.Component {
           ref={node => this.canvasRight = node}
           overscanDates={overscanDates}
           rows={rows}
-          settings={settings}
           selectedGridView={selectedGridView}
           selectedDate={selectedDate}
           columnWidth={columnWidth}

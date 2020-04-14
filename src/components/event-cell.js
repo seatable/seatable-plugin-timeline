@@ -5,7 +5,7 @@ const propTypes = {
   colorColumnKey: PropTypes.string,
   formatter: PropTypes.node,
   style: PropTypes.object,
-  index: PropTypes.number,
+  id: PropTypes.string,
   row: PropTypes.object,
   onRowExpand: PropTypes.func,
 };
@@ -14,24 +14,21 @@ class EventCell extends React.Component {
 
   onRowExpand = (evt) => {
     evt.preventDefault();
-    let { index, row, onRowExpand } = this.props;
+    let { id, row, onRowExpand } = this.props;
     if (onRowExpand) {
-      let { _id } = row || {};
-      let target = `timeline_event_cell_${index}_${_id}`;
-      onRowExpand(evt, row, target);
+      onRowExpand(evt, row, id);
     }
   }
 
   render() {
-    let { index, row, formatter, style } = this.props;
-    let { _id } = row || {};
+    let { id, row, formatter, style } = this.props;
     let eventCellStyle = {
       ...style
     };
     return (
       <div
         className="timeline-event-cell d-flex align-items-center"
-        id={`timeline_event_cell_${index}_${_id}`}
+        id={id || ''}
         style={eventCellStyle}
         onClick={this.onRowExpand}
       >

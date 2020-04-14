@@ -10,11 +10,10 @@ const propTypes = {
 
 class CanvasLeft extends React.Component {
 
-  renderCells = (name, rowIndex) => {
+  renderCells = (name) => {
     return [
       <EventCell
         key={`timeline-left-event-cell-${name}`}
-        id={`timeline_left_event_cell_${rowIndex}_0`}
         formatter={<NameFormatter value={name} />}
       />
     ];
@@ -29,7 +28,7 @@ class CanvasLeft extends React.Component {
           return (
             <EventRow
               key={`timeline-name-row-${index}`}
-              cells={this.renderCells(name, index)}
+              cells={this.renderCells(name)}
             />
           );
         })}

@@ -73,13 +73,12 @@ class TimelineSetting extends React.Component {
           {this.renderSelector(numberCoumns, SETTING_KEY.RECORD_DURATION_COLUMN_NAME, 'name', 'name')}
         </div>
       );
-    } else {
-      return (
-        <div className="setting-item end-time">
-          {this.renderSelector(dateColumns, SETTING_KEY.END_TIME_COLUMN_NAME, 'name', 'name')}
-        </div>
-      );
     }
+    return (
+      <div className="setting-item end-time">
+        {this.renderSelector(dateColumns, SETTING_KEY.END_TIME_COLUMN_NAME, 'name', 'name')}
+      </div>
+    );
   }
 
   onModifySettings = (selectedOption) => {

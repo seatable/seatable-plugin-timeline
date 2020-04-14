@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import moment from 'moment';
 import DTable from 'dtable-sdk';
 import TimelineViewsTabs from './components/timeline-views-tabs';
 import Timeline from './timeline';
@@ -8,11 +9,10 @@ import TimelineSetting from './components/timeline-setting';
 import View from './model/view';
 import TimelineRow from './model/timeline-row';
 import Event from './model/event';
-import { PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR } from './constants';
+import { PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR, RECORD_END_TYPE, DATE_UNIT } from './constants';
 import { generatorViewId, getDtableUuid } from './utils';
 import TimelinePopover from './components/timeline-popover';
 import RowExpand from './components/row-expand';
-
 
 import intl from 'react-intl-universal';
 
@@ -191,6 +191,7 @@ class App extends React.Component {
       start_time_column_name,
       end_time_column_name,
       record_duration_column_name,
+      record_end_type,
     } = settings;
     if (!name_column_name ||
         !start_time_column_name ||
@@ -209,14 +210,19 @@ class App extends React.Component {
       let bgColor = option.color || DEFAULT_BG_COLOR;
       let start = row[start_time_column_name];
       let end = row[end_time_column_name];
-      let duration = row[record_duration_column_name];
+      if (record_end_type === RECORD_END_TYPE.RECORD_DURATION) {
+        let duration = row[record_duration_column_name];
+        end = moment(start).add(duration - 1, DATE_UNIT.DAY).format('YYYY-MM-DD');
+      } else {
+        end = row[end_time_column_name];
+      }
       if (name) {
         if (nameColumnType === cellType.TEXT) {
-          this.updateRows(rows, name, row, label, bgColor, start, end, duration);
+          this.updateRows(rows, name, row, label, bgColor, start, end);
         } else if (nameColumnType === cellType.COLLABORATOR) {
           name.forEach((item) => {
             let collaborator = collaborators.find(c => c.email === item) || {};
-            this.updateRows(rows, collaborator.name, row, label, bgColor, start, end, duration);
+            this.updateRows(rows, collaborator.name, row, label, bgColor, start, end);
           });
         }
       }
@@ -224,9 +230,9 @@ class App extends React.Component {
     return rows;
   }
 
-  updateRows = (rows, name, row, label, bgColor, start, end, duration) => {
+  updateRows = (rows, name, row, label, bgColor, start, end) => {
     let index = rows.findIndex(r => r.name === name);
-    let event = new Event({row, label, bgColor, start, end, duration});
+    let event = new Event({row, label, bgColor, start, end});
     if (index > -1) {
       rows[index].events.push(event);
     } else {
@@ -365,7 +371,7 @@ class App extends React.Component {
   }
 
   render() {
-    let { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx, isShowRowExpand, rowExpandTarget, expandedRow,  } = this.state;
+    let { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx, isShowRowExpand, rowExpandTarget, expandedRow, rowExpandOffsetLeft } = this.state;
     if (isLoading || !showDialog) {
       return '';
     }
@@ -389,7 +395,6 @@ class App extends React.Component {
     let numberCoumns = this.dtable.getColumnsByType(selectedTable, CellType.NUMBER);
     let rows = this.getRows(tableName, viewName, CellType, collaborators, settings);
     console.log(`---------- Timeline plugin logs start ----------`);
-    console.log(settings);
     console.log(rows);
     console.log(`----------- Timeline plugin logs end -----------`);
     return (
@@ -412,8 +417,6 @@ class App extends React.Component {
         <ModalBody className="plugin-body position-relative">
           <Timeline
             rows={rows}
-            getColumnByName={this.dtable.getColumnByName}
-            settings={settings}
             selectedTimelineView={selectedTimelineView}
             onTimelineSettingToggle={this.onTimelineSettingToggle}
             onViewportRightScroll={this.onViewportRightScroll}
@@ -439,12 +442,12 @@ class App extends React.Component {
             container={document.querySelector('.timeline-viewport-right')}
             popperClassName={'popper-row-expand'}
             target={rowExpandTarget}
-            offset={this.state.rowExpandOffsetLeft}
+            offset={rowExpandOffsetLeft}
              body={
               <RowExpand
                 selectedTable={selectedTable}
                 expandedRow={expandedRow}
-                getOriginRow={this.dtable.getRowById}
+                getOriginalRow={this.dtable.getRowById}
                 getColumnByName={this.dtable.getColumnByName}
                 cellType={CellType}
                 collaborators={collaborators}

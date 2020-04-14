@@ -27,20 +27,20 @@ const propTypes = {
   expandedRow: PropTypes.object,
   cellType: PropTypes.object,
   collaborators: PropTypes.array,
-  getOriginRow: PropTypes.func,
+  getOriginalRow: PropTypes.func,
   getColumnByName: PropTypes.func,
 };
 
 class RowExpand extends React.Component {
 
   renderRowDetail = () => {
-    let { selectedTable, expandedRow, getOriginRow, getColumnByName, cellType, collaborators } = this.props;
+    let { selectedTable, expandedRow, getOriginalRow, getColumnByName, cellType, collaborators } = this.props;
     if (!expandedRow) return null;
     let { _id } = expandedRow;
     let rowName, cells = [];
-    let originRow = getOriginRow(selectedTable, _id) || {};
+    let originRow = getOriginalRow(selectedTable, _id) || {};
     Object.keys(expandedRow).forEach((name, index) => {
-      let column = getColumnByName(selectedTable, name)
+      let column = getColumnByName(selectedTable, name);
       if (column) {
         let { key, type, data } = column;
         let cellValue = originRow[key];
@@ -103,7 +103,7 @@ class RowExpand extends React.Component {
         }
         return <FileFormatter
           value={cellValue}
-        />
+        />;
       }
       case cellType.GEOLOCATION: {
         if (!cellValue) {
@@ -111,7 +111,7 @@ class RowExpand extends React.Component {
         }
         return <GeolocationFormatter
           value={cellValue}
-        />
+        />;
       }
       case cellType.IMAGE: {
         if (!cellValue) {
@@ -120,7 +120,7 @@ class RowExpand extends React.Component {
         return <ImageFormatter
           isSample
           value={cellValue}
-        />
+        />;
       }
       case cellType.LONG_TEXT: {
         if (!cellValue) {
@@ -128,7 +128,7 @@ class RowExpand extends React.Component {
         }
         return <LongTextFormatter
           value={cellValue}
-        />
+        />;
       }
       case cellType.MULTIPLE_SELECT: {
         let { options } = columnData || {};
@@ -139,7 +139,7 @@ class RowExpand extends React.Component {
         return <MultipleSelectFormatter
           options={options}
           value={validOptionIds}
-        />
+        />;
       }
       case cellType.NUMBER: {
         let { format } = columnData || {};
@@ -168,7 +168,7 @@ class RowExpand extends React.Component {
         }
         return <TextFormatter
           value={cellValue}
-        />
+        />;
       }
       default: {
         return null;
@@ -181,7 +181,7 @@ class RowExpand extends React.Component {
       <div className="timeline-row-expand position-relative">
         {this.renderRowDetail()}
       </div>
-    )
+    );
   }
 }
 
