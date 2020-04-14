@@ -42,12 +42,12 @@ class RowExpand extends React.Component {
     Object.keys(expandedRow).forEach((name, index) => {
       let column = getColumnByName(selectedTable, name);
       if (column) {
-        let { key, type, data } = column;
+        let { key, type, data, name } = column;
         let cellValue = originRow[key];
         if (key === '0000') {
           rowName = cellValue;
         } else {
-          let cellFormatter = this.getCellFormatter(cellValue, type, data, collaborators, cellType);
+          let cellFormatter = this.getCellFormatter(cellValue, name, type, data, collaborators, cellType);
           if (cellFormatter) {
             cells.push(
               <div key={`row-cell-${index}`} className="cell-item d-flex">{cellFormatter}</div>
@@ -58,19 +58,15 @@ class RowExpand extends React.Component {
     });
     return (
       <React.Fragment>
-        <div className="row-name">{rowName}</div>
+        <div className="row-name" title={rowName}>{rowName}</div>
         <div className="row-cells-container position-relative">
           <div className="cells d-flex align-items-center">{cells}</div>
-          <div className="cells-count position-absolute d-inline-flex align-items-center justify-content-around">
-            <span className="cells-count-title">{intl.get('Count')}</span>
-            <span className="cells-count-number">{cells.length}</span>
-          </div>
         </div>
       </React.Fragment>
     );
   }
 
-  getCellFormatter = (cellValue, columnType, columnData, collaborators, cellType) => {
+  getCellFormatter = (cellValue, columnName, columnType, columnData, collaborators, cellType) => {
     switch (columnType) {
       case cellType.CHECKBOX: {
         return <CheckboxFormatter
@@ -146,10 +142,15 @@ class RowExpand extends React.Component {
         if (cellValue !== 0 && !cellValue) {
           return emptyCell;
         }
-        return <NumberFormatter
-          format={format}
-          value={cellValue}
-        />;
+        return (
+          <div className="column-number d-inline-flex align-items-center">
+            <span className="column-name">{columnName}</span>
+            <NumberFormatter
+              format={format}
+              value={cellValue}
+            />
+          </div>
+        );
       }
       case cellType.SINGLE_SELECT: {
         let { options } = columnData || {};

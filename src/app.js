@@ -209,10 +209,12 @@ class App extends React.Component {
       let option = options.find(item => item.name === label) || {};
       let bgColor = option.color || DEFAULT_BG_COLOR;
       let start = row[start_time_column_name];
-      let end = row[end_time_column_name];
+      let end;
       if (record_end_type === RECORD_END_TYPE.RECORD_DURATION) {
         let duration = row[record_duration_column_name];
-        end = moment(start).add(duration - 1, DATE_UNIT.DAY).format('YYYY-MM-DD');
+        if (duration && duration !== 0) {
+          end = moment(start).add(duration - 1, DATE_UNIT.DAY).format('YYYY-MM-DD');
+        }
       } else {
         end = row[end_time_column_name];
       }
