@@ -221,9 +221,6 @@ class Timeline extends React.Component {
             <ViewportLeft
               ref={node => this.viewportLeft = node}
               renderedRows={renderedRows}
-              rowsCount={rowsCount}
-              rowOverscanStartIdx={rowOverscanStartIdx}
-              rowOverscanEndIdx={rowOverscanEndIdx}
               topOffset={topOffset}
               bottomOffset={bottomOffset}
               headerHeight={headerHeight}
