@@ -239,7 +239,7 @@ class CanvasRight extends React.Component {
     let { headerHeight, columnWidth, startOffset, endOffset, overscanDates, topOffset, bottomOffset } = this.props;
     let canvasRightStyle = {
       width: overscanDates.length * columnWidth + startOffset + endOffset,
-      height: `calc(100% - ${headerHeight + 16}px)`,
+      height: `calc(100% - ${headerHeight + 18}px)`,
       paddingLeft: startOffset,
       paddingRight: endOffset,
     };
