@@ -24,7 +24,7 @@ class TimelineHeader extends React.Component {
     };
     return (
       <div className="timeline-header" style={headerStyle}>
-        {renderHeaderYears({renderedDates, columnWidth})}
+        {renderHeaderYears({overscanDates, renderedDates, columnWidth})}
         {renderHeaderDates({overscanDates, renderedDates, renderedRows, columnWidth, startOffset, endOffset})}
       </div>
     );

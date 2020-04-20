@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import HeaderYears from '../header/header-years';
 import HeaderDays from '../header/header-days';
 import ViewportRight from '../timeline-body/viewport-right';
+import { dates } from '../../utils';
+import { DATE_UNIT, DATE_FORMAT } from '../../constants';
 
 const propTypes = {
   isShowUsers: PropTypes.bool,
@@ -30,10 +32,10 @@ class Day extends React.Component {
   }
 
   renderHeaderYears = (props) => {
-    let { renderedDates, columnWidth } = props;
+    let { overscanDates, columnWidth } = props;
     return <HeaderYears
       selectedGridView={this.props.selectedGridView}
-      yearDates={renderedDates}
+      yearDates={dates.getUniqueDates(overscanDates, DATE_UNIT.MONTH, DATE_FORMAT.YEAR_MONTH)}
       columnWidth={columnWidth}
     />
   }
