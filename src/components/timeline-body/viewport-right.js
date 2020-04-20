@@ -145,8 +145,8 @@ class ViewportRight extends React.Component {
   }
 
   render() {
-    let { dateOverscanStartIndex, dateOverscanEndIndex, amountDates, topOffset, bottomOffset } = this.state;
-    let { selectedGridView, selectedDate, headerHeight, renderedRows, renderHeaderYears, renderHeaderDates } = this.props;
+    let { dateOverscanStartIndex, dateOverscanEndIndex, amountDates } = this.state;
+    let { selectedGridView, selectedDate, headerHeight, renderedRows, renderHeaderYears, renderHeaderDates, topOffset, bottomOffset } = this.props;
     let columnWidth = getColumnWidth(selectedGridView);
     let startOffset = dateOverscanStartIndex * columnWidth;
     let endOffset = (amountDates.length - dateOverscanEndIndex) * columnWidth;

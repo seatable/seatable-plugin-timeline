@@ -28,7 +28,7 @@ class ViewportLeft extends React.Component {
   render() {
     let { renderedRows, headerHeight, topOffset, bottomOffset } = this.props;
     let viewportLeftStyle = {
-      height: `calc(100% - ${headerHeight + 18}px)`
+      height: `calc(100% - ${headerHeight + 16}px)`
     };
     return (
       <div
