@@ -1,6 +1,6 @@
 {
   "name": "seatable-plugin-timeline",
-  "version": "0.3.4",
+  "version": "0.4.4",
   "description": "The plugin to show timeline",
   "repository": {
     "type": "git",
@@ -12,7 +12,8 @@
   "homepage": "https://github.com/seatable/seatable-plugin-timeline#readme",
   "dependencies": {
     "classnames": "^2.2.6",
-    "dtable-sdk": "0.0.26",
+    "dtable-sdk": "0.0.29",
+    "dtable-ui-component": "^0.1.0",
     "moment": "^2.24.0",
     "react": "^16.12.0",
     "react-app-polyfill": "^1.0.6",

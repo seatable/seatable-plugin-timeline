@@ -3,30 +3,30 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import TodayMark from './today-mark';
 import { DATE_UNIT, DATE_FORMAT } from '../../constants';
-import { dates } from '../../utils';
 import intl from 'react-intl-universal';
 
 import '../../locale';
 
 const propTypes = {
   overscanDates: PropTypes.array,
-  rows: PropTypes.array,
+  renderedDates: PropTypes.array,
+  renderedRows: PropTypes.array,
   columnWidth: PropTypes.number,
 };
 
 class HeaderDaysRange extends React.Component {
 
   render() {
-    let { overscanDates, rows, columnWidth } = this.props;
+    let { overscanDates, renderedDates, renderedRows, columnWidth } = this.props;
     let todayIndex = overscanDates.indexOf(moment().format(DATE_FORMAT.YEAR_MONTH_DAY));
     let todayMarkStyle = {
       left: todayIndex * columnWidth + (columnWidth - 6) / 2,
       top: 23
     };
-    let monthDates = dates.getUniqueDates(overscanDates, DATE_UNIT.MONTH, DATE_FORMAT.YEAR_MONTH);
+
     return (
       <div className="header-days-range position-relative d-inline-flex align-items-end">
-        {monthDates.map(d => {
+        {renderedDates.map(d => {
           let startOfMonth = moment(d).startOf(DATE_UNIT.MONTH);
           let endOfMonth = moment(d).endOf(DATE_UNIT.MONTH);
           let dateItemWidth = (endOfMonth.diff(d, DATE_UNIT.DAY) + 1) * columnWidth;
@@ -40,7 +40,7 @@ class HeaderDaysRange extends React.Component {
             </div>
           );
         })}
-        {(todayIndex > -1 && Array.isArray(rows) && rows.length > 0) &&
+        {(todayIndex > -1 && Array.isArray(renderedRows) && renderedRows.length > 0) &&
           <TodayMark style={todayMarkStyle} />
         }
       </div>

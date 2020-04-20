@@ -12,9 +12,13 @@ const propTypes = {
   selectedGridView: PropTypes.string,
   selectedDate: PropTypes.string,
   headerHeight: PropTypes.number,
-  rows: PropTypes.array,
+  renderedRows: PropTypes.array,
+  topOffset: PropTypes.number,
+  bottomOffset: PropTypes.number,
   updateSelectedDate: PropTypes.func,
   onCanvasRightScroll: PropTypes.func,
+  onViewportRightScroll: PropTypes.func,
+  onRowExpand: PropTypes.func,
 };
 
 class Day extends React.Component {
@@ -37,16 +41,16 @@ class Day extends React.Component {
   }
 
   renderHeaderDates = (props) => {
-    let { overscanDates, rows, columnWidth } = props;
+    let { overscanDates, renderedRows, columnWidth } = props;
     return <HeaderDays
       overscanDates={overscanDates}
-      rows={rows}
+      renderedRows={renderedRows}
       columnWidth={columnWidth}
     />
   }
 
   render() {
-    let { isShowUsers, changedSelectedByScroll, headerHeight, rows, selectedGridView, selectedDate, updateSelectedDate, onCanvasRightScroll } = this.props;
+    let { isShowUsers, changedSelectedByScroll, headerHeight, renderedRows, selectedGridView, selectedDate, updateSelectedDate, onCanvasRightScroll, onViewportRightScroll, onRowExpand, topOffset, bottomOffset } = this.props;
     return (
       <div className="timeline-day-view">
         <ViewportRight
@@ -56,11 +60,15 @@ class Day extends React.Component {
           selectedGridView={selectedGridView}
           selectedDate={selectedDate}
           headerHeight={headerHeight}
-          rows={rows}
+          renderedRows={renderedRows}
+          topOffset={topOffset}
+          bottomOffset={bottomOffset}
           renderHeaderYears={this.renderHeaderYears}
           renderHeaderDates={this.renderHeaderDates}
           updateSelectedDate={updateSelectedDate}
           onCanvasRightScroll={onCanvasRightScroll}
+          onViewportRightScroll={onViewportRightScroll}
+          onRowExpand={onRowExpand}
         />
       </div>
     );

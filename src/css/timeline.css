@@ -232,22 +232,23 @@
 }
 
 .timeline-row {
+  overflow: hidden;
+  white-space: nowrap;
   border-bottom: 1px solid #e2e2e2;
 }
 
-.viewport-left {
-  height: calc(100% - 86px);
+.timeline-viewport-left {
   padding-bottom: 50px;
   overflow-y: auto;
 }
 
-.viewport-left::-webkit-scrollbar {
+.timeline-viewport-left::-webkit-scrollbar {
   display: none;
   width: 0;
   height: 0;
 }
 
-.viewport-left .timeline-event-cell {
+.timeline-viewport-left .timeline-event-cell {
   width: 100%;
   height: 100%;
   padding: 0 1rem;
@@ -263,25 +264,24 @@
   height: 100%;
 }
 
-.timeline-container .viewport-right {
+.timeline-container .timeline-viewport-right {
   height: 100%;
   overflow-y: hidden;
   overflow-x: auto;
 }
 
-.timeline-container .viewport-right .canvas-right {
-  height: calc(100% - 86px);
+.timeline-container .timeline-viewport-right .canvas-right {
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-.timeline-container .viewport-right .events-content {
+.timeline-container .timeline-viewport-right .events-content {
   height: 100%;
   overflow: hidden;
   background-color: #fff;
 }
 
-.timeline-container .viewport-right .no-events {
+.timeline-container .timeline-viewport-right .no-events {
   width: 100%;
   height: 100%;
 }
@@ -292,34 +292,35 @@
   background-color: #3b88fd;
 }
 
-.timeline-container .viewport-right .events-bg,
-.timeline-container .viewport-right .events-rows {
+.timeline-container .timeline-viewport-right .events-bg,
+.timeline-container .timeline-viewport-right .events-rows {
   left: 0;
   top: 0;
   width: 100%;
 }
 
-.timeline-container .viewport-right .events-rows {
+.timeline-container .timeline-viewport-right .events-rows {
   padding-bottom: 50px;
 }
 
-.timeline-day-bg {
+.timeline-date-bg {
   height: 100%;
 }
 
-.timeline-day-bg.sun-or-sat-day {
+.timeline-date-bg.sun-or-sat-day {
   background-color: rgba(245, 245, 245, 0.7);
 }
 
-.timeline-day-bg.end-of-range {
+.timeline-date-bg.end-of-range {
   border-right: 1px solid #e2e2e2;
 }
 
 /* timeline-event-cell */
-.timeline-container .viewport-right .timeline-event-cell {
+.timeline-container .timeline-viewport-right .timeline-event-cell {
   position: absolute;
   height: 100%;
   padding: 4px 0;
+  cursor: pointer;
 }
 
 .timeline-event-cell .cell-formatter {
@@ -340,5 +341,9 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   font-size: 14px;
-  cursor: default;
+}
+
+.timeline-popover {
+  min-width: 95px;
+  max-width: 332px;
 }

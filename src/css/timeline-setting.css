@@ -16,12 +16,16 @@
   padding: 0 10px 1rem;
 }
 
+.plugin-timeline-setting .setting-header-container {
+  width: 100%;
+  border-bottom: 1px solid #e2e2e2;
+}
+
 .plugin-timeline-setting .setting-header-title {
   flex: 1;
   padding: 10px 0;
   font-size: 1rem;
   font-weight: 700;
-  border-bottom: 1px solid #e2e2e2;
 }
 
 .plugin-timeline-setting .btn-close {
@@ -45,4 +49,35 @@
   height: 1px;
   margin-bottom: 14px;
   background-color: #e2e2e2;
+}
+
+.plugin-timeline-setting .record-end-type {
+  display: flex;
+  height: 36px;
+  flex-direction: row;
+  background-color: #ffffff;
+  border: 1px solid hsl(0,0%,80%);
+  border-radius: 4px;
+}
+
+.plugin-timeline-setting .record-end-type-item {
+  flex: 1 1;
+  text-align: center;
+  line-height: 34px;
+  cursor: pointer;
+  position: relative;
+}
+
+.plugin-timeline-setting .record-end-type-item:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+.plugin-timeline-setting .record-end-type-item:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+.plugin-timeline-setting .record-end-type-item.selected {
+  box-shadow: 0 0 0 1px rgb(229, 161, 82);
+  color: rgb(229, 161, 82);
+  background-color: rgba(229, 161, 82, .1);
 }

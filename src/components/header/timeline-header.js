@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 
 const propTypes = {
   headerHeight: PropTypes.number,
-  rows: PropTypes.array,
+  renderedRows: PropTypes.array,
   overscanDates: PropTypes.array,
+  renderedDates: PropTypes.array,
   columnWidth: PropTypes.number,
   startOffset: PropTypes.number,
   endOffset: PropTypes.number,
@@ -14,7 +15,7 @@ const propTypes = {
 class TimelineHeader extends React.Component {
 
   render() {
-    let { overscanDates, headerHeight, rows, columnWidth, startOffset, endOffset, renderHeaderYears, renderHeaderDates } = this.props;
+    let { overscanDates, renderedDates, headerHeight, renderedRows, columnWidth, startOffset, endOffset, renderHeaderYears, renderHeaderDates } = this.props;
     let headerStyle = {
       width: overscanDates.length * columnWidth + startOffset + endOffset,
       height: headerHeight,
@@ -23,8 +24,8 @@ class TimelineHeader extends React.Component {
     };
     return (
       <div className="timeline-header" style={headerStyle}>
-        {renderHeaderYears({overscanDates, columnWidth})}
-        {renderHeaderDates({overscanDates, rows, columnWidth, startOffset, endOffset})}
+        {renderHeaderYears({overscanDates, renderedDates, columnWidth})}
+        {renderHeaderDates({overscanDates, renderedDates, renderedRows, columnWidth, startOffset, endOffset})}
       </div>
     );
   }

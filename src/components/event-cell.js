@@ -2,18 +2,38 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const propTypes = {
+  colorColumnKey: PropTypes.string,
   formatter: PropTypes.node,
   style: PropTypes.object,
+  id: PropTypes.string,
+  row: PropTypes.object,
+  title: PropTypes.string,
+  onRowExpand: PropTypes.func,
 };
 
-class EventCell extends React.Component {
+class EventCell extends React.PureComponent {
+
+  onRowExpand = (evt) => {
+    evt.preventDefault();
+    let { id, row, onRowExpand } = this.props;
+    if (onRowExpand) {
+      onRowExpand(evt, row, id);
+    }
+  }
+
   render() {
-    let { formatter, style } = this.props;
+    let { id, formatter, style, title } = this.props;
     let eventCellStyle = {
       ...style
     };
     return (
-      <div className="timeline-event-cell d-flex align-items-center" style={eventCellStyle}>
+      <div
+        className="timeline-event-cell d-flex align-items-center"
+        id={id || ''}
+        style={eventCellStyle}
+        title={title}
+        onClick={this.onRowExpand}
+      >
         {formatter}
       </div>
     )

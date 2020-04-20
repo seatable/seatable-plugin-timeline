@@ -1,4 +1,5 @@
 const en = {
+  "Timeline": "Timeline",
   "New_View": "New View",
   "Rename_View": "Rename View",
   "Delete_View": "Delete View",
@@ -18,6 +19,7 @@ const en = {
   "Color_Column": "Color Column",
   "Start_Date": "Start Date",
   "End_Date": "End Date",
+  "Record_Duration": "Record Duration",
   "Jan": "Jan",
   "Feb": "Feb",
   "Mar": "Mar",
@@ -30,7 +32,7 @@ const en = {
   "Oct": "Oct",
   "Nov": "Nov",
   "Dec": "Dec",
-  "days_range": "Day {startOfMonthDay} - {endOfMonthDay}",
+  "days_range": "Day {startOfMonthDay} - {endOfMonthDay}"
 };
 
 export default en; 

@@ -1,7 +1,7 @@
 export default class TimelineRow {
 
   constructor(object = {}) {
-    this.user = object.user || '';
+    this.name = object.name || '';
     this.events = object.events || [];
   }
 }

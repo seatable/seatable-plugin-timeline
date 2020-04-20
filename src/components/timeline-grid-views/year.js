@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import HeaderYears from '../header/header-years';
 import HeaderYearMonths from '../header/header-year-months';
 import ViewportRight from '../timeline-body/viewport-right';
-import { dates } from '../../utils';
-import { DATE_UNIT, DATE_FORMAT } from '../../constants';
 
 const propTypes = {
   isShowUsers: PropTypes.bool,
@@ -12,9 +10,13 @@ const propTypes = {
   selectedGridView: PropTypes.string,
   selectedDate: PropTypes.string,
   headerHeight: PropTypes.number,
-  rows: PropTypes.array,
+  renderedRows: PropTypes.array,
+  topOffset: PropTypes.number,
+  bottomOffset: PropTypes.number,
   updateSelectedDate: PropTypes.func,
   onCanvasRightScroll: PropTypes.func,
+  onViewportRightScroll: PropTypes.func,
+  onRowExpand: PropTypes.func,
 };
 
 class Year extends React.Component {
@@ -28,25 +30,25 @@ class Year extends React.Component {
   }
 
   renderHeaderYears = (props) => {
-    let { overscanDates, columnWidth } = props;
+    let { renderedDates, columnWidth } = props;
     return <HeaderYears
       selectedGridView={this.props.selectedGridView}
-      yearDates={dates.getUniqueDates(overscanDates, DATE_UNIT.YEAR, DATE_FORMAT.YEAR)}
+      yearDates={renderedDates}
       columnWidth={columnWidth}
     />
   }
 
   renderHeaderDates = (props) => {
-    let { overscanDates, rows, columnWidth } = props;
+    let { overscanDates, renderedRows, columnWidth } = props;
     return <HeaderYearMonths
       overscanDates={overscanDates}
-      rows={rows}
+      renderedRows={renderedRows}
       columnWidth={columnWidth}
     />
   }
 
   render() {
-    let { isShowUsers, changedSelectedByScroll, headerHeight, rows, selectedGridView, selectedDate, updateSelectedDate, onCanvasRightScroll } = this.props;
+    let { isShowUsers, changedSelectedByScroll, headerHeight, renderedRows, selectedGridView, selectedDate, updateSelectedDate, onCanvasRightScroll, onViewportRightScroll, onRowExpand, topOffset, bottomOffset } = this.props;
     return (
       <div className="timeline-year-view">
         <ViewportRight
@@ -56,11 +58,15 @@ class Year extends React.Component {
           selectedGridView={selectedGridView}
           selectedDate={selectedDate}
           headerHeight={headerHeight}
-          rows={rows}
+          renderedRows={renderedRows}
+          topOffset={topOffset}
+          bottomOffset={bottomOffset}
           renderHeaderYears={this.renderHeaderYears}
           renderHeaderDates={this.renderHeaderDates}
           updateSelectedDate={updateSelectedDate}
           onCanvasRightScroll={onCanvasRightScroll}
+          onViewportRightScroll={onViewportRightScroll}
+          onRowExpand={onRowExpand}
         />
       </div>
     );

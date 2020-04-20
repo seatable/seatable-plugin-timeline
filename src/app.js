@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import moment from 'moment';
 import DTable from 'dtable-sdk';
 import TimelineViewsTabs from './components/timeline-views-tabs';
 import Timeline from './timeline';
@@ -8,11 +9,17 @@ import TimelineSetting from './components/timeline-setting';
 import View from './model/view';
 import TimelineRow from './model/timeline-row';
 import Event from './model/event';
-import { PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR } from './constants';
+import { PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR, DEFAULT_TEXT_COLOR, RECORD_END_TYPE, DATE_UNIT } from './constants';
 import { generatorViewId, getDtableUuid } from './utils';
+import TimelinePopover from './components/timeline-popover';
+import RowExpand from './components/row-expand';
+
+import intl from 'react-intl-universal';
+
+import './locale';
 
 import './css/plugin-layout.css';
-import timeLogo from './assets/image/timeline.png';
+import timelineLogo from './assets/image/timeline.png';
 
 const DEFAULT_PLUGIN_SETTINGS = {
   views: [
@@ -40,6 +47,9 @@ class App extends React.Component {
       isShowTimelineSetting: false,
       plugin_settings: {},
       selectedViewIdx: 0,
+      isShowRowExpand: false,
+      rowExpandTarget: '',
+      expandedRow: {},
     };
     this.dtable = new DTable();
   }
@@ -172,35 +182,50 @@ class App extends React.Component {
     return collaborators; // local develop
   }
 
-  getRows = (tableName, viewName, settings = {}) => {
-    let collaborators = this.getRelatedUsersFromLocal()
-    let CellType = this.dtable.getCellType();
+  getRows = (tableName, viewName, cellType, collaborators, settings = {}) => {
     let table = this.dtable.getTableByName(tableName);
     let rows = [];
-    let { user_column_name, single_select_column_name, start_time_column_name, end_time_column_name } = settings;
-    if (!user_column_name ||
+    let {
+      name_column_name,
+      single_select_column_name,
+      start_time_column_name,
+      end_time_column_name,
+      record_duration_column_name,
+      record_end_type,
+    } = settings;
+    if (!name_column_name ||
         !start_time_column_name ||
-        !end_time_column_name) {
+        (!end_time_column_name && !record_duration_column_name)) {
       return [];
     }
-    let userColumn = this.dtable.getColumnByName(table, user_column_name);
+    let nameColumn = this.dtable.getColumnByName(table, name_column_name);
     let singleSelectColumn = this.dtable.getColumnByName(table, single_select_column_name);
-    let options = singleSelectColumn && singleSelectColumn.data ? singleSelectColumn.data.options : [];
-    let { type: userColumnType } = userColumn;
+    let { data: singleSelectColumnData } = singleSelectColumn || {};
+    let options = singleSelectColumnData ? singleSelectColumn.data.options : [];
+    let { type: nameColumnType } = nameColumn || {};
     this.dtable.forEachRow(tableName, viewName, (row) => {
-      let user = row[user_column_name];
+      let name = row[name_column_name];
       let label = row[single_select_column_name];
       let option = options.find(item => item.name === label) || {};
       let bgColor = option.color || DEFAULT_BG_COLOR;
+      let textColor = option.textColor || DEFAULT_TEXT_COLOR;
       let start = row[start_time_column_name];
-      let end = row[end_time_column_name];
-      if (user) {
-        if (userColumnType === CellType.TEXT) {
-          this.updateRows(rows, user, row, label, bgColor, start, end);
-        } else if (userColumnType === CellType.COLLABORATOR) {
-          user.forEach((item) => {
+      let end;
+      if (record_end_type === RECORD_END_TYPE.RECORD_DURATION) {
+        let duration = row[record_duration_column_name];
+        if (duration && duration !== 0) {
+          end = moment(start).add(Math.ceil(duration) - 1, DATE_UNIT.DAY).format('YYYY-MM-DD');
+        }
+      } else {
+        end = row[end_time_column_name];
+      }
+      if (name) {
+        if (nameColumnType === cellType.TEXT) {
+          this.updateRows(rows, name, row, label, bgColor, textColor, start, end);
+        } else if (nameColumnType === cellType.COLLABORATOR) {
+          name.forEach((item) => {
             let collaborator = collaborators.find(c => c.email === item) || {};
-            this.updateRows(rows, collaborator.name, row, label, bgColor, start, end);
+            this.updateRows(rows, collaborator.name, row, label, bgColor, textColor, start, end);
           });
         }
       }
@@ -208,14 +233,14 @@ class App extends React.Component {
     return rows;
   }
 
-  updateRows = (rows, user, row, label, bgColor, start, end) => {
-    let index = rows.findIndex(r => r.user === user);
-    let event = new Event({row, label, bgColor, start, end});
+  updateRows = (rows, name, row, label, bgColor, textColor, start, end) => {
+    let index = rows.findIndex(r => r.name === name.trim());
+    let event = new Event({row, label, bgColor, textColor, start, end});
     if (index > -1) {
       rows[index].events.push(event);
     } else {
       rows.push(new TimelineRow({
-        user,
+        name,
         events: [event]
       }));
     }
@@ -303,8 +328,53 @@ class App extends React.Component {
     return settings && Object.keys(settings).length > 0;
   }
 
+  onRowExpand = (evt, row, target) => {
+    if (this.state.isShowRowExpand) return;
+    let viewportRightDom = document.querySelector('.timeline-viewport-right');
+    let { left: viewportRightLeft, width: viewportRightWidth } = viewportRightDom.getBoundingClientRect();
+    let { left: eventCellLeft, width: eventCellWidth } = evt.target.getBoundingClientRect();
+    let rowExpandOffsetLeft = 0;
+    if (Math.abs(eventCellLeft - viewportRightLeft) + eventCellWidth > viewportRightWidth) {
+      rowExpandOffsetLeft = -((eventCellLeft + eventCellWidth / 2) - evt.clientX);
+    }
+    this.setState({
+      isShowRowExpand: true,
+      rowExpandTarget: target,
+      expandedRow: row,
+      rowExpandOffsetLeft
+    });
+  }
+
+  onRowExpandToggle = () => {
+    this.setState({isShowRowExpand: !this.state.isShowRowExpand});
+  }
+
+  onViewportRightScroll = () => {
+    this.onResetRowExpand();
+  }
+
+  onResetRowExpand = () => {
+    let { isShowRowExpand, rowExpandTarget } = this.state;
+    if (isShowRowExpand && rowExpandTarget) {
+      let rowExpandTargetDom = document.querySelector(`#${rowExpandTarget}`);
+      if (rowExpandTargetDom) {
+        let viewportRightDom = document.querySelector('.timeline-viewport-right');
+        let { left: viewportRightLeft, width: viewportRightWidth } = viewportRightDom.getBoundingClientRect();
+        let { left: rowExpandTargetLeft, width: rowExpandTargetWidth } = rowExpandTargetDom.getBoundingClientRect();
+        let popoverOffsetLeft = rowExpandTargetLeft - viewportRightLeft;
+        if (popoverOffsetLeft >= viewportRightWidth || popoverOffsetLeft <= -rowExpandTargetWidth) {
+          this.setState({
+            isShowRowExpand: false,
+            rowExpandTarget: '',
+            expandedRow: {}
+          });
+        }
+      }
+    }
+  }
+
   render() {
-    let { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx } = this.state;
+    let { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx, isShowRowExpand, rowExpandTarget, expandedRow, rowExpandOffsetLeft } = this.state;
     if (isLoading || !showDialog) {
       return '';
     }
@@ -318,13 +388,15 @@ class App extends React.Component {
     let selectedView = this.getSelectedView(selectedTable, settings) || views[0];
     let { name: viewName } = selectedView;
     let CellType = this.dtable.getCellType();
-    let userColumns = [
+    let collaborators = this.getRelatedUsersFromLocal();
+    let nameColumns = [
       ...this.dtable.getColumnsByType(selectedTable, CellType.COLLABORATOR),
       ...this.dtable.getColumnsByType(selectedTable, CellType.TEXT)
     ];
     let singleSelectColumns = this.dtable.getColumnsByType(selectedTable, CellType.SINGLE_SELECT);
     let dateColumns = this.dtable.getColumnsByType(selectedTable, CellType.DATE);
-    let rows = this.getRows(tableName, viewName, settings);
+    let numberCoumns = this.dtable.getColumnsByType(selectedTable, CellType.NUMBER);
+    let rows = this.getRows(tableName, viewName, CellType, collaborators, settings);
     console.log(`---------- Timeline plugin logs start ----------`);
     console.log(rows);
     console.log(`----------- Timeline plugin logs end -----------`);
@@ -332,8 +404,8 @@ class App extends React.Component {
       <Modal isOpen={true} toggle={this.onPluginToggle} className="dtable-plugin timeline" size='lg'>
         <ModalHeader className="plugin-header" close={this.renderBtnGroups()}>
           <div className="logo-title d-flex align-items-center">
-            <img className="plugin-logo" src={timeLogo} alt="" />
-            <span className="plugin-title">{'Timeline'}</span>
+            <img className="plugin-logo" src={timelineLogo} alt="" />
+            <span className="plugin-title">{intl.get('Timeline')}</span>
           </div>
           <TimelineViewsTabs
             ref={ref => this.viewsTabs = ref}
@@ -350,21 +422,43 @@ class App extends React.Component {
             rows={rows}
             selectedTimelineView={selectedTimelineView}
             onTimelineSettingToggle={this.onTimelineSettingToggle}
+            onViewportRightScroll={this.onViewportRightScroll}
+            onRowExpand={this.onRowExpand}
           />
           {isShowTimelineSetting &&
             <TimelineSetting
               tables={tables}
               selectedTable={selectedTable}
               views={views}
-              userColumns={userColumns}
+              nameColumns={nameColumns}
               singleSelectColumns={singleSelectColumns}
               dateColumns={dateColumns}
+              numberCoumns={numberCoumns}
               settings={settings || {}}
               onModifyTimelineSettings={this.onModifyTimelineSettings}
               onHideTimelineSetting={this.onHideTimelineSetting}
             />
           }
         </ModalBody>
+        {isShowRowExpand &&
+          <TimelinePopover
+            container={document.querySelector('.timeline-viewport-right')}
+            popperClassName={'popper-row-expand'}
+            target={rowExpandTarget}
+            offset={rowExpandOffsetLeft}
+             body={
+              <RowExpand
+                selectedTable={selectedTable}
+                expandedRow={expandedRow}
+                getOriginalRow={this.dtable.getRowById}
+                getColumnByName={this.dtable.getColumnByName}
+                cellType={CellType}
+                collaborators={collaborators}
+              />
+            }
+            onPopoverToggle={this.onRowExpandToggle}
+          />
+        }
       </Modal>
     );
   }

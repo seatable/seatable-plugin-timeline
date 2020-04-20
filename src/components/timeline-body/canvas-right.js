@@ -6,86 +6,120 @@ import EventRow from '../event-row';
 import EventCell from '../event-cell';
 import { dates } from '../../utils';
 import { ROW_HEIGHT, DATE_UNIT, DATE_FORMAT, zIndexs, GRID_VIEWS } from '../../constants';
-import SingleSelectFormatter from '../../components/cell-formatter/single-select-formatter';
+import EventFormatter from '../../components/cell-formatter/event-formatter';
 import intl from 'react-intl-universal';
 import '../../locale';
 
 const propTypes = {
   days: PropTypes.array,
-  rows: PropTypes.array,
+  renderedRows: PropTypes.array,
   selectedGridView: PropTypes.string,
   selectedDate: PropTypes.string,
+  headerHeight: PropTypes.number,
   columnWidth: PropTypes.number,
   startDateOfMonth: PropTypes.string,
   endDateOfMonth: PropTypes.string,
+  topOffset: PropTypes.number,
+  bottomOffset: PropTypes.number,
   onViewportRightScroll: PropTypes.func,
+  onRowExpand: PropTypes.func,
 };
 
-class ViewportRight extends React.Component {
+class CanvasRight extends React.Component {
 
-  renderEventRows = () => {
-    let { rows } = this.props;
-    if (!rows || rows.length === 0) {
+  renderRows = () => {
+    let { renderedRows, renderedDates, rowsCount } = this.props;
+    if (rowsCount === 0) {
       return <div className="no-events d-flex align-items-center justify-content-center">{intl.get('There_are_no_records')}</div>
     }
+    let bgRows = [], eventRows = [];
+    Array.isArray(renderedRows) && renderedRows.forEach((r, index) => {
+      bgRows.push(
+        <EventRow
+          key={`events-bg-row-${index}`}
+          cells={this.renderBgCells(renderedDates)}
+        />
+      );
+      eventRows.push(
+        <EventRow
+          key={`timeline-events-row-${index}`}
+          cells={this.renderEventCells(r, index)}
+        />
+      );
+    });
     return (
       <React.Fragment>
         <div className="events-bg position-absolute" style={{zIndex: zIndexs.EVENTS_BG}}>
-          {Array.isArray(rows) && rows.map((r, index) => {
-            return (
-              <EventRow
-                key={`events-bg-row-${index}`}
-                cells={this.renderBgCells()}
-              />
-            );
-          })}
+          {bgRows}
         </div>
         <div className="events-rows position-absolute">
-          {Array.isArray(rows) && rows.map((r, index) => {
-            return (
-              <EventRow
-                key={`timeline-events-row-${index}`}
-                cells={this.renderEventCells(r)}
-              />
-            );
-          })}
+          {eventRows}
         </div>
       </React.Fragment>
     );
   }
 
-  renderEventCells = (row) => {
+  renderEventCells = (eventRow, rowIndex) => {
     let { overscanDates } = this.props;
-    let { user, events } = row;
+    let { events } = eventRow;
     let overscanStartDate = overscanDates[0];
     let overscanEndDate = overscanDates[overscanDates.length - 1];
     let displayEvents = this.getEventsInRange(events, overscanStartDate, overscanEndDate);
-    return displayEvents.map((e, index) => {
-      let { label, bgColor, start, end } = e;
+    return displayEvents.map((e) => {
+      let { label, bgColor, textColor, start, end, row } = e;
+      if (!row) return null;
       let width = this.getEventWidth(start, end);
       let left = this.getEventLeft(overscanStartDate, start);
+      let { _id: rowId } = row;
+      let formatterLabel = null, formatterStyle = {};
+      if (width < 30) {
+        formatterLabel = '';
+        formatterStyle = {
+          padding: 0
+        };
+      } else {
+        formatterLabel = label;
+        formatterStyle = {
+          padding: '0 10px'
+        };
+      }
       return (
         <EventCell
-          key={`timeline-event-cell-${user}-${index}`}
+          key={`timeline-event-cell-${rowIndex}_${rowId}`}
           style={{left, zIndex: zIndexs.EVENT_CELL, width}}
-          formatter={<SingleSelectFormatter label={label} bgColor={bgColor} start={start} end={end} />}
+          row={row}
+          id={`timeline_event_cell_${rowIndex}_${rowId}`}
+          onRowExpand={this.props.onRowExpand}
+          title={`${label}(${start} - ${end})`}
+          formatter={<EventFormatter label={formatterLabel} bgColor={bgColor} textColor={textColor} formatterStyle={formatterStyle} />}
         />
       );
     });
   }
 
-  renderBgCells = () => {
-    let { overscanDates, columnWidth } = this.props;
-    return overscanDates.map((d) => {
-      let week = dates.getDate2Week(d);
-      let isEndRange = this.isEndOfRange(d);
-      let isWeekend = this.isWeekend(week);
+  renderBgCells = (renderedDates) => {
+    let { columnWidth, selectedGridView } = this.props;
+    return renderedDates.map((d) => {
+      let dateItemWidth, isWeekend = false, isEndRange = false;
+      if (selectedGridView === GRID_VIEWS.YEAR) {
+        isEndRange = true;
+        let endOfYear = moment(d).endOf(DATE_UNIT.YEAR);
+        dateItemWidth = (endOfYear.diff(d, DATE_UNIT.MONTH) + 1) * columnWidth;
+      } else if (selectedGridView === GRID_VIEWS.MONTH) {
+        isEndRange = true;
+        let endOfMonth = moment(d).endOf(DATE_UNIT.MONTH);
+        dateItemWidth = (moment(endOfMonth).diff(d, DATE_UNIT.DAY) + 1) * columnWidth;
+      } else {
+        isEndRange = this.isEndOfRange(d);
+        isWeekend = this.isWeekend(dates.getDate2Week(d));
+        dateItemWidth = columnWidth;
+      }
       return (
         <div
-          key={`timeline-day-bg-${d}`}
+          key={`timeline-date-bg-${d}`}
           name={d}
-          className={classnames({'timeline-day-bg': true, 'sun-or-sat-day': isWeekend, 'd-inline-block': true, 'end-of-range': isEndRange})}
-          style={{width: columnWidth}}
+          className={classnames({'timeline-date-bg': true, 'sun-or-sat-day': isWeekend, 'd-inline-block': true, 'end-of-range': isEndRange})}
+          style={{width: dateItemWidth}}
         ></div>
       );
     });
@@ -97,25 +131,26 @@ class ViewportRight extends React.Component {
       return [];
     }
     return events.filter(e => {
+      let { start: eventStartDate, end: eventEndDate } = e;
       let isValidEvent = true;
       if (selectedGridView === GRID_VIEWS.YEAR) {
-        isValidEvent = moment(e.end).diff(e.start, DATE_UNIT.MONTH) > 0;
+        isValidEvent = moment(eventEndDate).diff(eventStartDate, DATE_UNIT.MONTH) > 0;
       } else {
-        isValidEvent = moment(e.end).isSameOrAfter(e.start);
+        isValidEvent = moment(eventEndDate).isSameOrAfter(eventStartDate);
       }
-      return isValidEvent && (dates.isDateInRange(e.start, startDate, endDate) ||
-        dates.isDateInRange(e.end, startDate, endDate) ||
-        dates.isDateInRange(selectedDate, e.start, e.end));
+      return isValidEvent && (dates.isDateInRange(eventStartDate, startDate, endDate) ||
+        dates.isDateInRange(eventEndDate, startDate, endDate) ||
+        dates.isDateInRange(selectedDate, eventStartDate, eventEndDate));
     });
   }
 
-  getEventWidth = (startDate, endDate) => {
+  getEventWidth = (eventStartDate, eventEndDate) => {
     let { selectedGridView, columnWidth } = this.props;
     let duration = 0;
     if (selectedGridView === GRID_VIEWS.YEAR) {
-      duration = moment(endDate).diff(moment(startDate), DATE_UNIT.MONTH) + 1;
+      duration = moment(eventEndDate).diff(moment(eventStartDate), DATE_UNIT.MONTH) + 1;
     } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
-      duration = moment(endDate).diff(moment(startDate), DATE_UNIT.DAY) + 1;
+      duration = moment(eventEndDate).diff(moment(eventStartDate), DATE_UNIT.DAY) + 1;
     }
     return duration * columnWidth;
   }
@@ -132,9 +167,9 @@ class ViewportRight extends React.Component {
   }
 
   renderTodayMarkLine = () => {
-    let { rows, overscanDates, selectedGridView, columnWidth } = this.props;
+    let { overscanDates, selectedGridView, columnWidth, renderedRows, rowsCount } = this.props;
     let today = moment();
-    if (!Array.isArray(rows) || rows.length === 0) return null;
+    if (rowsCount === 0) return null;
     if (selectedGridView === GRID_VIEWS.YEAR) {
       today = today.startOf(DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY);
     } else if (selectedGridView === GRID_VIEWS.MONTH) {
@@ -145,7 +180,7 @@ class ViewportRight extends React.Component {
     let todayIndex = overscanDates.indexOf(today);
     if (todayIndex < 0) return null;
     let left = todayIndex * columnWidth + columnWidth / 2;
-    let height = rows.length * ROW_HEIGHT;
+    let height = renderedRows.length * ROW_HEIGHT;
     return <div
       className="today-mark-line position-absolute"
       style={{
@@ -188,31 +223,45 @@ class ViewportRight extends React.Component {
 
   onCanvasRightScroll = (evt) => {
     evt.stopPropagation();
+    if (!this.activeScroll) {
+      this.activeScroll = true;
+      return;
+    }
     this.props.onCanvasRightScroll(evt.target.scrollTop);
   }
 
   setCanvasRightScroll = (scrollTop) => {
+    this.activeScroll = false;
     this.canvasRight.scrollTop = scrollTop;
   }
 
   render() {
-    let { columnWidth, startOffset, endOffset, overscanDates } = this.props;
+    let { headerHeight, columnWidth, startOffset, endOffset, overscanDates, topOffset, bottomOffset } = this.props;
     let canvasRightStyle = {
       width: overscanDates.length * columnWidth + startOffset + endOffset,
+      height: `calc(100% - ${headerHeight + 18}px)`,
       paddingLeft: startOffset,
       paddingRight: endOffset,
     };
     return (
       <div className="canvas-right" ref={ref => this.canvasRight = ref} style={canvasRightStyle} onScroll={this.onCanvasRightScroll}>
-        <div className="position-relative" style={{width: '100%', height: '100%'}}>
-          {this.renderEventRows()}
-          {this.renderTodayMarkLine()}
+        <div
+          className="event-rows-wrapper"
+          style={{
+            paddingTop: topOffset,
+            paddingBottom: bottomOffset
+          }}
+        >
+          <div className="position-relative" style={{width: '100%', height: '100%'}}>
+            {this.renderRows()}
+            {this.renderTodayMarkLine()}
+          </div>
         </div>
       </div>
     );
   }
 }
 
-ViewportRight.propTypes = propTypes;
+CanvasRight.propTypes = propTypes;
 
-export default ViewportRight;
+export default CanvasRight;
