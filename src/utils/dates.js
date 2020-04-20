@@ -91,7 +91,7 @@ export function isDateInRange(targetDate, startDate, endDate) {
 }
 
 export function getUniqueDates(dates, unit, format) {
-  let exsitFormattedDate, uniqueDates = []
+  let exsitFormattedDate, uniqueDates = [];
   Array.isArray(dates) && dates.forEach((d) => {
     let formattedDate = moment(d);
     if (unit === DATE_UNIT.YEAR) {

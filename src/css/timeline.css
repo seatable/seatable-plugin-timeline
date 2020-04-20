@@ -232,11 +232,12 @@
 }
 
 .timeline-row {
+  overflow: hidden;
+  white-space: nowrap;
   border-bottom: 1px solid #e2e2e2;
 }
 
 .timeline-viewport-left {
-  height: calc(100% - 86px);
   padding-bottom: 50px;
   overflow-y: auto;
 }
@@ -270,7 +271,6 @@
 }
 
 .timeline-container .timeline-viewport-right .canvas-right {
-  height: calc(100% - 86px);
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -303,15 +303,15 @@
   padding-bottom: 50px;
 }
 
-.timeline-day-bg {
+.timeline-date-bg {
   height: 100%;
 }
 
-.timeline-day-bg.sun-or-sat-day {
+.timeline-date-bg.sun-or-sat-day {
   background-color: rgba(245, 245, 245, 0.7);
 }
 
-.timeline-day-bg.end-of-range {
+.timeline-date-bg.end-of-range {
   border-right: 1px solid #e2e2e2;
 }
 

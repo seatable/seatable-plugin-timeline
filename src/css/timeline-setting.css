@@ -16,12 +16,16 @@
   padding: 0 10px 1rem;
 }
 
+.plugin-timeline-setting .setting-header-container {
+  width: 100%;
+  border-bottom: 1px solid #e2e2e2;
+}
+
 .plugin-timeline-setting .setting-header-title {
   flex: 1;
   padding: 10px 0;
   font-size: 1rem;
   font-weight: 700;
-  border-bottom: 1px solid #e2e2e2;
 }
 
 .plugin-timeline-setting .btn-close {

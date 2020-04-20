@@ -105,8 +105,10 @@ class TimelineSetting extends React.Component {
       <div className="plugin-timeline-setting position-absolute" style={{zIndex: zIndexs.TIMELINE_SETTING}} ref={ref => this.timelineSetting = ref}>
         <div className="setting-container">
           <div className="setting-header d-flex align-items-center">
-            <div className="setting-header-title">{intl.get('Settings')}</div>
-            <div className="dtable-font dtable-icon-x btn-close" onClick={onHideTimelineSetting}></div>
+            <div className="setting-header-container d-flex">
+              <div className="setting-header-title">{intl.get('Settings')}</div>
+              <div className="dtable-font dtable-icon-x btn-close" onClick={onHideTimelineSetting}></div>
+            </div>
           </div>
           <div className="setting-body">
             <div className="setting-list">

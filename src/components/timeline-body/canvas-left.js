@@ -5,7 +5,7 @@ import EventCell from '../event-cell';
 import NameFormatter from '../cell-formatter/name-formatter';
 
 const propTypes = {
-  rows: PropTypes.array,
+  renderedRows: PropTypes.array,
 };
 
 class CanvasLeft extends React.Component {
@@ -14,16 +14,17 @@ class CanvasLeft extends React.Component {
     return [
       <EventCell
         key={`timeline-left-event-cell-${name}`}
+        title={name}
         formatter={<NameFormatter value={name} />}
       />
     ];
   }
 
   render() {
-    let { rows } = this.props;
+    let { renderedRows } = this.props;
     return (
       <div className="canvas-left">
-        {Array.isArray(rows) && rows.map((r, index) => {
+        {Array.isArray(renderedRows) && renderedRows.map((r, index) => {
           let { name } = r;
           return (
             <EventRow

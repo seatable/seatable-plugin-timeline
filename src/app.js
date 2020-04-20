@@ -9,7 +9,7 @@ import TimelineSetting from './components/timeline-setting';
 import View from './model/view';
 import TimelineRow from './model/timeline-row';
 import Event from './model/event';
-import { PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR, RECORD_END_TYPE, DATE_UNIT } from './constants';
+import { PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR, DEFAULT_TEXT_COLOR, RECORD_END_TYPE, DATE_UNIT } from './constants';
 import { generatorViewId, getDtableUuid } from './utils';
 import TimelinePopover from './components/timeline-popover';
 import RowExpand from './components/row-expand';
@@ -202,12 +202,13 @@ class App extends React.Component {
     let singleSelectColumn = this.dtable.getColumnByName(table, single_select_column_name);
     let { data: singleSelectColumnData } = singleSelectColumn || {};
     let options = singleSelectColumnData ? singleSelectColumn.data.options : [];
-    let { type: nameColumnType } = nameColumn;
+    let { type: nameColumnType } = nameColumn || {};
     this.dtable.forEachRow(tableName, viewName, (row) => {
       let name = row[name_column_name];
       let label = row[single_select_column_name];
       let option = options.find(item => item.name === label) || {};
       let bgColor = option.color || DEFAULT_BG_COLOR;
+      let textColor = option.textColor || DEFAULT_TEXT_COLOR;
       let start = row[start_time_column_name];
       let end;
       if (record_end_type === RECORD_END_TYPE.RECORD_DURATION) {
@@ -220,11 +221,11 @@ class App extends React.Component {
       }
       if (name) {
         if (nameColumnType === cellType.TEXT) {
-          this.updateRows(rows, name, row, label, bgColor, start, end);
+          this.updateRows(rows, name, row, label, bgColor, textColor, start, end);
         } else if (nameColumnType === cellType.COLLABORATOR) {
           name.forEach((item) => {
             let collaborator = collaborators.find(c => c.email === item) || {};
-            this.updateRows(rows, collaborator.name, row, label, bgColor, start, end);
+            this.updateRows(rows, collaborator.name, row, label, bgColor, textColor, start, end);
           });
         }
       }
@@ -232,9 +233,9 @@ class App extends React.Component {
     return rows;
   }
 
-  updateRows = (rows, name, row, label, bgColor, start, end) => {
-    let index = rows.findIndex(r => r.name === name);
-    let event = new Event({row, label, bgColor, start, end});
+  updateRows = (rows, name, row, label, bgColor, textColor, start, end) => {
+    let index = rows.findIndex(r => r.name === name.trim());
+    let event = new Event({row, label, bgColor, textColor, start, end});
     if (index > -1) {
       rows[index].events.push(event);
     } else {

@@ -7,10 +7,11 @@ const propTypes = {
   style: PropTypes.object,
   id: PropTypes.string,
   row: PropTypes.object,
+  title: PropTypes.string,
   onRowExpand: PropTypes.func,
 };
 
-class EventCell extends React.Component {
+class EventCell extends React.PureComponent {
 
   onRowExpand = (evt) => {
     evt.preventDefault();
@@ -21,7 +22,7 @@ class EventCell extends React.Component {
   }
 
   render() {
-    let { id, formatter, style } = this.props;
+    let { id, formatter, style, title } = this.props;
     let eventCellStyle = {
       ...style
     };
@@ -30,6 +31,7 @@ class EventCell extends React.Component {
         className="timeline-event-cell d-flex align-items-center"
         id={id || ''}
         style={eventCellStyle}
+        title={title}
         onClick={this.onRowExpand}
       >
         {formatter}

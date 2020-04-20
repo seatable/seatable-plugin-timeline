@@ -9,14 +9,14 @@ import '../../locale';
 
 const propTypes = {
   overscanDates: PropTypes.array,
-  rows: PropTypes.array,
+  renderedRows: PropTypes.array,
   columnWidth: PropTypes.number,
 };
 
 class HeaderYearMonths extends React.Component {
 
   render() {
-    let { overscanDates, rows, columnWidth } = this.props;
+    let { overscanDates, renderedRows, columnWidth } = this.props;
     let todayIndex = overscanDates.indexOf(moment().startOf(DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY));
     let todayMarkStyle = {
       left: todayIndex * columnWidth + (columnWidth - 6) / 2,
@@ -32,7 +32,7 @@ class HeaderYearMonths extends React.Component {
             </div>
           );
         })}
-        {(todayIndex > -1 && Array.isArray(rows) && rows.length > 0) &&
+        {(todayIndex > -1 && Array.isArray(renderedRows) && renderedRows.length > 0) &&
           <TodayMark style={todayMarkStyle} />
         }
       </div>
