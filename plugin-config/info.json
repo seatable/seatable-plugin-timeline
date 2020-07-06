@@ -1,6 +1,6 @@
 {
   "name": "timeline",
-  "version": "0.4.7",
+  "version": "0.4.9",
   "display_name": {
     "de": "",
     "en": "Timeline",
@@ -8,9 +8,9 @@
     "zh-cn": "时间线"
   },
   "description": {
-    "de": "Das Plugin zur Anzeige der Timeline",
-    "en": "The plugin to show timeline",
-    "fr": "Le plugin pour afficher la chronologie",
-    "zh-cn": "显示时间表的插件"
+    "de": "Visualisieren Sie die aufgezeichneten Informationen auf der Timeline.",
+    "en": "Visualize the recorded information on the timeline.",
+    "fr": "Visualisez les informations enregistrées sur la chronologie.",
+    "zh-cn": "在时间线上可视化展现记录信息。"
   }
 }
