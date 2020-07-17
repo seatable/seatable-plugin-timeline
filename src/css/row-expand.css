@@ -45,3 +45,7 @@
   color: #999;
   line-height: 1;
 }
+
+.timeline-row-expand .checkbox-formatter {
+  display: flex;
+}
