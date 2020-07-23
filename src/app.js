@@ -132,6 +132,7 @@ class App extends React.Component {
 
   onPluginToggle = () => {
     this.setState({showDialog: false});
+    window.app.onClosePlugin();
   }
 
   renderBtnGroups = () => {
@@ -219,13 +220,18 @@ class App extends React.Component {
       } else {
         end = row[end_time_column_name];
       }
+      if (Object.prototype.toString.call(name) === '[object Number]') {
+        name += '';
+      }
       if (name) {
         if (nameColumnType === cellType.TEXT) {
           this.updateRows(rows, name, row, label, bgColor, textColor, start, end);
         } else if (nameColumnType === cellType.COLLABORATOR) {
           name.forEach((item) => {
-            let collaborator = collaborators.find(c => c.email === item) || {};
-            this.updateRows(rows, collaborator.name, row, label, bgColor, textColor, start, end);
+            let collaborator = collaborators.find(c => c.email === item);
+            if (collaborator) {
+              this.updateRows(rows, collaborator.name, row, label, bgColor, textColor, start, end);
+            }
           });
         }
       }
@@ -234,13 +240,14 @@ class App extends React.Component {
   }
 
   updateRows = (rows, name, row, label, bgColor, textColor, start, end) => {
-    let index = rows.findIndex(r => r.name === name.trim());
+    let formattedName = name ? (name + '').trim() : '';
+    let index = rows.findIndex(r => r.name === formattedName.trim());
     let event = new Event({row, label, bgColor, textColor, start, end});
     if (index > -1) {
       rows[index].events.push(event);
     } else {
       rows.push(new TimelineRow({
-        name,
+        name: formattedName,
         events: [event]
       }));
     }
