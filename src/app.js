@@ -241,7 +241,7 @@ class App extends React.Component {
 
   updateRows = (rows, name, row, label, bgColor, textColor, start, end) => {
     let formattedName = name ? (name + '').trim() : '';
-    let index = rows.findIndex(r => r.name === formattedName.trim());
+    let index = rows.findIndex(r => r.name === formattedName);
     let event = new Event({row, label, bgColor, textColor, start, end});
     if (index > -1) {
       rows[index].events.push(event);
