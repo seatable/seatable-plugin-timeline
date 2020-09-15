@@ -1,4 +1,4 @@
-const de = {
+{
   "Timeline": "Timeline",
   "New_View": "New View",
   "Rename_View": "Rename View",
@@ -33,6 +33,4 @@ const de = {
   "Nov": "Nov",
   "Dec": "Dec",
   "days_range": "Day {startOfMonthDay} - {endOfMonthDay}"
-};
-
-export default de;
+}

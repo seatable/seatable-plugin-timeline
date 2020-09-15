@@ -1,0 +1,8 @@
+[main]
+host = https://www.transifex.com
+
+[seatable_plugins.timeline]
+file_filter = public/locale/<lang>/timeline.json
+source_file = public/locale/en/timeline.json
+source_lang = en_US
+type = KEYVALUEJSON

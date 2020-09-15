@@ -35,4 +35,4 @@ const zh_CN = {
   "days_range": "{startOfMonthDay} - {endOfMonthDay} 日"
 };
 
-export default zh_CN; 
+export default zh_CN;
