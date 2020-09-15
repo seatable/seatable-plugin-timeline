@@ -35,4 +35,4 @@ const en = {
   "days_range": "Day {startOfMonthDay} - {endOfMonthDay}"
 };
 
-export default en; 
+export default en;
