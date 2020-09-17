@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import intl from 'react-intl-universal';
 import { zIndexs } from '../constants'
 
 import '../css/dropdown-menu.css';
@@ -19,7 +20,7 @@ class DropdownMenu extends React.Component {
     };
     return (
       <div className="timeline-dropdown-menu dropdown-menu large show" style={dropdownMenuStyle}>
-        {options || <div className="no-options d-flex align-items-center justify-content-center">No options</div>}
+        {options || <div className="no-options d-flex align-items-center justify-content-center">{intl.get('No_options')}</div>}
       </div>
     );
   }

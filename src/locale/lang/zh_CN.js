@@ -19,7 +19,7 @@ const zh_CN = {
   "Color_Column": "颜色标签字段",
   "Start_Date": "开始日期",
   "End_Date": "结束日期",
-  "Record_Duration": "记录时长",
+  "Duration": "时长",
   "Jan": "一月",
   "Feb": "二月",
   "Mar": "三月",
@@ -32,7 +32,8 @@ const zh_CN = {
   "Oct": "十月",
   "Nov": "十一",
   "Dec": "十二",
-  "days_range": "{startOfMonthDay} - {endOfMonthDay} 日"
+  "days_range": "{startOfMonthDay} - {endOfMonthDay} 日",
+  "No_options": "没有选项"
 };
 
 export default zh_CN;

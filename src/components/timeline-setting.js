@@ -47,7 +47,7 @@ class TimelineSetting extends React.Component {
     let { record_end_type } = settings;
     record_end_type = record_end_type || RECORD_END_TYPE.END_TIME;
     return RECORD_END_TYPES.map((r) => {
-      let displayType = r === RECORD_END_TYPE.END_TIME ? 'End_Date' : 'Record_Duration';
+      let displayType = r === RECORD_END_TYPE.END_TIME ? 'End_Date' : 'Duration';
       return (
         <div
           key={`record_end_type_${r}`}

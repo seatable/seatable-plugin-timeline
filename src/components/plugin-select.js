@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select, { components } from 'react-select';
+import intl from 'react-intl-universal';
 
 const DropdownIndicator = props => {
   return (
@@ -47,7 +48,14 @@ class PluginSelect extends React.Component {
         onChange={onChange}
         options={options}
         styles = {PluginSelectStyle}
-        components={{ DropdownIndicator }}
+        components={{
+          DropdownIndicator,
+          NoOptionsMessage: (props) => {
+            return (
+              <div {...props.innerProps} className="d-flex align-items-center justify-content-center" style={{margin: '6px 10px', color: '#c2c2c2'}}>{intl.get('No_options')}</div>
+            );
+          }
+        }}
         placeholder={placeholder}
         isSearchable={isSearchable}
         menuPosition={'fixed'}
