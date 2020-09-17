@@ -29,7 +29,7 @@
     "test": "node scripts/test.js",
     "translate": "node scripts/translate.js",
     "push-translate": "tx push -s",
-    "pull-translate": "tx pull -a && npm run translate",
+    "pull-translate": "tx pull -a -f && npm run translate",
     "build-plugin": "export GENERATE_SOURCEMAP=false && npm run clean && npm run build && node scripts/build-plugin.js"
   },
   "browserslist": {
