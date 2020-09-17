@@ -1,5 +1,5 @@
 const de = {
-  "Timeline": "Gantt",
+  "Timeline": "Timeline",
   "New_View": "Neue Ansicht",
   "Rename_View": "Ansicht umbenennen",
   "Delete_View": "Ansicht löschen",
@@ -19,7 +19,7 @@ const de = {
   "Color_Column": "Farbe",
   "Start_Date": "Startdatum",
   "End_Date": "Enddatum",
-  "Record_Duration": "Dauer",
+  "Duration": "Dauer",
   "Jan": "Jan.",
   "Feb": "Feb.",
   "Mar": "Mrz.",
@@ -32,7 +32,8 @@ const de = {
   "Oct": "Okt.",
   "Nov": "Nov.",
   "Dec": "Dez.",
-  "days_range": "Tag {startOfMonthDay} - {endOfMonthDay}"
+  "days_range": "Tag {startOfMonthDay} - {endOfMonthDay}",
+  "No_options": "Keine Optionen"
 };
 
 export default de;

@@ -1,5 +1,5 @@
 const fr = {
-  "Timeline": "Gantt",
+  "Timeline": "Timeline",
   "New_View": "Nouvelle vue",
   "Rename_View": "Renommer la vue",
   "Delete_View": "Supprimmer la vue",
@@ -19,7 +19,7 @@ const fr = {
   "Color_Column": "Farbe",
   "Start_Date": "Date de départ",
   "End_Date": "Date de fin",
-  "Record_Duration": "Durée",
+  "Duration": "Durée",
   "Jan": "Janv.",
   "Feb": "Févr.",
   "Mar": "Mars",
@@ -32,7 +32,8 @@ const fr = {
   "Oct": "Oct.",
   "Nov": "Nov.",
   "Dec": "Déc.",
-  "days_range": "Jour {startOfMonthDay} - {endOfMonthDay}"
+  "days_range": "Jour {startOfMonthDay} - {endOfMonthDay}",
+  "No_options": "Il n'y a pas d'options."
 };
 
 export default fr;
