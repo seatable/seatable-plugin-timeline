@@ -4,21 +4,23 @@
   width: 300px;
   height: 100%;
   box-shadow: 0px 2px 10px 3px rgba(0, 0, 0, 0.2);
-  overflow: auto;
   background: #fff;
 }
 
 .plugin-timeline-setting .setting-container {
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .plugin-timeline-setting .setting-header {
-  padding: 0 10px 1rem;
+  padding: 0 20px;
 }
 
 .plugin-timeline-setting .setting-header-container {
   width: 100%;
   border-bottom: 1px solid #e2e2e2;
+  align-items: center;
 }
 
 .plugin-timeline-setting .setting-header-title {
@@ -33,7 +35,9 @@
 }
 
 .plugin-timeline-setting .setting-body {
-  padding: 0 10px;
+  padding: 14px 20px;
+  overflow: auto;
+  flex: 1;
 }
 
 .plugin-timeline-setting .setting-item {
