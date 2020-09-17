@@ -52,7 +52,7 @@ class PluginSelect extends React.Component {
           DropdownIndicator,
           NoOptionsMessage: (props) => {
             return (
-              <div {...props.innerProps} className="no-options d-flex align-items-center justify-content-center" style={{margin: '6px 10px', color: '#c2c2c2'}}>{intl.get('No_options')}</div>
+              <div {...props.innerProps} className="d-flex align-items-center justify-content-center" style={{margin: '6px 10px', color: '#c2c2c2'}}>{intl.get('No_options')}</div>
             );
           }
         }}
