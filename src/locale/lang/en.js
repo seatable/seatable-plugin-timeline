@@ -19,7 +19,7 @@ const en = {
   "Color_Column": "Color Column",
   "Start_Date": "Start Date",
   "End_Date": "End Date",
-  "Record_Duration": "Record Duration",
+  "Duration": "Duration",
   "Jan": "Jan",
   "Feb": "Feb",
   "Mar": "Mar",
@@ -32,7 +32,8 @@ const en = {
   "Oct": "Oct",
   "Nov": "Nov",
   "Dec": "Dec",
-  "days_range": "Day {startOfMonthDay} - {endOfMonthDay}"
+  "days_range": "Day {startOfMonthDay} - {endOfMonthDay}",
+  "No_options": "No options"
 };
 
 export default en;
