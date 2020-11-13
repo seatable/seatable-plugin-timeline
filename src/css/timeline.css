@@ -240,6 +240,8 @@
 .timeline-viewport-left {
   padding-bottom: 50px;
   overflow-y: auto;
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
 }
 
 .timeline-viewport-left::-webkit-scrollbar {

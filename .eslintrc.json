@@ -1,3 +1,37 @@
 {
-  "extends": "react-app"
+  "extends": [
+    "react-app",
+    "eslint:recommended"
+  ],
+
+  "rules": {
+    "indent": [
+      "warn",
+      2,
+      { "SwitchCase": 1 }
+    ],
+    "linebreak-style": [
+      "warn",
+      "unix"
+    ],
+    "quotes": [
+      "warn",
+      "single"
+    ],
+    "semi": [
+      "warn",
+      "always"
+    ],
+
+    "no-case-declarations": "warn",
+    "no-cond-assign": "warn",
+    "no-redeclare": "warn",
+    "no-unreachable": "warn",
+    "no-class-assign": "warn",
+    "no-unused-vars": "warn",
+    "no-irregular-whitespace": "warn",
+    "no-console": "warn",
+    "no-useless-escape": "warn",
+    "no-trailing-spaces": "warn"
+  }
 }

@@ -16,7 +16,7 @@ const propTypes = {
   nameColumns: PropTypes.array,
   singleSelectColumns: PropTypes.array,
   dateColumns: PropTypes.array,
-  numberCoumns: PropTypes.array,
+  numberColumns: PropTypes.array,
   settings: PropTypes.object,
   onModifyTimelineSettings: PropTypes.func,
   onHideTimelineSetting: PropTypes.func,
@@ -64,13 +64,13 @@ class TimelineSetting extends React.Component {
   }
 
   renderRecordEndItem = () => {
-    let { settings, dateColumns, numberCoumns } = this.props;
+    let { settings, dateColumns, numberColumns } = this.props;
     let { record_end_type } = settings;
     record_end_type = record_end_type || RECORD_END_TYPE.END_TIME;
     if (record_end_type === RECORD_END_TYPE.RECORD_DURATION) {
       return (
         <div className="setting-item record-duration">
-          {this.renderSelector(numberCoumns, SETTING_KEY.RECORD_DURATION_COLUMN_NAME, 'name', 'name')}
+          {this.renderSelector(numberColumns, SETTING_KEY.RECORD_DURATION_COLUMN_NAME, 'name', 'name')}
         </div>
       );
     }

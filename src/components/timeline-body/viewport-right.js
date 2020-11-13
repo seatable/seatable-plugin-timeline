@@ -10,6 +10,7 @@ import { getGridState,
   getScanDates,
   getColumnWidth,
   getRenderedDates,
+  canUpdateSelectedDate,
 } from '../../utils/viewport-utils';
 
 const propTypes = {
@@ -28,7 +29,7 @@ const propTypes = {
 };
 
 class ViewportRight extends React.Component {
-  
+
   constructor(props) {
     super(props);
     this.state = {
@@ -39,6 +40,7 @@ class ViewportRight extends React.Component {
       dateOverscanEndIndex: 0,
     };
     this.isScrolling = false;
+    this.currentDate = props.selectedDate;
   }
 
   componentDidMount() {
@@ -70,7 +72,8 @@ class ViewportRight extends React.Component {
         visibleStartDate: amountDates[dateVisibleStartIndex]
       });
     } else if (this.props.selectedDate !== nextProps.selectedDate && !nextProps.changedSelectedByScroll) { // onNavigate
-        this.updateScroll({
+      this.currentDate = nextProps.selectedDate;
+      this.updateScroll({
         viewportRightWidth,
         columnWidth,
         selectedGridView: newSelectedGridView,
@@ -81,19 +84,24 @@ class ViewportRight extends React.Component {
   }
 
   onScroll = (evt) => {
-    let { selectedGridView, selectedDate } = this.props;
-    let { amountDates } = this.state;
-    let scrollLeft = evt.target.scrollLeft;
     if (!this.isScrolling) {
       this.isScrolling = true;
       return;
-    };
+    }
+    let { selectedGridView, selectedDate } = this.props;
+    let { amountDates } = this.state;
+    let scrollLeft = evt.target.scrollLeft;
     let unit = getCalcDateUnit(selectedGridView);
     let columnWidth = getColumnWidth(selectedGridView);
     let oversNum = scrollLeft / columnWidth;
     let fract = oversNum - Math.trunc(oversNum);
     let viewportRightWidth = this.viewportRight.offsetWidth;
     let overDatesCount = Math.ceil(oversNum) - 1;
+    if (overDatesCount < 0) {
+      overDatesCount = 0;
+    } else if (overDatesCount >= amountDates.length) {
+      overDatesCount = amountDates.length - 1;
+    }
     let visibleStartDate = amountDates[overDatesCount];
     let visibleDatesCount = Math.ceil(viewportRightWidth / columnWidth);
     let { overscanDates, gridDates } = getScanDates(selectedGridView);
@@ -106,6 +114,7 @@ class ViewportRight extends React.Component {
       viewportRightWidth,
       columnWidth,
       fract,
+      overscanDates,
       ...getGridDatesBoundaries(visibleStartDate, visibleDatesCount, overscanDates, gridDates, unit)
     });
   }
@@ -113,15 +122,17 @@ class ViewportRight extends React.Component {
   updateScroll = ({selectedGridView, selectedDate, visibleStartDate, visibleEndDate, overscanStartDate, overscanEndDate, viewportRightWidth, columnWidth, amountDates, scrollLeft, fract}) => {
     let visibleDatesCount = Math.ceil(viewportRightWidth / columnWidth);
     let compareDate = getCompareDate(selectedGridView, visibleStartDate, visibleDatesCount);
-    if (isDifferentScope(selectedDate, compareDate, selectedGridView)) {
-      this.isScrolling = false;
+    if (canUpdateSelectedDate(selectedDate, compareDate, selectedGridView)) {
+      this.props.updateSelectedDate(compareDate, true);
+    }
+    if (isDifferentScope(this.currentDate, compareDate, selectedGridView)) {
       let updatedGridState = getGridState(selectedGridView, compareDate, viewportRightWidth);
       visibleEndDate = updatedGridState.visibleEndDate;
       overscanStartDate = updatedGridState.overscanStartDate;
       overscanEndDate = updatedGridState.overscanEndDate;
       amountDates = updatedGridState.amountDates;
       scrollLeft = (amountDates.indexOf(visibleStartDate) + (fract || 0)) * columnWidth;
-      this.props.updateSelectedDate(compareDate, true);
+      this.currentDate = compareDate;
     }
     let dateVisibleStartIndex = amountDates.indexOf(visibleStartDate);
     let dateVisibleEndIndex = amountDates.indexOf(visibleEndDate);
@@ -154,7 +165,11 @@ class ViewportRight extends React.Component {
     let renderedDates = getRenderedDates(selectedGridView, overscanDates);
 
     return (
-      <div className="timeline-viewport-right" ref={ref => this.viewportRight = ref} onScroll={this.onScroll}>
+      <div
+        className="timeline-viewport-right"
+        ref={ref => this.viewportRight = ref}
+        onScroll={this.onScroll}
+      >
         <TimelineHeader
           selectedGridView={selectedGridView}
           selectedDate={selectedDate}

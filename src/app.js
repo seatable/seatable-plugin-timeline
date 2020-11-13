@@ -402,7 +402,7 @@ class App extends React.Component {
     ];
     let singleSelectColumns = this.dtable.getColumnsByType(selectedTable, CellType.SINGLE_SELECT);
     let dateColumns = this.dtable.getColumnsByType(selectedTable, CellType.DATE);
-    let numberCoumns = this.dtable.getColumnsByType(selectedTable, CellType.NUMBER);
+    let numberColumns = this.dtable.getColumnsByType(selectedTable, CellType.NUMBER);
     let rows = this.getRows(tableName, viewName, CellType, collaborators, settings);
     console.log(`---------- Timeline plugin logs start ----------`);
     console.log(rows);
@@ -440,7 +440,7 @@ class App extends React.Component {
               nameColumns={nameColumns}
               singleSelectColumns={singleSelectColumns}
               dateColumns={dateColumns}
-              numberCoumns={numberCoumns}
+              numberColumns={numberColumns}
               settings={settings || {}}
               onModifyTimelineSettings={this.onModifyTimelineSettings}
               onHideTimelineSetting={this.onHideTimelineSetting}

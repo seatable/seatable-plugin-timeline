@@ -146,6 +146,7 @@ class Timeline extends React.Component {
   }
 
   updateScroll = (scrollTop) => {
+    this.scrollTop = scrollTop;
     let { rows } = this.props;
     let { selectedGridView } = this.state;
     let rowsCount = rows.length;
@@ -220,6 +221,7 @@ class Timeline extends React.Component {
             <div className="blank-zone" style={blankZoneStyle}></div>
             <ViewportLeft
               ref={node => this.viewportLeft = node}
+              scrollTop={this.scrollTop}
               renderedRows={renderedRows}
               topOffset={topOffset}
               bottomOffset={bottomOffset}
