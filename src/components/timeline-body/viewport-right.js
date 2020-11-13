@@ -73,6 +73,7 @@ class ViewportRight extends React.Component {
       });
     } else if (this.props.selectedDate !== nextProps.selectedDate && !nextProps.changedSelectedByScroll) { // onNavigate
       this.currentDate = nextProps.selectedDate;
+      this.isScrolling = false;
       this.updateScroll({
         viewportRightWidth,
         columnWidth,
@@ -114,12 +115,11 @@ class ViewportRight extends React.Component {
       viewportRightWidth,
       columnWidth,
       fract,
-      overscanDates,
       ...getGridDatesBoundaries(visibleStartDate, visibleDatesCount, overscanDates, gridDates, unit)
     });
   }
 
-  updateScroll = ({selectedGridView, selectedDate, visibleStartDate, visibleEndDate, overscanStartDate, overscanEndDate, viewportRightWidth, columnWidth, amountDates, scrollLeft, fract}) => {
+  updateScroll = ({selectedGridView, selectedDate, visibleStartDate, visibleEndDate, overscanStartDate, overscanEndDate, viewportRightWidth, columnWidth, scrollLeft, amountDates, fract}) => {
     let visibleDatesCount = Math.ceil(viewportRightWidth / columnWidth);
     let compareDate = getCompareDate(selectedGridView, visibleStartDate, visibleDatesCount);
     if (canUpdateSelectedDate(selectedDate, compareDate, selectedGridView)) {
