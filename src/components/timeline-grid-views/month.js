@@ -31,21 +31,25 @@ class Month extends React.Component {
 
   renderHeaderYears = (props) => {
     let { renderedDates, columnWidth } = props;
-    return <HeaderYears
-      selectedGridView={this.props.selectedGridView}
-      yearDates={renderedDates}
-      columnWidth={columnWidth}
-    />
+    return (
+      <HeaderYears
+        selectedGridView={this.props.selectedGridView}
+        yearDates={renderedDates}
+        columnWidth={columnWidth}
+      />
+    );
   }
 
   renderHeaderDates = (props) => {
-    let { overscanDates, renderedDates, renderedRows, columnWidth } = props;
-    return <HeaderDaysRange
-      overscanDates={overscanDates}
-      renderedDates={renderedDates}
-      renderedRows={renderedRows}
-      columnWidth={columnWidth}
-    />
+    let { overScanDates, renderedDates, renderedRows, columnWidth } = props;
+    return (
+      <HeaderDaysRange
+        overScanDates={overScanDates}
+        renderedDates={renderedDates}
+        renderedRows={renderedRows}
+        columnWidth={columnWidth}
+      />
+    );
   }
 
   render() {

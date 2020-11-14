@@ -32,21 +32,25 @@ class Day extends React.Component {
   }
 
   renderHeaderYears = (props) => {
-    let { overscanDates, columnWidth } = props;
-    return <HeaderYears
-      selectedGridView={this.props.selectedGridView}
-      yearDates={dates.getUniqueDates(overscanDates, DATE_UNIT.MONTH, DATE_FORMAT.YEAR_MONTH)}
-      columnWidth={columnWidth}
-    />
+    let { overScanDates, columnWidth } = props;
+    return (
+      <HeaderYears
+        selectedGridView={this.props.selectedGridView}
+        yearDates={dates.getUniqueDates(overScanDates, DATE_UNIT.MONTH, DATE_FORMAT.YEAR_MONTH)}
+        columnWidth={columnWidth}
+      />
+    );
   }
 
   renderHeaderDates = (props) => {
-    let { overscanDates, renderedRows, columnWidth } = props;
-    return <HeaderDays
-      overscanDates={overscanDates}
-      renderedRows={renderedRows}
-      columnWidth={columnWidth}
-    />
+    let { overScanDates, renderedRows, columnWidth } = props;
+    return (
+      <HeaderDays
+        overScanDates={overScanDates}
+        renderedRows={renderedRows}
+        columnWidth={columnWidth}
+      />
+    );
   }
 
   render() {
