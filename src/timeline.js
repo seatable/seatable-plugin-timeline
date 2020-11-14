@@ -11,7 +11,7 @@ import {
   getRowOverscanStartIdx,
   getRowOverscanEndIdx
 } from './utils/timeline-utils';
-import { PLUGIN_NAME, NAVIGATE, GRID_VIEWS, zIndexs, DATE_FORMAT, ROW_HEIGHT } from './constants';
+import { PLUGIN_NAME, NAVIGATE, GRID_VIEWS, zIndexs, DATE_FORMAT, ROW_HEIGHT, DATE_UNIT } from './constants';
 
 import './css/timeline.css';
 
@@ -100,10 +100,16 @@ class Timeline extends React.Component {
     let { selectedDate, selectedGridView } = this.state;
     let todayDate = dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY);
     selectedDate = selectedDate || todayDate;
+    let calcDateUnit;
+    if (selectedGridView === GRID_VIEWS.YEAR) {
+      calcDateUnit = DATE_UNIT.YEAR;
+    } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
+      calcDateUnit = DATE_UNIT.MONTH;
+    }
     if (action === NAVIGATE.PREVIOUS) {
-      selectedDate = moment(selectedDate).subtract(1, selectedGridView).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      selectedDate = moment(selectedDate).subtract(1, calcDateUnit).format(DATE_FORMAT.YEAR_MONTH_DAY);
     } else if (action === NAVIGATE.NEXT) {
-      selectedDate = moment(selectedDate).add(1, selectedGridView).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      selectedDate = moment(selectedDate).add(1, calcDateUnit).format(DATE_FORMAT.YEAR_MONTH_DAY);
     } else if (action === NAVIGATE.TODAY) {
       selectedDate = todayDate;
     }
