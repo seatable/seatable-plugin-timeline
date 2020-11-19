@@ -158,9 +158,9 @@ class CanvasRight extends React.Component {
   getEventLeft = (overScanStartDate, startDate) => {
     let { selectedGridView, columnWidth } = this.props;
     if (selectedGridView === GRID_VIEWS.YEAR) {
-      let formattedOverscanStartDate = moment(overScanStartDate).format(DATE_FORMAT.YEAR_MONTH);
+      let formattedOverScanStartDate = moment(overScanStartDate).format(DATE_FORMAT.YEAR_MONTH);
       let formattedStartDate = moment(startDate).format(DATE_FORMAT.YEAR_MONTH);
-      return moment(formattedStartDate).diff(formattedOverscanStartDate, DATE_UNIT.MONTH) * columnWidth;
+      return moment(formattedStartDate).diff(formattedOverScanStartDate, DATE_UNIT.MONTH) * columnWidth;
     } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
       return moment(startDate).diff(overScanStartDate, DATE_UNIT.DAY) * columnWidth;
     }

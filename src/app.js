@@ -132,7 +132,7 @@ class App extends React.Component {
 
   onPluginToggle = () => {
     this.setState({showDialog: false});
-    window.app.onClosePlugin();
+    window.app.onClosePlugin && window.app.onClosePlugin();
   }
 
   renderBtnGroups = () => {
@@ -404,6 +404,7 @@ class App extends React.Component {
     let dateColumns = this.dtable.getColumnsByType(selectedTable, CellType.DATE);
     let numberColumns = this.dtable.getColumnsByType(selectedTable, CellType.NUMBER);
     let rows = this.getRows(tableName, viewName, CellType, collaborators, settings);
+    /* eslint-disable */
     console.log(`---------- Timeline plugin logs start ----------`);
     console.log(rows);
     console.log(`----------- Timeline plugin logs end -----------`);

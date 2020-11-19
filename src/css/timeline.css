@@ -40,9 +40,49 @@
   min-width: 80px;
 }
 
+.timeline-toolbar .btn-date-range {
+  width: 110px;
+  border: 1px solid #dbdbdb;
+  border-radius: 4px;
+  overflow: hidden;
+  color: #666;
+}
+
+.timeline-toolbar .btn-date-range .ant-calendar-picker-input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  text-align: center;
+}
+
+.timeline-toolbar .btn-date-range,
 .timeline-toolbar .btn-select-view {
   height: 26px;
   margin-right: 5px;
+}
+
+.timeline-toolbar-range-calendar .rc-calendar-ok-btn {
+  height: 280px;
+}
+
+.timeline-toolbar-range-calendar .rc-calendar-year-panel-selected-cell {
+  color: #fff;
+}
+
+.timeline-toolbar-range-calendar .rc-calendar-year-panel-selected-cell .rc-calendar-year-panel-year {
+  background-color: #3b88fd;
+}
+
+.timeline-toolbar-range-calendar .rc-calendar-year-panel-selected-cell .rc-calendar-year-panel-year:hover {
+  background-color: #3b88fd;
+}
+
+.timeline-toolbar-range-calendar .rc-calendar-year-panel-year:hover {
+  background-color: rgba(59, 136, 253, .1);
+}
+
+.timeline-toolbar-range-calendar .rc-calendar-range-middle {
+  margin-left: -6px;
 }
 
 .timeline-toolbar .btn-select-view .btn-group {
@@ -177,9 +217,8 @@
 }
 
 .timeline-header .header-days {
-  height: 50px;
+  height: 32px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #e2e2e2;
 }
 
 .timeline-header .date-item {
@@ -209,7 +248,7 @@
 }
 
 .timeline-header .today-mark {
-  top: 41px;
+  top: 19px;
   width: 7px;
   height: 6px;
   background-color: #3b88fd;

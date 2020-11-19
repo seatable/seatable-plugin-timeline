@@ -9,6 +9,8 @@ const propTypes = {
   changedSelectedByScroll: PropTypes.bool,
   selectedGridView: PropTypes.string,
   selectedDate: PropTypes.string,
+  gridStartDate: PropTypes.string,
+  gridEndDate: PropTypes.string,
   headerHeight: PropTypes.number,
   renderedRows: PropTypes.array,
   topOffset: PropTypes.number,
@@ -53,7 +55,9 @@ class Month extends React.Component {
   }
 
   render() {
-    let { isShowUsers, changedSelectedByScroll, headerHeight, renderedRows, selectedGridView, selectedDate, updateSelectedDate, onCanvasRightScroll, onViewportRightScroll, onRowExpand, topOffset, bottomOffset } = this.props;
+    let { isShowUsers, changedSelectedByScroll, headerHeight, renderedRows, selectedGridView, selectedDate,
+      gridStartDate, gridEndDate, updateSelectedDate, onCanvasRightScroll, onViewportRightScroll, onRowExpand,
+      topOffset, bottomOffset } = this.props;
     return (
       <div className="timeline-month-view">
         <ViewportRight
@@ -62,6 +66,8 @@ class Month extends React.Component {
           changedSelectedByScroll={changedSelectedByScroll}
           selectedGridView={selectedGridView}
           selectedDate={selectedDate}
+          gridStartDate={gridStartDate}
+          gridEndDate={gridEndDate}
           headerHeight={headerHeight}
           renderedRows={renderedRows}
           topOffset={topOffset}

@@ -35,11 +35,13 @@ class TimelineSetting extends React.Component {
     if (!selectedOption && (settingKey === SETTING_KEY.TABLE_NAME || settingKey === SETTING_KEY.VIEW_NAME)) {
       selectedOption = options[0];
     }
-    return <PluginSelect
-      value={selectedOption}
-      options={options}
-      onChange={this.onModifySettings}
-    />
+    return (
+      <PluginSelect
+        value={selectedOption}
+        options={options}
+        onChange={this.onModifySettings}
+      />
+    );
   }
 
   renderRecordEndType = () => {
@@ -51,7 +53,7 @@ class TimelineSetting extends React.Component {
       return (
         <div
           key={`record_end_type_${r}`}
-          onClick={() => this.onSelectRecordEndType(r)} 
+          onClick={() => this.onSelectRecordEndType(r)}
           className={classnames({
             'record-end-type-item': true,
             'selected': r === record_end_type,
@@ -81,7 +83,7 @@ class TimelineSetting extends React.Component {
     );
   }
 
-  onModifySettings = (selectedOption) => {
+  onModifySettings = (selectedOption, evt) => {
     let { settings } = this.props;
     let { setting_key, value } = selectedOption;
     let updated;
@@ -102,7 +104,7 @@ class TimelineSetting extends React.Component {
   render() {
     let { tables, views, nameColumns, singleSelectColumns, dateColumns, onHideTimelineSetting } = this.props;
     return (
-      <div className="plugin-timeline-setting position-absolute" style={{zIndex: zIndexs.TIMELINE_SETTING}} ref={ref => this.timelineSetting = ref}>
+      <div className="plugin-timeline-setting position-absolute" style={{zIndex: zIndexs.TIMELINE_SETTING}} ref={ref => this.timelineSetting = ref} onClick={this.onClick}>
         <div className="setting-container">
           <div className="setting-header d-flex align-items-center">
             <div className="setting-header-container d-flex">
