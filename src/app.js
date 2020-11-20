@@ -2,24 +2,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import moment from 'moment';
+import intl from 'react-intl-universal';
 import DTable from 'dtable-sdk';
 import TimelineViewsTabs from './components/timeline-views-tabs';
 import Timeline from './timeline';
-import TimelineSetting from './components/timeline-setting';
 import View from './model/view';
 import TimelineRow from './model/timeline-row';
 import Event from './model/event';
 import { PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR, DEFAULT_TEXT_COLOR, RECORD_END_TYPE, DATE_UNIT } from './constants';
 import { generatorViewId, getDtableUuid } from './utils';
+import EventBus from './utils/event-bus';
 import TimelinePopover from './components/timeline-popover';
 import RowExpand from './components/row-expand';
 
-import intl from 'react-intl-universal';
-
 import './locale';
+import timelineLogo from './assets/image/timeline.png';
 
 import './css/plugin-layout.css';
-import timelineLogo from './assets/image/timeline.png';
 
 const DEFAULT_PLUGIN_SETTINGS = {
   views: [
@@ -51,6 +50,7 @@ class App extends React.Component {
       rowExpandTarget: '',
       expandedRow: {},
     };
+    this.eventBus = new EventBus();
     this.dtable = new DTable();
   }
 
@@ -122,17 +122,17 @@ class App extends React.Component {
     });
   }
 
+  onPluginToggle = () => {
+    this.setState({showDialog: false});
+    window.app.onClosePlugin && window.app.onClosePlugin();
+  }
+
   onTimelineSettingToggle = () => {
     this.setState({isShowTimelineSetting: !this.state.isShowTimelineSetting});
   }
 
   onHideTimelineSetting = () => {
     this.setState({isShowTimelineSetting: false});
-  }
-
-  onPluginToggle = () => {
-    this.setState({showDialog: false});
-    window.app.onClosePlugin && window.app.onClosePlugin();
   }
 
   renderBtnGroups = () => {
@@ -381,7 +381,8 @@ class App extends React.Component {
   }
 
   render() {
-    let { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx, isShowRowExpand, rowExpandTarget, expandedRow, rowExpandOffsetLeft } = this.state;
+    let { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx, isShowRowExpand,
+      rowExpandTarget, expandedRow, rowExpandOffsetLeft} = this.state;
     if (isLoading || !showDialog) {
       return '';
     }
@@ -427,26 +428,25 @@ class App extends React.Component {
         </ModalHeader>
         <ModalBody className="plugin-body position-relative">
           <Timeline
+            tables={tables}
+            views={views}
+            selectedTable={selectedTable}
             rows={rows}
+            nameColumns={nameColumns}
+            singleSelectColumns={singleSelectColumns}
+            dateColumns={dateColumns}
+            numberColumns={numberColumns}
+            settings={settings}
             selectedTimelineView={selectedTimelineView}
+            eventBus={this.eventBus}
+            isShowTimelineSetting={isShowTimelineSetting}
             onTimelineSettingToggle={this.onTimelineSettingToggle}
             onViewportRightScroll={this.onViewportRightScroll}
             onRowExpand={this.onRowExpand}
+            updateDateRange={this.updateDateRange}
+            onModifyTimelineSettings={this.onModifyTimelineSettings}
+            onHideTimelineSetting={this.onHideTimelineSetting}
           />
-          {isShowTimelineSetting &&
-            <TimelineSetting
-              tables={tables}
-              selectedTable={selectedTable}
-              views={views}
-              nameColumns={nameColumns}
-              singleSelectColumns={singleSelectColumns}
-              dateColumns={dateColumns}
-              numberColumns={numberColumns}
-              settings={settings || {}}
-              onModifyTimelineSettings={this.onModifyTimelineSettings}
-              onHideTimelineSetting={this.onHideTimelineSetting}
-            />
-          }
         </ModalBody>
         {isShowRowExpand &&
           <TimelinePopover

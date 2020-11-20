@@ -18,6 +18,7 @@
 }
 
 .timeline-toolbar .toolbar-left {
+  min-width: 40px;
   left: 0;
 }
 
@@ -28,7 +29,7 @@
 
 .timeline-toolbar .toggle-drawer-btn {
   height: 24px;
-  width: 24px;
+  width: 28px;
   text-align: center;
   cursor: pointer;
   color: #000;
@@ -36,53 +37,17 @@
   font-weight: 700;
  }
 
+.timeline-toolbar .current-date {
+  font-size: 16px;
+}
+
 .timeline-toolbar .dropdown-menu {
   min-width: 80px;
 }
 
-.timeline-toolbar .btn-date-range {
-  width: 110px;
-  border: 1px solid #dbdbdb;
-  border-radius: 4px;
-  overflow: hidden;
-  color: #666;
-}
-
-.timeline-toolbar .btn-date-range .ant-calendar-picker-input {
-  width: 100%;
-  height: 100%;
-  border: none;
-  text-align: center;
-}
-
-.timeline-toolbar .btn-date-range,
 .timeline-toolbar .btn-select-view {
   height: 26px;
   margin-right: 5px;
-}
-
-.timeline-toolbar-range-calendar .rc-calendar-ok-btn {
-  height: 280px;
-}
-
-.timeline-toolbar-range-calendar .rc-calendar-year-panel-selected-cell {
-  color: #fff;
-}
-
-.timeline-toolbar-range-calendar .rc-calendar-year-panel-selected-cell .rc-calendar-year-panel-year {
-  background-color: #3b88fd;
-}
-
-.timeline-toolbar-range-calendar .rc-calendar-year-panel-selected-cell .rc-calendar-year-panel-year:hover {
-  background-color: #3b88fd;
-}
-
-.timeline-toolbar-range-calendar .rc-calendar-year-panel-year:hover {
-  background-color: rgba(59, 136, 253, .1);
-}
-
-.timeline-toolbar-range-calendar .rc-calendar-range-middle {
-  margin-left: -6px;
 }
 
 .timeline-toolbar .btn-select-view .btn-group {

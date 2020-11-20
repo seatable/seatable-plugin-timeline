@@ -19,12 +19,19 @@ class HeaderYears extends React.Component {
         calcUnit = DATE_UNIT.YEAR;
         displayFormat = DATE_FORMAT.YEAR;
         dateItemWidth = (moment(d).endOf(DATE_UNIT.YEAR).diff(d, DATE_UNIT.MONTH) + 1) * columnWidth;
-      } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
+      } else if (selectedGridView === GRID_VIEWS.MONTH) {
         calcUnit = DATE_UNIT.MONTH;
         displayFormat = DATE_FORMAT.YEAR_MONTH;
         dateItemWidth = (moment(d).endOf(DATE_UNIT.MONTH).diff(d, DATE_UNIT.DAY) + 1) * columnWidth;
+      } else if (selectedGridView === GRID_VIEWS.DAY) {
+        calcUnit = DATE_UNIT.MONTH;
+        displayFormat = DATE_FORMAT.MONTH;
+        if (moment(d).startOf(DATE_UNIT.YEAR).isSame(d)) {
+          displayFormat = DATE_FORMAT.YEAR_MONTH;
+        }
+        dateItemWidth = (moment(d).endOf(DATE_UNIT.MONTH).diff(d, DATE_UNIT.DAY) + 1) * columnWidth;
       }
-      if (moment(d).startOf(calcUnit).format(DATE_FORMAT.YEAR_MONTH_DAY) === d) {
+      if (moment(d).startOf(calcUnit).isSame(d)) {
         displayDate = moment(d).format(displayFormat);
       }
       return (

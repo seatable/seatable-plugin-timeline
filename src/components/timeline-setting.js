@@ -1,11 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import moment from 'moment';
+import Picker from '@seafile/seafile-calendar/lib/Picker';
+import RangeCalendar from '@seafile/seafile-calendar/lib/RangeCalendar';
 import PluginSelect from './plugin-select';
-import { SETTING_KEY, zIndexs, RECORD_END_TYPE } from '../constants';
-import intl from 'react-intl-universal';
-import '../locale';
+import { SETTING_KEY, zIndexs, RECORD_END_TYPE, GRID_VIEWS, DATE_UNIT, DATE_FORMAT } from '../constants';
 
+import intl from 'react-intl-universal';
+
+import '@seafile/seafile-calendar/assets/index.css';
 import '../css/timeline-setting.css';
 
 const RECORD_END_TYPES = [RECORD_END_TYPE.END_TIME, RECORD_END_TYPE.RECORD_DURATION];
@@ -18,11 +22,30 @@ const propTypes = {
   dateColumns: PropTypes.array,
   numberColumns: PropTypes.array,
   settings: PropTypes.object,
+  gridStartDate: PropTypes.string,
+  gridEndDate: PropTypes.string,
   onModifyTimelineSettings: PropTypes.func,
   onHideTimelineSetting: PropTypes.func,
+  updateDateRange: PropTypes.func,
 };
 
 class TimelineSetting extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedRangeDates: [moment(props.gridStartDate), moment(props.gridEndDate)],
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.gridStartDate !== this.props.gridStartDate ||
+      nextProps.gridEndDate !== this.props.gridEndDate) {
+      this.setState({
+        selectedRangeDates: [moment(nextProps.gridStartDate), moment(nextProps.gridEndDate)]
+      });
+    }
+  }
 
   renderSelector = (source, settingKey, valueKey, labelKey) => {
     let { settings } = this.props;
@@ -101,6 +124,95 @@ class TimelineSetting extends React.Component {
     this.props.onModifyTimelineSettings(updated);
   }
 
+  renderDatePicker = () => {
+    const { selectedRangeDates } = this.state;
+    return (
+      <Picker
+        value={selectedRangeDates}
+        calendar={this.renderRangeCalendar()}
+        style={{ zIndex: zIndexs.RC_CALENDAR }}
+        onOpenChange={this.onOpenChange}
+        onChange={this.onDatePickerChange}
+      >
+        {
+          ({ value }) => {
+            return (
+              <span>
+                <input
+                  readOnly
+                  className="ant-calendar-picker-input ant-input"
+                  value={value && value[0] && value[1] ? `${value[0].format('YYYY')} - ${value[1].format('YYYY')}` : ''}
+                />
+              </span>
+            );
+          }
+        }
+      </Picker>
+    );
+  }
+
+  renderRangeCalendar = () => {
+    const { selectedRangeDates } = this.state;
+    return (
+      <RangeCalendar
+        className={'timeline-setting-range-calendar'}
+        showToday={false}
+        mode={[DATE_UNIT.YEAR, DATE_UNIT.YEAR]}
+        format={DATE_FORMAT.YEAR}
+        defaultValue={selectedRangeDates}
+        onPanelChange={this.onChangeSelectedRangeDates}
+      />
+    );
+  }
+
+  disabledDate = (current) => {
+    const { selectedRangeDates } = this.state;
+    if (!selectedRangeDates || selectedRangeDates.length === 0) {
+      return false;
+    }
+    const tooLate = selectedRangeDates[0] && current.diff(selectedRangeDates[0], DATE_UNIT.YEAR) > 3;
+    const tooEarly = selectedRangeDates[1] && selectedRangeDates[1].diff(current, DATE_UNIT.YEAR) > 3;
+    return tooEarly || tooLate;
+  }
+
+  onDatePickerChange = (dates) => {
+    this.setState({selectedRangeDates: dates});
+  }
+
+  onChangeSelectedRangeDates = (dates) => {
+    this.setState({selectedRangeDates: dates});
+  }
+
+  onOpenChange = (open) => {
+    if (!open) {
+      const { selectedRangeDates } = this.state;
+      const { selectedGridView, gridStartDate, gridEndDate } = this.props;
+
+      // not changed.
+      if (selectedRangeDates[0].isSame(gridStartDate) &&
+        selectedRangeDates[1].isSame(gridEndDate)) {
+        return;
+      }
+
+      // not allowed date range.
+      const startDate = selectedRangeDates[0].startOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      const endDate = selectedRangeDates[1].endOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      const diffs = selectedRangeDates[1].diff(selectedRangeDates[0], DATE_UNIT.YEAR);
+      if ((selectedGridView === GRID_VIEWS.YEAR && diffs < 2) ||
+        ((selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) &&
+        selectedRangeDates[1].isBefore(selectedRangeDates[0]))
+      ) {
+        const { gridStartDate, gridEndDate } = this.props;
+        this.setState({
+          selectedRangeDates: [moment(gridStartDate), moment(gridEndDate)]
+        });
+        return;
+      }
+
+      this.props.updateDateRange(startDate, endDate);
+    }
+  }
+
   render() {
     let { tables, views, nameColumns, singleSelectColumns, dateColumns, onHideTimelineSetting } = this.props;
     return (
@@ -139,6 +251,12 @@ class TimelineSetting extends React.Component {
               <div className="split-line"></div>
               <div className="setting-item record-end-type">{this.renderRecordEndType()}</div>
               {this.renderRecordEndItem()}
+              <div className="setting-item date-range">
+                <div className="title">{intl.get('Date_range')}</div>
+                <div className="btn-date-range d-flex align-items-center">
+                  {this.renderDatePicker()}
+                </div>
+              </div>
             </div>
           </div>
         </div>

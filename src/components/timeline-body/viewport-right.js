@@ -13,6 +13,7 @@ import {
   canUpdateSelectedDate,
 } from '../../utils/viewport-utils';
 import * as dates from '../../utils/dates';
+import * as EventTypes from '../../constants/event-types';
 
 const propTypes = {
   isShowUsers: PropTypes.bool,
@@ -25,6 +26,7 @@ const propTypes = {
   renderedRows: PropTypes.array,
   topOffset: PropTypes.number,
   bottomOffset: PropTypes.number,
+  eventBus: PropTypes.object,
   renderHeaderDates: PropTypes.func,
   updateSelectedDate: PropTypes.func,
   onCanvasRightScroll: PropTypes.func,
@@ -123,6 +125,7 @@ class ViewportRight extends React.Component {
     let visibleStartDate = this.allDates[overDatesCount];
     let visibleDatesCount = Math.ceil(viewportRightWidth / columnWidth);
     let overScanDates = getScanDates(selectedGridView);
+    this.props.eventBus.dispatch(EventTypes.VIEWPORT_RIGHT_SCROLL, {visibleStartDate, scrollLeft});
     this.updateScroll({
       selectedGridView,
       selectedDate,
@@ -158,7 +161,8 @@ class ViewportRight extends React.Component {
     }, () => {
       if (this.canUpdateScrollLeft) {
         const scrollWidth = this.viewportRight.scrollWidth;
-        let scrollLeft = visibleStartIndex * columnWidth;
+        const scrollLeft = visibleStartIndex * columnWidth;
+        this.props.eventBus.dispatch(EventTypes.VIEWPORT_RIGHT_SCROLL, {visibleStartDate, scrollLeft});
         this.viewportRight.scrollLeft = scrollLeft;
         this.canUpdateScrollLeft = false;
         this.props.onViewportRightScroll(scrollLeft, viewportRightWidth, scrollWidth);

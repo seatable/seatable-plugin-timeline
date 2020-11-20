@@ -15,6 +15,7 @@ const propTypes = {
   renderedRows: PropTypes.array,
   topOffset: PropTypes.number,
   bottomOffset: PropTypes.number,
+  eventBus: PropTypes.object,
   updateSelectedDate: PropTypes.func,
   onCanvasRightScroll: PropTypes.func,
   onViewportRightScroll: PropTypes.func,
@@ -56,7 +57,7 @@ class Year extends React.Component {
   render() {
     let { isShowUsers, changedSelectedByScroll, headerHeight, renderedRows, selectedGridView, selectedDate,
       gridStartDate, gridEndDate, updateSelectedDate, onCanvasRightScroll, onViewportRightScroll, onRowExpand,
-      topOffset, bottomOffset } = this.props;
+      topOffset, bottomOffset, eventBus } = this.props;
     return (
       <div className="timeline-year-view">
         <ViewportRight
@@ -71,6 +72,7 @@ class Year extends React.Component {
           renderedRows={renderedRows}
           topOffset={topOffset}
           bottomOffset={bottomOffset}
+          eventBus={eventBus}
           renderHeaderYears={this.renderHeaderYears}
           renderHeaderDates={this.renderHeaderDates}
           updateSelectedDate={updateSelectedDate}

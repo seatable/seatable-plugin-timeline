@@ -1,9 +1,7 @@
 import moment from 'moment';
 import * as dates from './dates';
 import { DATE_UNIT, DATE_FORMAT, GRID_VIEWS } from '../constants';
-
-const GENERAL_COLUMN_WIDTH = 40;
-const MONTH_COLUMN_WIDTH = 10;
+import { GENERAL_COLUMN_WIDTH, MONTH_COLUMN_WIDTH } from '../constants/column';
 
 export const getGridInitState = (selectedGridView, selectedDate, gridStartDate, gridEndDate, viewportRightWidth) => {
   let m_gridStartDate = moment(gridStartDate);

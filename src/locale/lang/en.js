@@ -33,7 +33,8 @@ const en = {
   "Nov": "Nov",
   "Dec": "Dec",
   "days_range": "Day {startOfMonthDay} - {endOfMonthDay}",
-  "No_options": "No options"
+  "No_options": "No options",
+  "Date_range": "Date range"
 };
 
 export default en;

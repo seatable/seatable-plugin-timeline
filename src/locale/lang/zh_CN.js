@@ -33,7 +33,8 @@ const zh_CN = {
   "Nov": "十一",
   "Dec": "十二",
   "days_range": "{startOfMonthDay} - {endOfMonthDay} 日",
-  "No_options": "没有选项"
+  "No_options": "没有选项",
+  "Date_range": "日期范围"
 };
 
 export default zh_CN;

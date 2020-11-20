@@ -1,18 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import Picker from '@seafile/seafile-calendar/lib/Picker';
-import RangeCalendar from '@seafile/seafile-calendar/lib/RangeCalendar';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { NAVIGATE, GRID_VIEWS, zIndexs, DATE_UNIT, DATE_FORMAT } from '../constants';
-import intl from 'react-intl-universal';
+import * as EventTypes from '../constants/event-types';
 
-import '@seafile/seafile-calendar/assets/index.css';
+import intl from 'react-intl-universal';
 
 const propTypes = {
   selectedGridView: PropTypes.string,
   selectedDate: PropTypes.string,
   isShowUsers: PropTypes.bool,
+  eventBus: PropTypes.object,
   canNavigateToday: PropTypes.bool,
   onShowUsersToggle: PropTypes.func,
   onNavigate: PropTypes.func,
@@ -25,22 +24,18 @@ class TimelineToolbar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedRangeDates: [moment(props.gridStartDate), moment(props.gridEndDate)],
-      isSelectViewDropdownOpen: false
+      isSelectViewDropdownOpen: false,
+      currentDate: moment(props.selectedDate).format(DATE_FORMAT.YEAR_MONTH),
     };
+    this.viewportRightScrollLeft = 0;
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.gridStartDate !== this.props.gridStartDate ||
-      nextProps.gridEndDate !== this.props.gridEndDate) {
-      this.setState({
-        selectedRangeDates: [moment(nextProps.gridStartDate), moment(nextProps.gridEndDate)]
-      });
-    }
+  componentDidMount() {
+    this.unsubscribeGridHorizontalScroll = this.props.eventBus.subscribe(EventTypes.VIEWPORT_RIGHT_SCROLL, this.viewportRightScroll);
   }
 
-  onSelectViewToggle = () => {
-    this.setState({isSelectViewDropdownOpen: !this.state.isSelectViewDropdownOpen});
+  componentWillUnmount() {
+    this.unsubscribeGridHorizontalScroll();
   }
 
   getDisplaySelectedGridView = () => {
@@ -58,92 +53,42 @@ class TimelineToolbar extends React.Component {
     }
   }
 
-  renderDatePicker = () => {
-    const { selectedRangeDates } = this.state;
-    return (
-      <Picker
-        value={selectedRangeDates}
-        calendar={this.renderRangeCalendar()}
-        style={{ zIndex: zIndexs.RC_CALENDAR }}
-        onOpenChange={this.onOpenChange}
-        onChange={this.onDatePickerChange}
-      >
-        {
-          ({ value }) => {
-            return (
-              <span>
-                <input
-                  readOnly
-                  className="ant-calendar-picker-input ant-input"
-                  value={value && value[0] && value[1] ? `${value[0].format('YYYY')} - ${value[1].format('YYYY')}` : ''}
-                />
-              </span>
-            );
-          }
-        }
-      </Picker>
-    );
-  }
-
-  renderRangeCalendar = () => {
-    const { selectedRangeDates } = this.state;
-    return (
-      <RangeCalendar
-        className={'timeline-toolbar-range-calendar'}
-        showToday={false}
-        mode={[DATE_UNIT.YEAR, DATE_UNIT.YEAR]}
-        format={DATE_FORMAT.YEAR}
-        defaultValue={selectedRangeDates}
-        onPanelChange={this.onChangeSelectedRangeDates}
-      />
-    );
-  }
-
-  disabledDate = (current) => {
-    const { selectedRangeDates } = this.state;
-    if (!selectedRangeDates || selectedRangeDates.length === 0) {
-      return false;
+  renderCurrentDate = () => {
+    const { selectedGridView } = this.props;
+    if (selectedGridView === GRID_VIEWS.DAY) {
+      const { currentDate } = this.state;
+      return (
+        <div className="current-date d-flex align-items-center">
+          <span className="year">{moment(currentDate).format(DATE_FORMAT.YEAR)}</span>
+          -
+          <span className="month" ref={ref => this.currentDateOfMonth = ref}>{moment(currentDate).format(DATE_FORMAT.MONTH)}</span>
+        </div>
+      );
     }
-    const tooLate = selectedRangeDates[0] && current.diff(selectedRangeDates[0], DATE_UNIT.YEAR) > 3;
-    const tooEarly = selectedRangeDates[1] && selectedRangeDates[1].diff(current, DATE_UNIT.YEAR) > 3;
-    return tooEarly || tooLate;
+    return null;
   }
 
-  onChangeSelectedRangeDates = (dates) => {
-    this.setState({selectedRangeDates: dates});
+  onSelectViewToggle = () => {
+    this.setState({isSelectViewDropdownOpen: !this.state.isSelectViewDropdownOpen});
   }
 
-  onDatePickerChange = (dates) => {
-    this.setState({selectedRangeDates: dates});
-  }
-
-  onOpenChange = (open) => {
-    if (!open) {
-      const { selectedRangeDates } = this.state;
-      const { selectedGridView, gridStartDate, gridEndDate } = this.props;
-
-      // not changed.
-      if (selectedRangeDates[0].isSame(gridStartDate) &&
-        selectedRangeDates[1].isSame(gridEndDate)) {
+  viewportRightScroll = ({visibleStartDate, scrollLeft}) => {
+    const { selectedGridView } = this.props;
+    const { currentDate } = this.state;
+    if (selectedGridView === GRID_VIEWS.DAY) {
+      let newDate;
+      if (scrollLeft - this.viewportRightScrollLeft > 0) {
+        // scroll ro right.
+        newDate = moment(visibleStartDate).add(2, DATE_UNIT.DAY);
+      } else if (scrollLeft - this.viewportRightScrollLeft <= 0) {
+        // scroll to left.
+        newDate = moment(visibleStartDate).add(1, DATE_UNIT.DAY);
+      }
+      const formattedNewDate = newDate.format(DATE_FORMAT.YEAR_MONTH);
+      if (formattedNewDate === currentDate) {
         return;
       }
-
-      // not allowed date range.
-      const startDate = selectedRangeDates[0].startOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY);
-      const endDate = selectedRangeDates[1].endOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY);
-      const diffs = selectedRangeDates[1].diff(selectedRangeDates[0], DATE_UNIT.YEAR);
-      if ((selectedGridView === GRID_VIEWS.YEAR && diffs < 2) ||
-        ((selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) &&
-        selectedRangeDates[1].isBefore(selectedRangeDates[0]))
-      ) {
-        const { gridStartDate, gridEndDate } = this.props;
-        this.setState({
-          selectedRangeDates: [moment(gridStartDate), moment(gridEndDate)]
-        });
-        return;
-      }
-
-      this.props.updateSelectedRange(startDate, endDate);
+      this.setState({currentDate: formattedNewDate});
     }
   }
 
@@ -152,15 +97,13 @@ class TimelineToolbar extends React.Component {
     let displaySelectedGridView = this.getDisplaySelectedGridView();
     return (
       <div className="timeline-toolbar d-flex align-items-center justify-content-between">
-        <div className="toolbar-left d-flex justify-content-center position-absolute" style={{width: 40, zIndex: zIndexs.TOOLBAR}}>
+        <div className="toolbar-left d-flex justify-content-center position-absolute" style={{zIndex: zIndexs.TOOLBAR}}>
           <div className="toggle-drawer-btn" onClick={onShowUsersToggle}>
             <i className={`dtable-font ${isShowUsers ? 'dtable-icon-retract-com' : 'dtable-icon-open-com'}`}></i>
           </div>
+          {this.renderCurrentDate()}
         </div>
         <div className="toolbar-right d-flex align-items-center position-absolute" style={{zIndex: zIndexs.TOOLBAR}}>
-          <div className="btn-date-range d-flex">
-            {this.renderDatePicker()}
-          </div>
           <div className="btn-select-view">
             <Dropdown group isOpen={this.state.isSelectViewDropdownOpen} size="sm" toggle={this.onSelectViewToggle}>
               <DropdownToggle caret>
