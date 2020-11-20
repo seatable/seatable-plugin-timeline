@@ -5,6 +5,7 @@ import moment from 'moment';
 import Picker from '@seafile/seafile-calendar/lib/Picker';
 import RangeCalendar from '@seafile/seafile-calendar/lib/RangeCalendar';
 import PluginSelect from './plugin-select';
+import { translateCalendar } from '../utils/seafile-calendar-translate';
 import { SETTING_KEY, zIndexs, RECORD_END_TYPE, GRID_VIEWS, DATE_UNIT, DATE_FORMAT } from '../constants';
 
 import intl from 'react-intl-universal';
@@ -157,6 +158,7 @@ class TimelineSetting extends React.Component {
     return (
       <RangeCalendar
         className={'timeline-setting-range-calendar'}
+        locale={translateCalendar()}
         showToday={false}
         mode={[DATE_UNIT.YEAR, DATE_UNIT.YEAR]}
         format={DATE_FORMAT.YEAR}
