@@ -24,6 +24,7 @@ const propTypes = {
   settings: PropTypes.object,
   gridStartDate: PropTypes.string,
   gridEndDate: PropTypes.string,
+  selectedGridView: PropTypes.string,
   onModifyTimelineSettings: PropTypes.func,
   onHideTimelineSetting: PropTypes.func,
   updateDateRange: PropTypes.func,
@@ -34,7 +35,7 @@ class TimelineSetting extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedRangeDates: [moment(props.gridStartDate), moment(props.gridEndDate)],
+      dateRange: [moment(props.gridStartDate), moment(props.gridEndDate)],
     };
   }
 
@@ -42,7 +43,7 @@ class TimelineSetting extends React.Component {
     if (nextProps.gridStartDate !== this.props.gridStartDate ||
       nextProps.gridEndDate !== this.props.gridEndDate) {
       this.setState({
-        selectedRangeDates: [moment(nextProps.gridStartDate), moment(nextProps.gridEndDate)]
+        dateRange: [moment(nextProps.gridStartDate), moment(nextProps.gridEndDate)]
       });
     }
   }
@@ -125,10 +126,10 @@ class TimelineSetting extends React.Component {
   }
 
   renderDatePicker = () => {
-    const { selectedRangeDates } = this.state;
+    const { dateRange } = this.state;
     return (
       <Picker
-        value={selectedRangeDates}
+        value={dateRange}
         calendar={this.renderRangeCalendar()}
         style={{ zIndex: zIndexs.RC_CALENDAR }}
         onOpenChange={this.onOpenChange}
@@ -152,59 +153,58 @@ class TimelineSetting extends React.Component {
   }
 
   renderRangeCalendar = () => {
-    const { selectedRangeDates } = this.state;
+    const { dateRange } = this.state;
     return (
       <RangeCalendar
         className={'timeline-setting-range-calendar'}
         showToday={false}
         mode={[DATE_UNIT.YEAR, DATE_UNIT.YEAR]}
         format={DATE_FORMAT.YEAR}
-        defaultValue={selectedRangeDates}
+        defaultValue={dateRange}
         onPanelChange={this.onChangeSelectedRangeDates}
       />
     );
   }
 
   disabledDate = (current) => {
-    const { selectedRangeDates } = this.state;
-    if (!selectedRangeDates || selectedRangeDates.length === 0) {
+    const { dateRange } = this.state;
+    if (!dateRange || dateRange.length === 0) {
       return false;
     }
-    const tooLate = selectedRangeDates[0] && current.diff(selectedRangeDates[0], DATE_UNIT.YEAR) > 3;
-    const tooEarly = selectedRangeDates[1] && selectedRangeDates[1].diff(current, DATE_UNIT.YEAR) > 3;
+    const tooLate = dateRange[0] && current.diff(dateRange[0], DATE_UNIT.YEAR) > 3;
+    const tooEarly = dateRange[1] && dateRange[1].diff(current, DATE_UNIT.YEAR) > 3;
     return tooEarly || tooLate;
   }
 
   onDatePickerChange = (dates) => {
-    this.setState({selectedRangeDates: dates});
+    this.setState({dateRange: dates});
   }
 
   onChangeSelectedRangeDates = (dates) => {
-    this.setState({selectedRangeDates: dates});
+    this.setState({dateRange: dates});
   }
 
   onOpenChange = (open) => {
     if (!open) {
-      const { selectedRangeDates } = this.state;
+      const { dateRange } = this.state;
       const { selectedGridView, gridStartDate, gridEndDate } = this.props;
 
       // not changed.
-      if (selectedRangeDates[0].isSame(gridStartDate) &&
-        selectedRangeDates[1].isSame(gridEndDate)) {
+      if (dateRange[0].isSame(gridStartDate) && dateRange[1].isSame(gridEndDate)) {
         return;
       }
 
       // not allowed date range.
-      const startDate = selectedRangeDates[0].startOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY);
-      const endDate = selectedRangeDates[1].endOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY);
-      const diffs = selectedRangeDates[1].diff(selectedRangeDates[0], DATE_UNIT.YEAR);
+      const startDate = dateRange[0].startOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      const endDate = dateRange[1].endOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      const diffs = dateRange[1].diff(dateRange[0], DATE_UNIT.YEAR);
       if ((selectedGridView === GRID_VIEWS.YEAR && diffs < 2) ||
         ((selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) &&
-        selectedRangeDates[1].isBefore(selectedRangeDates[0]))
+        dateRange[1].isBefore(dateRange[0]))
       ) {
         const { gridStartDate, gridEndDate } = this.props;
         this.setState({
-          selectedRangeDates: [moment(gridStartDate), moment(gridEndDate)]
+          dateRange: [moment(gridStartDate), moment(gridEndDate)]
         });
         return;
       }
