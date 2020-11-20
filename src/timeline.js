@@ -66,11 +66,18 @@ class Timeline extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.selectedTimelineView && this.props.selectedTimelineView !== nextProps.selectedTimelineView) {
+      let { gridStartDate, gridEndDate } = this.state;
       let selectedGridView = this.getSelectedGridView(nextProps.selectedTimelineView._id);
+      const diffs = moment(gridEndDate).diff(gridStartDate, DATE_UNIT.YEAR);
+      let initDateRange = {};
+      if (selectedGridView === GRID_VIEWS.YEAR && diffs < 2) {
+        initDateRange = this.getInitDateRange();
+      }
       this.setState({
         selectedGridView,
         selectedDate: dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY),
         changedSelectedByScroll: false,
+        ...initDateRange
       }, () => {
         this.onResetViewportScroll();
       });
