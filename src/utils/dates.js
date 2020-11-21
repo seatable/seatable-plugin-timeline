@@ -13,7 +13,7 @@ export function getDateWithUnit(date, unit) {
       return formattedDate.year();
     }
     case DATE_UNIT.MONTH: {
-      return formattedDate.format('MM'); 
+      return formattedDate.format('MM');
     }
     case DATE_UNIT.DAY: {
       return formattedDate.format('D');
@@ -46,7 +46,7 @@ export function getDatesInRange(startDate, endDate, unit = 'day') {
   let dates = [];
   while(formattedStartDate.isSameOrBefore(formattedEndDate)) {
     dates.push(formattedStartDate.format(DATE_FORMAT.YEAR_MONTH_DAY));
-    formattedStartDate.add(1, unit);
+    formattedStartDate = formattedStartDate.add(1, unit);
   }
   return dates;
 }
@@ -73,7 +73,7 @@ export function getDate2Week(date) {
       return 'F';
     }
     case '6': {
-      return 'S'
+      return 'S';
     }
     default: {
       return '';
@@ -86,12 +86,12 @@ export function getDate2Month(date) {
 }
 
 export function isDateInRange(targetDate, startDate, endDate) {
-  return moment(targetDate).isBetween(startDate, endDate) || 
+  return moment(targetDate).isBetween(startDate, endDate) ||
     targetDate === startDate || targetDate === endDate;
 }
 
 export function getUniqueDates(dates, unit, format) {
-  let exsitFormattedDate, uniqueDates = [];
+  let existFormattedDate, uniqueDates = [];
   Array.isArray(dates) && dates.forEach((d) => {
     let formattedDate = moment(d);
     if (unit === DATE_UNIT.YEAR) {
@@ -99,9 +99,9 @@ export function getUniqueDates(dates, unit, format) {
     } else {
       formattedDate = formattedDate.startOf(unit).format(format);
     }
-    if (exsitFormattedDate !== formattedDate) {
+    if (existFormattedDate !== formattedDate) {
       uniqueDates.push(d);
-      exsitFormattedDate = formattedDate;
+      existFormattedDate = formattedDate;
     }
   });
   return uniqueDates;

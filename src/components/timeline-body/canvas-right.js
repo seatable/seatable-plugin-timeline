@@ -30,7 +30,7 @@ class CanvasRight extends React.Component {
   renderRows = () => {
     let { renderedRows, renderedDates, rowsCount } = this.props;
     if (rowsCount === 0) {
-      return <div className="no-events d-flex align-items-center justify-content-center">{intl.get('There_are_no_records')}</div>
+      return <div className="no-events d-flex align-items-center justify-content-center">{intl.get('There_are_no_records')}</div>;
     }
     let bgRows = [], eventRows = [];
     Array.isArray(renderedRows) && renderedRows.forEach((r, index) => {
@@ -60,16 +60,16 @@ class CanvasRight extends React.Component {
   }
 
   renderEventCells = (eventRow, rowIndex) => {
-    let { overscanDates } = this.props;
+    let { overScanDates } = this.props;
     let { events } = eventRow;
-    let overscanStartDate = overscanDates[0];
-    let overscanEndDate = overscanDates[overscanDates.length - 1];
-    let displayEvents = this.getEventsInRange(events, overscanStartDate, overscanEndDate);
+    let overScanStartDate = overScanDates[0];
+    let overScanEndDate = overScanDates[overScanDates.length - 1];
+    let displayEvents = this.getEventsInRange(events, overScanStartDate, overScanEndDate);
     return displayEvents.map((e) => {
       let { label, bgColor, textColor, start, end, row } = e;
       if (!row) return null;
       let width = this.getEventWidth(start, end);
-      let left = this.getEventLeft(overscanStartDate, start);
+      let left = this.getEventLeft(overScanStartDate, start);
       let { _id: rowId } = row;
       let formatterLabel = null, formatterStyle = {};
       if (width < 30) {
@@ -155,19 +155,19 @@ class CanvasRight extends React.Component {
     return duration * columnWidth;
   }
 
-  getEventLeft = (overscanStartDate, startDate) => {
+  getEventLeft = (overScanStartDate, startDate) => {
     let { selectedGridView, columnWidth } = this.props;
     if (selectedGridView === GRID_VIEWS.YEAR) {
-      let formattedOverscanStartDate = moment(overscanStartDate).format(DATE_FORMAT.YEAR_MONTH);
+      let formattedOverScanStartDate = moment(overScanStartDate).format(DATE_FORMAT.YEAR_MONTH);
       let formattedStartDate = moment(startDate).format(DATE_FORMAT.YEAR_MONTH);
-      return moment(formattedStartDate).diff(formattedOverscanStartDate, DATE_UNIT.MONTH) * columnWidth;
+      return moment(formattedStartDate).diff(formattedOverScanStartDate, DATE_UNIT.MONTH) * columnWidth;
     } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
-      return moment(startDate).diff(overscanStartDate, DATE_UNIT.DAY) * columnWidth;
+      return moment(startDate).diff(overScanStartDate, DATE_UNIT.DAY) * columnWidth;
     }
   }
 
   renderTodayMarkLine = () => {
-    let { overscanDates, selectedGridView, columnWidth, renderedRows, rowsCount } = this.props;
+    let { overScanDates, selectedGridView, columnWidth, renderedRows, rowsCount } = this.props;
     let today = moment();
     if (rowsCount === 0) return null;
     if (selectedGridView === GRID_VIEWS.YEAR) {
@@ -177,7 +177,7 @@ class CanvasRight extends React.Component {
     } else {
       today = today.format(DATE_FORMAT.YEAR_MONTH_DAY);
     }
-    let todayIndex = overscanDates.indexOf(today);
+    let todayIndex = overScanDates.indexOf(today);
     if (todayIndex < 0) return null;
     let left = todayIndex * columnWidth + columnWidth / 2;
     let height = renderedRows.length * ROW_HEIGHT;
@@ -236,9 +236,9 @@ class CanvasRight extends React.Component {
   }
 
   render() {
-    let { headerHeight, columnWidth, startOffset, endOffset, overscanDates, topOffset, bottomOffset } = this.props;
+    let { headerHeight, columnWidth, startOffset, endOffset, overScanDates, topOffset, bottomOffset } = this.props;
     let canvasRightStyle = {
-      width: overscanDates.length * columnWidth + startOffset + endOffset,
+      width: overScanDates.length * columnWidth + startOffset + endOffset,
       height: `calc(100% - ${headerHeight + 18}px)`,
       paddingLeft: startOffset,
       paddingRight: endOffset,

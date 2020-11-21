@@ -12,6 +12,10 @@ const propTypes = {
 
 class ViewportLeft extends React.Component {
 
+  componentDidMount() {
+    this.viewportLeft.scrollTop = this.props.scrollTop;
+  }
+
   onViewportLeftScroll = (evt) => {
     if (!this.activeScroll) {
       this.activeScroll = true;

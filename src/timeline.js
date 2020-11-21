@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import TimelineSetting from './components/timeline-setting';
 import TimelineToolbar from './components/timeline-toolbar';
 import ViewportLeft from './components/timeline-body/viewport-left';
 import VIEWS from './components/timeline-grid-views';
@@ -8,21 +9,33 @@ import { dates, getDtableUuid } from './utils';
 import {
   getTimelineState,
   getVisibleBoundaries,
-  getRowOverscanStartIdx,
-  getRowOverscanEndIdx
+  getRowOverScanStartIdx,
+  getRowOverScanEndIdx
 } from './utils/timeline-utils';
-import { PLUGIN_NAME, NAVIGATE, GRID_VIEWS, zIndexs, DATE_FORMAT, ROW_HEIGHT } from './constants';
+import { PLUGIN_NAME, NAVIGATE, GRID_VIEWS, zIndexs, DATE_FORMAT, ROW_HEIGHT, DATE_UNIT } from './constants';
 
 import './css/timeline.css';
 
 const KEY_SELECTED_GRID_VIEWS = `${PLUGIN_NAME}-selectedGridViews`;
 
 const propTypes = {
+  tables: PropTypes.array,
+  views: PropTypes.array,
+  selectedTable: PropTypes.object,
   rows: PropTypes.array,
+  nameColumns: PropTypes.array,
+  singleSelectColumns: PropTypes.array,
+  dateColumns: PropTypes.array,
+  numberColumns: PropTypes.array,
   selectedTimelineView: PropTypes.object,
+  settings: PropTypes.object,
+  isShowTimelineSetting: PropTypes.bool,
+  eventBus: PropTypes.object,
   onTimelineSettingToggle: PropTypes.func,
   onViewportRightScroll: PropTypes.func,
   onRowExpand: PropTypes.func,
+  onModifyTimelineSettings: PropTypes.func,
+  onHideTimelineSetting: PropTypes.func,
 };
 
 class Timeline extends React.Component {
@@ -34,32 +47,48 @@ class Timeline extends React.Component {
       selectedGridView: this.getSelectedGridView(props.selectedTimelineView._id),
       selectedDate: dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY),
       changedSelectedByScroll: false,
+      canScrollToLeft: true,
+      canScrollToRight: true,
+      canNavigateToday: true,
+      ...this.getInitDateRange()
     };
+    this.headerHeight = 68;
   }
 
   componentDidMount() {
-    let { selectedGridView, rows } = this.props;
+    let { rows } = this.props;
     let timelineHeight = this.timeline.offsetHeight;
-    let headerHeight = this.getHeaderHeight(selectedGridView);
-    let viewportHeight = timelineHeight - headerHeight;
+    let viewportHeight = timelineHeight - this.headerHeight;
     this.setState({
       ...getTimelineState(viewportHeight, rows.length)
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.selectedTimelineView) {
-      if (this.props.selectedTimelineView !== nextProps.selectedTimelineView) {
-        let selectedGridView = this.getSelectedGridView(nextProps.selectedTimelineView._id);
-        this.setState({
-          selectedGridView,
-          selectedDate: dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY),
-          changedSelectedByScroll: false,
-        }, () => {
-          this.onResetViewportScroll();
-        });
+    if (nextProps.selectedTimelineView && this.props.selectedTimelineView !== nextProps.selectedTimelineView) {
+      let { gridStartDate, gridEndDate } = this.state;
+      let selectedGridView = this.getSelectedGridView(nextProps.selectedTimelineView._id);
+      const diffs = moment(gridEndDate).diff(gridStartDate, DATE_UNIT.YEAR);
+      let initDateRange = {};
+      if (selectedGridView === GRID_VIEWS.YEAR && diffs < 2) {
+        initDateRange = this.getInitDateRange();
       }
+      this.setState({
+        selectedGridView,
+        selectedDate: dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY),
+        changedSelectedByScroll: false,
+        ...initDateRange
+      }, () => {
+        this.onResetViewportScroll();
+      });
     }
+  }
+
+  getInitDateRange = () => {
+    return {
+      gridStartDate: moment().subtract(2, DATE_UNIT.YEAR).startOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY),
+      gridEndDate: moment().add(2, DATE_UNIT.YEAR).endOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY),
+    };
   }
 
   getSelectedGridViews = () => {
@@ -87,11 +116,23 @@ class Timeline extends React.Component {
     this.setState({isShowUsers: !this.state.isShowUsers});
   }
 
-  onSelectGridView = (gridView) => {
+  onSelectGridView = (selectedGridView) => {
+    let { selectedDate, gridStartDate, gridEndDate } = this.state;
+
+    // not less than 3 years under the view of year.
+    const diffs = moment(gridEndDate).diff(gridStartDate, DATE_UNIT.YEAR);
+    let initDateRange = {};
+    if (selectedGridView === GRID_VIEWS.YEAR && diffs < 2) {
+      initDateRange = this.getInitDateRange();
+      selectedDate = dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY);
+    }
+
     this.setState({
-      selectedGridView: gridView
+      selectedDate,
+      selectedGridView,
+      ...initDateRange
     }, () => {
-      this.storeSelectedGridViews(gridView);
+      this.storeSelectedGridViews(selectedGridView);
       this.onResetViewportScroll();
     });
   }
@@ -100,14 +141,28 @@ class Timeline extends React.Component {
     let { selectedDate, selectedGridView } = this.state;
     let todayDate = dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY);
     selectedDate = selectedDate || todayDate;
+    let calcDateUnit;
+    if (selectedGridView === GRID_VIEWS.YEAR) {
+      calcDateUnit = DATE_UNIT.YEAR;
+    } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
+      calcDateUnit = DATE_UNIT.MONTH;
+    }
     if (action === NAVIGATE.PREVIOUS) {
-      selectedDate = moment(selectedDate).subtract(1, selectedGridView).format(DATE_FORMAT.YEAR_MONTH_DAY);
-    } else if (action === NAVIGATE.NEXT) {
-      selectedDate = moment(selectedDate).add(1, selectedGridView).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      if (!this.state.canScrollToLeft) {
+        return;
+      }
+      selectedDate = moment(selectedDate).subtract(1, calcDateUnit).format(DATE_FORMAT.YEAR_MONTH_DAY);
+    } else if (action === NAVIGATE.NEXT && this.state.canScrollToRight) {
+      if (!this.state.canScrollToRight) {
+        return;
+      }
+      selectedDate = moment(selectedDate).add(1, calcDateUnit).format(DATE_FORMAT.YEAR_MONTH_DAY);
     } else if (action === NAVIGATE.TODAY) {
       selectedDate = todayDate;
     }
-    this.updateSelectedDate(selectedDate, false);
+    if (selectedDate !== this.state.selectedDate) {
+      this.updateSelectedDate(selectedDate, false);
+    }
   }
 
   updateSelectedDate = (selectedDate, changedSelectedByScroll) => {
@@ -146,18 +201,18 @@ class Timeline extends React.Component {
   }
 
   updateScroll = (scrollTop) => {
+    this.scrollTop = scrollTop;
     let { rows } = this.props;
-    let { selectedGridView } = this.state;
     let rowsCount = rows.length;
-    let viewportHeight = this.timeline.offsetHeight - this.getHeaderHeight(selectedGridView);
+    let viewportHeight = this.timeline.offsetHeight - this.headerHeight;
     let { rowVisibleStartIdx, rowVisibleEndIdx } = getVisibleBoundaries(viewportHeight, scrollTop, rowsCount);
-    let rowOverscanStartIdx = getRowOverscanStartIdx(rowVisibleStartIdx);
-    let rowOverscanEndIdx = getRowOverscanEndIdx(rowVisibleEndIdx, rowsCount);
+    let rowOverScanStartIdx = getRowOverScanStartIdx(rowVisibleStartIdx);
+    let rowOverScanEndIdx = getRowOverScanEndIdx(rowVisibleEndIdx, rowsCount);
     this.setState({
       rowVisibleStartIdx,
       rowVisibleEndIdx,
-      rowOverscanStartIdx,
-      rowOverscanEndIdx
+      rowOverScanStartIdx,
+      rowOverScanEndIdx
     });
   }
 
@@ -175,87 +230,137 @@ class Timeline extends React.Component {
     return views[selectedGridView];
   };
 
-  getHeaderHeight = (selectedGridView) => {
-    // header-years + header-days
-    if (selectedGridView === GRID_VIEWS.DAY) {
-      return 86;
-    }
-    return 68;
-  }
-
-  getRenderedRows = (rowOverscanStartIdx, rowOverscanEndIdx) => {
+  getRenderedRows = (rowOverScanStartIdx, rowOverScanEndIdx) => {
     let { rows } = this.props;
     let rowsLength = rows.length;
-    if (rowOverscanStartIdx >= rowsLength || rowOverscanEndIdx > rowsLength) {
+    if (rowOverScanStartIdx >= rowsLength || rowOverScanEndIdx > rowsLength) {
       return [];
     }
-    let i = rowOverscanStartIdx, renderRows = [];
-    while (i < rowOverscanEndIdx) {
+    let i = rowOverScanStartIdx, renderRows = [];
+    while (i < rowOverScanEndIdx) {
       renderRows.push(rows[i]);
       i++;
     }
     return renderRows;
   }
 
+  onViewportRightScroll = (viewportRightScrollLeft, viewportRightWidth, viewportRightScrollWidth) => {
+    const { canScrollToLeft, canScrollToRight } = this.state;
+    if (canScrollToLeft && viewportRightScrollLeft <= 0) {
+      this.setState({canScrollToLeft: false});
+    } else if (!canScrollToLeft && viewportRightScrollLeft > 0) {
+      this.setState({canScrollToLeft: true});
+    }
+    if (canScrollToRight && viewportRightScrollWidth - viewportRightWidth - viewportRightScrollLeft <= 0) {
+      this.setState({canScrollToRight: false});
+    } else if (!canScrollToRight && viewportRightScrollWidth - viewportRightWidth - viewportRightScrollLeft > 0) {
+      this.setState({canScrollToRight: true});
+    }
+
+    this.props.onViewportRightScroll();
+  }
+
+  updateDateRange = (gridStartDate, gridEndDate) => {
+    const { selectedGridView } = this.state;
+    const days = moment(gridEndDate).diff(gridStartDate, DATE_UNIT.DAY);
+    const middleDate = moment(gridStartDate).add(Math.floor(days / 2), DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
+    const today = dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY);
+    const canNavigateToday = dates.isDateInRange(today, gridStartDate, gridEndDate) &&
+      this.timelineView.viewportRight.canNavigateToday(selectedGridView, today, gridStartDate, gridEndDate);
+    this.setState({
+      gridStartDate,
+      gridEndDate,
+      canNavigateToday,
+      selectedDate: middleDate,
+    });
+  }
+
   render() {
-    let { isShowUsers, selectedGridView, selectedDate, changedSelectedByScroll, rowOverscanStartIdx, rowOverscanEndIdx } = this.state;
+    let { isShowUsers, selectedGridView, selectedDate, changedSelectedByScroll, rowOverScanStartIdx,
+      rowOverScanEndIdx, gridStartDate, gridEndDate, canNavigateToday } = this.state;
+    let { tables, views, selectedTable, nameColumns, singleSelectColumns, dateColumns, numberColumns,
+      isShowTimelineSetting, settings } = this.props;
     let GridView = this.getGridView(selectedGridView);
     let isToday = this.isToday();
     let rightPaneWrapperStyle = {
       marginLeft: isShowUsers && 180
     };
-    let headerHeight = this.getHeaderHeight(selectedGridView)
     let blankZoneStyle = {
-      height: headerHeight
+      height: this.headerHeight
     };
     let rowsCount = this.props.rows.length;
-    let renderedRows = this.getRenderedRows(rowOverscanStartIdx, rowOverscanEndIdx);
-    let topOffset = rowOverscanStartIdx > 0 ? rowOverscanStartIdx * ROW_HEIGHT : 0;
-    let bottomOffset = (rowsCount - rowOverscanEndIdx) > 0 ? (rowsCount - rowOverscanEndIdx) * ROW_HEIGHT : 0;
+    let renderedRows = this.getRenderedRows(rowOverScanStartIdx, rowOverScanEndIdx);
+    let topOffset = rowOverScanStartIdx > 0 ? rowOverScanStartIdx * ROW_HEIGHT : 0;
+    let bottomOffset = (rowsCount - rowOverScanEndIdx) > 0 ? (rowsCount - rowOverScanEndIdx) * ROW_HEIGHT : 0;
 
     return (
-      <div className="timeline-container position-relative" ref={ref => this.timeline = ref}>
-        {isShowUsers &&
-          <div className="left-pane-wrapper position-absolute" style={{zIndex: zIndexs.LEFT_PANE_WRAPPER}}>
-            <div className="blank-zone" style={blankZoneStyle}></div>
-            <ViewportLeft
-              ref={node => this.viewportLeft = node}
+      <Fragment>
+        <div className="timeline-container position-relative" ref={ref => this.timeline = ref}>
+          {isShowUsers &&
+            <div className="left-pane-wrapper position-absolute" style={{zIndex: zIndexs.LEFT_PANE_WRAPPER}}>
+              <div className="blank-zone" style={blankZoneStyle}></div>
+              <ViewportLeft
+                ref={node => this.viewportLeft = node}
+                scrollTop={this.scrollTop}
+                renderedRows={renderedRows}
+                topOffset={topOffset}
+                bottomOffset={bottomOffset}
+                headerHeight={this.headerHeight}
+                onViewportLeftScroll={this.onViewportLeftScroll}
+              />
+            </div>
+          }
+          <div className="right-pane-wrapper position-relative" style={rightPaneWrapperStyle}>
+            <TimelineToolbar
+              selectedGridView={selectedGridView}
+              selectedDate={selectedDate}
+              canNavigateToday={!isToday && canNavigateToday}
+              isShowUsers={isShowUsers}
+              eventBus={this.props.eventBus}
+              onShowUsersToggle={this.onShowUsersToggle}
+              onNavigate={this.onNavigate}
+              onTimelineSettingToggle={this.props.onTimelineSettingToggle}
+              onSelectGridView={this.onSelectGridView}
+            />
+            <GridView
+              ref={node => this.timelineView = node}
+              isShowUsers={isShowUsers}
+              changedSelectedByScroll={changedSelectedByScroll}
+              selectedGridView={selectedGridView}
+              selectedDate={selectedDate}
+              gridStartDate={gridStartDate}
+              gridEndDate={gridEndDate}
+              headerHeight={this.headerHeight}
               renderedRows={renderedRows}
               topOffset={topOffset}
               bottomOffset={bottomOffset}
-              headerHeight={headerHeight}
-              onViewportLeftScroll={this.onViewportLeftScroll}
+              eventBus={this.props.eventBus}
+              updateSelectedDate={this.updateSelectedDate}
+              onCanvasRightScroll={this.onCanvasRightScroll}
+              onViewportRightScroll={this.onViewportRightScroll}
+              onRowExpand={this.props.onRowExpand}
             />
           </div>
-        }
-        <div className="right-pane-wrapper position-relative" style={rightPaneWrapperStyle}>
-          <TimelineToolbar
-            selectedGridView={selectedGridView}
-            isToday={isToday}
-            selectedDate={selectedDate}
-            isShowUsers={isShowUsers}
-            onShowUsersToggle={this.onShowUsersToggle}
-            onNavigate={this.onNavigate}
-            onTimelineSettingToggle={this.props.onTimelineSettingToggle}
-            onSelectGridView={this.onSelectGridView}
-          />
-          <GridView
-            ref={node => this.timelineView = node}
-            isShowUsers={isShowUsers}
-            changedSelectedByScroll={changedSelectedByScroll}
-            selectedGridView={selectedGridView}
-            selectedDate={selectedDate}
-            headerHeight={headerHeight}
-            renderedRows={renderedRows}
-            topOffset={topOffset}
-            bottomOffset={bottomOffset}
-            updateSelectedDate={this.updateSelectedDate}
-            onCanvasRightScroll={this.onCanvasRightScroll}
-            onViewportRightScroll={this.props.onViewportRightScroll}
-            onRowExpand={this.props.onRowExpand}
-          />
         </div>
-      </div>
+        {isShowTimelineSetting &&
+          <TimelineSetting
+            tables={tables}
+            views={views}
+            selectedTable={selectedTable}
+            nameColumns={nameColumns}
+            singleSelectColumns={singleSelectColumns}
+            dateColumns={dateColumns}
+            numberColumns={numberColumns}
+            selectedGridView={selectedGridView}
+            settings={settings || {}}
+            gridStartDate={gridStartDate}
+            gridEndDate={gridEndDate}
+            onModifyTimelineSettings={this.props.onModifyTimelineSettings}
+            onHideTimelineSetting={this.props.onHideTimelineSetting}
+            updateDateRange={this.updateDateRange}
+          />
+        }
+      </Fragment>
     );
   }
 }

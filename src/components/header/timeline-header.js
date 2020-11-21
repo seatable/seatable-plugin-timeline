@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const propTypes = {
   headerHeight: PropTypes.number,
   renderedRows: PropTypes.array,
-  overscanDates: PropTypes.array,
+  overScanDates: PropTypes.array,
   renderedDates: PropTypes.array,
   columnWidth: PropTypes.number,
   startOffset: PropTypes.number,
@@ -15,17 +15,17 @@ const propTypes = {
 class TimelineHeader extends React.Component {
 
   render() {
-    let { overscanDates, renderedDates, headerHeight, renderedRows, columnWidth, startOffset, endOffset, renderHeaderYears, renderHeaderDates } = this.props;
+    let { overScanDates, renderedDates, headerHeight, renderedRows, columnWidth, startOffset, endOffset, renderHeaderYears, renderHeaderDates } = this.props;
     let headerStyle = {
-      width: overscanDates.length * columnWidth + startOffset + endOffset,
+      width: overScanDates.length * columnWidth + startOffset + endOffset,
       height: headerHeight,
       paddingLeft: startOffset,
       paddingRight: endOffset
     };
     return (
       <div className="timeline-header" style={headerStyle}>
-        {renderHeaderYears({overscanDates, renderedDates, columnWidth})}
-        {renderHeaderDates({overscanDates, renderedDates, renderedRows, columnWidth, startOffset, endOffset})}
+        {renderHeaderYears({overScanDates, renderedDates, columnWidth})}
+        {renderHeaderDates({overScanDates, renderedDates, renderedRows, columnWidth, startOffset, endOffset})}
       </div>
     );
   }

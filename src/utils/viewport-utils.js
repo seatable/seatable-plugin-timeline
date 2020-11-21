@@ -1,46 +1,47 @@
 import moment from 'moment';
 import * as dates from './dates';
 import { DATE_UNIT, DATE_FORMAT, GRID_VIEWS } from '../constants';
+import { GENERAL_COLUMN_WIDTH, MONTH_COLUMN_WIDTH } from '../constants/column';
 
-const GENERAL_COLUMN_WIDTH = 40;
-const MONTH_COLUMN_WIDTH = 10;
-
-export const getGridState = (selectedGridView, selectedDate, viewportRightWidth) => {
+export const getGridInitState = (selectedGridView, selectedDate, gridStartDate, gridEndDate, viewportRightWidth) => {
+  let m_gridStartDate = moment(gridStartDate);
+  let m_gridEndDate = moment(gridEndDate);
   let columnWidth = getColumnWidth(selectedGridView);
+  let overScanDates = getScanDates(selectedGridView);
   let visibleDatesCount = Math.ceil(viewportRightWidth / columnWidth);
-  let { overscanDates, gridDates } = getScanDates(selectedGridView);
   let visibleStartDate, unit;
   switch (selectedGridView) {
     case GRID_VIEWS.YEAR: {
       unit = DATE_UNIT.MONTH;
-      visibleStartDate= moment(selectedDate).startOf(DATE_UNIT.YEAR).add(-1, DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      m_gridStartDate = m_gridStartDate.subtract(1, DATE_UNIT.MONTH);
+      visibleStartDate= moment(selectedDate).startOf(DATE_UNIT.YEAR).subtract(1, DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY);
       break;
     }
     case GRID_VIEWS.MONTH: {
       unit = DATE_UNIT.DAY;
-      visibleStartDate= moment(selectedDate).startOf(DATE_UNIT.MONTH).add(-4, DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      m_gridStartDate = m_gridStartDate.subtract(4, DATE_UNIT.DAY);
+      visibleStartDate= moment(selectedDate).startOf(DATE_UNIT.MONTH).subtract(4, DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
       break;
     }
     default: {
       // default view: Day.
       unit = DATE_UNIT.DAY;
-      visibleStartDate = moment(selectedDate).add(-(Math.ceil(visibleDatesCount / 3 + 1)), DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      m_gridStartDate = m_gridStartDate.subtract(1, DATE_UNIT.DAY);
+      visibleStartDate = moment(selectedDate).subtract(Math.ceil(visibleDatesCount / 3 + 1), DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
       break;
     }
   }
-  let { gridStartDate, gridEndDate, visibleEndDate, overscanStartDate, overscanEndDate } = getGridDatesBoundaries(visibleStartDate, visibleDatesCount, overscanDates, gridDates, unit);
-  let amountDates = dates.getDatesInRange(gridStartDate, gridEndDate, unit);
-  return {gridStartDate, gridEndDate, visibleStartDate, visibleEndDate, overscanStartDate, overscanEndDate, amountDates};
-}
+  const allDates = dates.getDatesInRange(m_gridStartDate, m_gridEndDate, unit);
+  const { visibleEndDate, overScanStartDate, overScanEndDate } = getGridDatesBoundaries(visibleStartDate, visibleDatesCount, overScanDates, unit);
+  return {visibleStartDate, visibleEndDate, overScanStartDate, overScanEndDate, allDates};
+};
 
-export const getGridDatesBoundaries = (visibleStartDate, visibleDatesCount, overscanDates, gridDates, unit) => {
-  let overscanStartDate = moment(visibleStartDate).add(-overscanDates, unit).format(DATE_FORMAT.YEAR_MONTH_DAY);
-  let gridStartDate = moment(visibleStartDate).add(-gridDates, unit);
+export const getGridDatesBoundaries = (visibleStartDate, visibleDatesCount, overScanDates, unit) => {
+  let overScanStartDate = moment(visibleStartDate).add(-overScanDates, unit).format(DATE_FORMAT.YEAR_MONTH_DAY);
   let visibleEndDate = moment(visibleStartDate).add(visibleDatesCount, unit).format(DATE_FORMAT.YEAR_MONTH_DAY);
-  let overscanEndDate = moment(visibleEndDate).add(overscanDates, unit).format(DATE_FORMAT.YEAR_MONTH_DAY);
-  let gridEndDate = moment(visibleEndDate).add(gridDates, unit);
-  return {gridStartDate, gridEndDate, visibleEndDate, overscanStartDate, overscanEndDate};
-}
+  let overScanEndDate = moment(visibleEndDate).add(overScanDates, unit).format(DATE_FORMAT.YEAR_MONTH_DAY);
+  return {visibleEndDate, overScanStartDate, overScanEndDate};
+};
 
 export const getCompareDate = (selectedGridView, visibleStartDate, visibleDatesCount) => {
   switch (selectedGridView) {
@@ -55,33 +56,32 @@ export const getCompareDate = (selectedGridView, visibleStartDate, visibleDatesC
       return moment(visibleStartDate).add(Math.ceil(visibleDatesCount / 3), DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
     }
   }
-}
+};
 
-export const isDifferentScope = (dateA, dateB, selectedGridView) => {
+export const canUpdateSelectedDate = (dateA, dateB, selectedGridView) => {
   let formattedDateA = moment(dateA);
   let formattedDateB = moment(dateB);
   let yearOfDateA = formattedDateA.year();
   let yearOfDateB = formattedDateB.year();
   if (selectedGridView === GRID_VIEWS.YEAR) {
-    return (yearOfDateA !== yearOfDateB);
+    return yearOfDateA !== yearOfDateB;
   } else {
     let monthOfDateA = formattedDateA.month();
     let monthOfDateB = formattedDateB.month();
-    return (yearOfDateA !== yearOfDateB) ||
-      (monthOfDateA !== monthOfDateB);
+    return yearOfDateA !== yearOfDateB || monthOfDateA !== monthOfDateB;
   }
-}
+};
 
 export const getScanDates = (selectedGridView) => {
   switch (selectedGridView) {
     case GRID_VIEWS.MONTH: {
-      return {overscanDates: 40, gridDates: 240};
+      return 40;
     }
     default: {
-      return {overscanDates: 10, gridDates: 80};
+      return 10;
     }
   }
-}
+};
 
 export const getCalcDateUnit = (selectedGridView) => {
   switch (selectedGridView) {
@@ -92,7 +92,7 @@ export const getCalcDateUnit = (selectedGridView) => {
       return DATE_UNIT.DAY;
     }
   }
-}
+};
 
 export const getColumnWidth = (selectedGridView) => {
   switch (selectedGridView) {
@@ -103,14 +103,14 @@ export const getColumnWidth = (selectedGridView) => {
       return GENERAL_COLUMN_WIDTH;
     }
   }
-}
+};
 
-export const getRenderedDates = (selectedGridView, overscanDates) => {
+export const getRenderedDates = (selectedGridView, overScanDates) => {
   if (selectedGridView === GRID_VIEWS.YEAR) {
-    return dates.getUniqueDates(overscanDates, DATE_UNIT.YEAR, DATE_FORMAT.YEAR);
+    return dates.getUniqueDates(overScanDates, DATE_UNIT.YEAR, DATE_FORMAT.YEAR);
   } else if (selectedGridView === GRID_VIEWS.MONTH) {
-    return dates.getUniqueDates(overscanDates, DATE_UNIT.MONTH, DATE_FORMAT.YEAR_MONTH_DAY);
+    return dates.getUniqueDates(overScanDates, DATE_UNIT.MONTH, DATE_FORMAT.YEAR_MONTH_DAY);
   } else if (selectedGridView === GRID_VIEWS.DAY) {
-    return overscanDates;
+    return overScanDates;
   }
-}
+};

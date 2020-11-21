@@ -1,15 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import { NAVIGATE, GRID_VIEWS, zIndexs } from '../constants';
+import { NAVIGATE, GRID_VIEWS, zIndexs, DATE_UNIT, DATE_FORMAT } from '../constants';
+import * as EventTypes from '../constants/event-types';
+
 import intl from 'react-intl-universal';
-import '../locale';
 
 const propTypes = {
   selectedGridView: PropTypes.string,
   selectedDate: PropTypes.string,
   isShowUsers: PropTypes.bool,
-  isToday: PropTypes.bool,
+  eventBus: PropTypes.object,
+  canNavigateToday: PropTypes.bool,
   onShowUsersToggle: PropTypes.func,
   onNavigate: PropTypes.func,
   onTimelineSettingToggle: PropTypes.func,
@@ -21,12 +24,18 @@ class TimelineToolbar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isSelectViewDropdownOpen: false
+      isSelectViewDropdownOpen: false,
+      currentDate: moment(props.selectedDate).format(DATE_FORMAT.YEAR_MONTH),
     };
+    this.viewportRightScrollLeft = 0;
   }
 
-  onSelectViewToggle = () => {
-    this.setState({isSelectViewDropdownOpen: !this.state.isSelectViewDropdownOpen});
+  componentDidMount() {
+    this.unsubscribeGridHorizontalScroll = this.props.eventBus.subscribe(EventTypes.VIEWPORT_RIGHT_SCROLL, this.viewportRightScroll);
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeGridHorizontalScroll();
   }
 
   getDisplaySelectedGridView = () => {
@@ -44,15 +53,55 @@ class TimelineToolbar extends React.Component {
     }
   }
 
+  renderCurrentDate = () => {
+    const { selectedGridView } = this.props;
+    if (selectedGridView === GRID_VIEWS.DAY) {
+      const { currentDate } = this.state;
+      return (
+        <div className="current-date d-flex align-items-center">
+          <span className="year">{moment(currentDate).format(DATE_FORMAT.YEAR)}</span>
+          -
+          <span className="month" ref={ref => this.currentDateOfMonth = ref}>{moment(currentDate).format(DATE_FORMAT.MONTH)}</span>
+        </div>
+      );
+    }
+    return null;
+  }
+
+  onSelectViewToggle = () => {
+    this.setState({isSelectViewDropdownOpen: !this.state.isSelectViewDropdownOpen});
+  }
+
+  viewportRightScroll = ({visibleStartDate, scrollLeft}) => {
+    const { selectedGridView } = this.props;
+    const { currentDate } = this.state;
+    if (selectedGridView === GRID_VIEWS.DAY) {
+      let newDate;
+      if (scrollLeft - this.viewportRightScrollLeft > 0) {
+        // scroll ro right.
+        newDate = moment(visibleStartDate).add(2, DATE_UNIT.DAY);
+      } else if (scrollLeft - this.viewportRightScrollLeft <= 0) {
+        // scroll to left.
+        newDate = moment(visibleStartDate).add(1, DATE_UNIT.DAY);
+      }
+      const formattedNewDate = newDate.format(DATE_FORMAT.YEAR_MONTH);
+      if (formattedNewDate === currentDate) {
+        return;
+      }
+      this.setState({currentDate: formattedNewDate});
+    }
+  }
+
   render() {
-    let { onShowUsersToggle, isShowUsers, isToday, onNavigate, onTimelineSettingToggle } = this.props;
+    let { onShowUsersToggle, isShowUsers, canNavigateToday, onNavigate, onTimelineSettingToggle } = this.props;
     let displaySelectedGridView = this.getDisplaySelectedGridView();
     return (
       <div className="timeline-toolbar d-flex align-items-center justify-content-between">
-        <div className="toolbar-left d-flex justify-content-center position-absolute" style={{width: 40, zIndex: zIndexs.TOOLBAR}}>
+        <div className="toolbar-left d-flex justify-content-center position-absolute" style={{zIndex: zIndexs.TOOLBAR}}>
           <div className="toggle-drawer-btn" onClick={onShowUsersToggle}>
-            <i className={`dtable-font ${isShowUsers ? `dtable-icon-retract-com` : `dtable-icon-open-com`}`}></i>
+            <i className={`dtable-font ${isShowUsers ? 'dtable-icon-retract-com' : 'dtable-icon-open-com'}`}></i>
           </div>
+          {this.renderCurrentDate()}
         </div>
         <div className="toolbar-right d-flex align-items-center position-absolute" style={{zIndex: zIndexs.TOOLBAR}}>
           <div className="btn-select-view">
@@ -77,8 +126,8 @@ class TimelineToolbar extends React.Component {
             </span>
           </div>
           <div
-            className={`btn-today ${isToday && `btn-today-disabled`}`}
-            onClick={!isToday ? onNavigate.bind(this, NAVIGATE.TODAY) : undefined}
+            className={`btn-today ${!canNavigateToday && 'btn-today-disabled'}`}
+            onClick={canNavigateToday ? onNavigate.bind(this, NAVIGATE.TODAY) : undefined}
           >{intl.get('Today')}</div>
           <div className="btn-setting" id="btn_setting" onClick={onTimelineSettingToggle}>
             <i className="dtable-font dtable-icon-settings"></i>

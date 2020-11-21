@@ -60,7 +60,9 @@ class TimelineViewsTabs extends React.Component {
   }
 
   onHideViewDropdown = () => {
-    this.setState({isShowViewDropdown: false});
+    if (this.state.isShowViewDropdown) {
+      this.setState({isShowViewDropdown: false});
+    }
   }
 
   setViewItem = idx => viewItem => {
@@ -144,7 +146,7 @@ class TimelineViewsTabs extends React.Component {
                                     <i className="item-icon dtable-font dtable-icon-rename"></i>
                                     <span className="item-text">{intl.get('Rename_View')}</span>
                                   </button>
-                                  {i > 0 &&
+                                  {views.length > 1 &&
                                     <button className="dropdown-item" onClick={this.props.onDeleteView.bind(this, _id)}>
                                       <i className="item-icon dtable-font dtable-icon-delete"></i>
                                       <span className="item-text">{intl.get('Delete_View')}</span>

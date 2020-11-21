@@ -85,3 +85,43 @@
   color: rgb(229, 161, 82);
   background-color: rgba(229, 161, 82, .1);
 }
+
+.plugin-timeline-setting .btn-date-range {
+  width: 100%;
+  border: 1px solid hsl(0,0%,80%);;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.plugin-timeline-setting .btn-date-range>span {
+  display: inline-block;
+  width: 100%;
+  height: 36px;
+}
+
+.plugin-timeline-setting .btn-date-range .ant-calendar-picker-input {
+  width: 100%;
+  height: 100%;
+  padding: 0 8px;
+  border: none;
+}
+
+.timeline-setting-range-calendar .rc-calendar-year-panel-selected-cell {
+  color: #fff;
+}
+
+.timeline-setting-range-calendar .rc-calendar-year-panel-selected-cell .rc-calendar-year-panel-year {
+  background-color: #3b88fd;
+}
+
+.timeline-setting-range-calendar .rc-calendar-year-panel-selected-cell .rc-calendar-year-panel-year:hover {
+  background-color: #3b88fd;
+}
+
+.timeline-setting-range-calendar .rc-calendar-year-panel-year:hover {
+  background-color: rgba(59, 136, 253, .1);
+}
+
+.timeline-setting-range-calendar .rc-calendar-range-middle {
+  margin-left: -6px;
+}

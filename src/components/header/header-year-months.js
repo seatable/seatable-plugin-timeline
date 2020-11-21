@@ -8,7 +8,7 @@ import intl from 'react-intl-universal';
 import '../../locale';
 
 const propTypes = {
-  overscanDates: PropTypes.array,
+  overScanDates: PropTypes.array,
   renderedRows: PropTypes.array,
   columnWidth: PropTypes.number,
 };
@@ -16,15 +16,15 @@ const propTypes = {
 class HeaderYearMonths extends React.Component {
 
   render() {
-    let { overscanDates, renderedRows, columnWidth } = this.props;
-    let todayIndex = overscanDates.indexOf(moment().startOf(DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY));
+    let { overScanDates, renderedRows, columnWidth } = this.props;
+    let todayIndex = overScanDates.indexOf(moment().startOf(DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY));
     let todayMarkStyle = {
       left: todayIndex * columnWidth + (columnWidth - 6) / 2,
       top: 23
     };
     return (
       <div className="header-year-months position-relative d-inline-flex align-items-end">
-        {overscanDates.map((d) => {
+        {overScanDates.map((d) => {
           let displayDate = intl.get(dates.getDate2Month(d));
           return (
             <div className="date-item d-flex flex-column" name={d} key={`date-item-${d}`}>

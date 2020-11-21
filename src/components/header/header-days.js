@@ -6,7 +6,7 @@ import { dates } from '../../utils';
 import { DATE_UNIT, DATE_FORMAT } from '../../constants';
 
 const propTypes = {
-  overscanDates: PropTypes.array,
+  overScanDates: PropTypes.array,
   renderedRows: PropTypes.array,
   columnWidth: PropTypes.number,
 };
@@ -14,20 +14,17 @@ const propTypes = {
 class HeaderDays extends React.Component {
 
   render() {
-    let { overscanDates, renderedRows, columnWidth } = this.props;
-    let todayIndex = overscanDates.indexOf(moment().format(DATE_FORMAT.YEAR_MONTH_DAY));
+    let { overScanDates, renderedRows, columnWidth } = this.props;
+    let todayIndex = overScanDates.indexOf(moment().format(DATE_FORMAT.YEAR_MONTH_DAY));
     let todayMarkStyle = {
       left: todayIndex * columnWidth + (columnWidth - 6) / 2,
-      top: 41
     };
     return (
       <div className="header-days position-relative d-inline-flex">
-        {overscanDates.map((d) => {
-          let week = dates.getDate2Week(d);
+        {overScanDates.map((d) => {
           let day = dates.getDateWithUnit(d, DATE_UNIT.DAY);
           return (
             <div className="date-item d-flex flex-column" name={d} key={`date-item-${d}`}>
-              <span key={`week-${d}`} className="week d-flex align-items-center justify-content-center">{week}</span>
               <span key={`day-${d}`} className="day d-flex align-items-center justify-content-center">{day}</span>
             </div>
           );

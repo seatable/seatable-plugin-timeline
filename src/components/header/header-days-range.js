@@ -8,7 +8,7 @@ import intl from 'react-intl-universal';
 import '../../locale';
 
 const propTypes = {
-  overscanDates: PropTypes.array,
+  overScanDates: PropTypes.array,
   renderedDates: PropTypes.array,
   renderedRows: PropTypes.array,
   columnWidth: PropTypes.number,
@@ -17,8 +17,8 @@ const propTypes = {
 class HeaderDaysRange extends React.Component {
 
   render() {
-    let { overscanDates, renderedDates, renderedRows, columnWidth } = this.props;
-    let todayIndex = overscanDates.indexOf(moment().format(DATE_FORMAT.YEAR_MONTH_DAY));
+    let { overScanDates, renderedDates, renderedRows, columnWidth } = this.props;
+    let todayIndex = overScanDates.indexOf(moment().format(DATE_FORMAT.YEAR_MONTH_DAY));
     let todayMarkStyle = {
       left: todayIndex * columnWidth + (columnWidth - 6) / 2,
       top: 23
