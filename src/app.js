@@ -268,17 +268,16 @@ class App extends React.Component {
       if (Object.prototype.toString.call(name) === '[object Number]') {
         name += '';
       }
-      if (name) {
-        if (nameColumnType === cellType.TEXT) {
-          this.updateRows(groupedRows, name, row, label, bgColor, textColor, start, end, minDate, maxDate);
-        } else if (nameColumnType === cellType.COLLABORATOR) {
-          name.forEach((item) => {
-            let collaborator = collaborators.find(c => c.email === item);
-            if (collaborator) {
-              this.updateRows(groupedRows, collaborator.name, row, label, bgColor, textColor, start, end, minDate, maxDate);
-            }
-          });
-        }
+      name = name || `(${intl.get('Empty')})`;
+      if (nameColumnType === cellType.TEXT) {
+        this.updateRows(groupedRows, name, row, label, bgColor, textColor, start, end, minDate, maxDate);
+      } else if (nameColumnType === cellType.COLLABORATOR) {
+        name.forEach((item) => {
+          let collaborator = collaborators.find(c => c.email === item);
+          if (collaborator) {
+            this.updateRows(groupedRows, collaborator.name, row, label, bgColor, textColor, start, end, minDate, maxDate);
+          }
+        });
       }
     });
     return groupedRows;
