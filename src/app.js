@@ -7,13 +7,12 @@ import DTable from 'dtable-sdk';
 import TimelineViewsTabs from './components/timeline-views-tabs';
 import Timeline from './timeline';
 import View from './model/view';
+import Group from './model/group';
 import TimelineRow from './model/timeline-row';
 import Event from './model/event';
 import { PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR, DEFAULT_TEXT_COLOR, RECORD_END_TYPE, DATE_UNIT } from './constants';
 import { generatorViewId, getDtableUuid } from './utils';
 import EventBus from './utils/event-bus';
-import TimelinePopover from './components/timeline-popover';
-import RowExpand from './components/row-expand';
 
 import './locale';
 import timelineLogo from './assets/image/timeline.png';
@@ -183,28 +182,72 @@ class App extends React.Component {
     return collaborators; // local develop
   }
 
-  getRows = (tableName, viewName, cellType, collaborators, settings = {}) => {
-    let table = this.dtable.getTableByName(tableName);
+  getConvertedRows = (tableName, viewName) => {
     let rows = [];
-    let {
-      name_column_name,
-      single_select_column_name,
-      start_time_column_name,
-      end_time_column_name,
-      record_duration_column_name,
-      record_end_type,
-    } = settings;
-    if (!name_column_name ||
-        !start_time_column_name ||
-        (!end_time_column_name && !record_duration_column_name)) {
-      return [];
-    }
+    this.Id2ConvertedRowMap = {};
+    this.dtable.forEachRow(tableName, viewName, (row) => {
+      this.Id2ConvertedRowMap[row._id] = row;
+      rows.push(row);
+    });
+    return rows;
+  }
+
+  getRows = (originRows, table, cellType, collaborators, settings = {}) => {
+    let { name_column_name, single_select_column_name } = settings;
     let nameColumn = this.dtable.getColumnByName(table, name_column_name);
     let singleSelectColumn = this.dtable.getColumnByName(table, single_select_column_name);
     let { data: singleSelectColumnData } = singleSelectColumn || {};
     let options = singleSelectColumnData ? singleSelectColumn.data.options : [];
     let { type: nameColumnType } = nameColumn || {};
-    this.dtable.forEachRow(tableName, viewName, (row) => {
+    return this.getGroupedRows(originRows, nameColumnType, settings, options, cellType, collaborators);
+  }
+
+  getGroups = (convertedGroups, originRows, table, cellType, collaborators, settings = {}) => {
+    if (!Array.isArray(convertedGroups) || convertedGroups.length === 0 ||
+    !Array.isArray(originRows) || originRows.length === 0) return [];
+    let { name_column_name, single_select_column_name } = settings;
+    let nameColumn = this.dtable.getColumnByName(table, name_column_name);
+    let singleSelectColumn = this.dtable.getColumnByName(table, single_select_column_name);
+    let { data: singleSelectColumnData } = singleSelectColumn || {};
+    let options = singleSelectColumnData ? singleSelectColumn.data.options : [];
+    let { type: nameColumnType } = nameColumn || {};
+    let groups = [];
+    convertedGroups.forEach((group) => {
+      let { cell_value, column_name, column_key, rows } = group;
+      let convertedRows = rows.map((r) => this.Id2ConvertedRowMap[r._id]);
+      cell_value = cell_value || cell_value === 0  ? cell_value : `(${intl.get('Empty')})`;
+      let groupedRows = this.getGroupedRows(convertedRows, nameColumnType, settings, options, cellType, collaborators);
+      let {minDate, maxDate} = this.getGroupBoundaryDates(groupedRows);
+      groups.push(new Group({
+        cell_value,
+        column_name,
+        column_key,
+        isExpanded: true,
+        subgroups: null,
+        min_date: minDate,
+        max_date: maxDate,
+        rows: groupedRows
+      }));
+    });
+    return groups;
+  }
+
+  getGroupBoundaryDates = (groupedRows) => {
+    let minDate, maxDate;
+    groupedRows.forEach((row) => {
+      let { min_date, max_date } = row;
+      minDate = !minDate || moment(min_date).isBefore(minDate) ? min_date : minDate;
+      maxDate = !maxDate || moment(max_date).isAfter(maxDate) ? max_date : maxDate;
+    });
+    return {minDate, maxDate};
+  }
+
+  getGroupedRows = (rows, nameColumnType, settings, options, cellType, collaborators) => {
+    let { name_column_name, single_select_column_name, start_time_column_name,
+      end_time_column_name, record_duration_column_name, record_end_type,
+    } = settings;
+    let minDate, maxDate, groupedRows = [];
+    rows.forEach((row) => {
       let name = row[name_column_name];
       let label = row[single_select_column_name];
       let option = options.find(item => item.name === label) || {};
@@ -220,26 +263,28 @@ class App extends React.Component {
       } else {
         end = row[end_time_column_name];
       }
+      minDate = !minDate || moment(start).isBefore(minDate) ? start : minDate;
+      maxDate = !maxDate || moment(end).isAfter(maxDate) ? end : maxDate;
       if (Object.prototype.toString.call(name) === '[object Number]') {
         name += '';
       }
       if (name) {
         if (nameColumnType === cellType.TEXT) {
-          this.updateRows(rows, name, row, label, bgColor, textColor, start, end);
+          this.updateRows(groupedRows, name, row, label, bgColor, textColor, start, end, minDate, maxDate);
         } else if (nameColumnType === cellType.COLLABORATOR) {
           name.forEach((item) => {
             let collaborator = collaborators.find(c => c.email === item);
             if (collaborator) {
-              this.updateRows(rows, collaborator.name, row, label, bgColor, textColor, start, end);
+              this.updateRows(groupedRows, collaborator.name, row, label, bgColor, textColor, start, end, minDate, maxDate);
             }
           });
         }
       }
     });
-    return rows;
+    return groupedRows;
   }
 
-  updateRows = (rows, name, row, label, bgColor, textColor, start, end) => {
+  updateRows = (rows, name, row, label, bgColor, textColor, start, end, minDate, maxDate) => {
     let formattedName = name ? (name + '').trim() : '';
     let index = rows.findIndex(r => r.name === formattedName);
     let event = new Event({row, label, bgColor, textColor, start, end});
@@ -248,6 +293,8 @@ class App extends React.Component {
     } else {
       rows.push(new TimelineRow({
         name: formattedName,
+        min_date: minDate,
+        max_date: maxDate,
         events: [event]
       }));
     }
@@ -335,54 +382,53 @@ class App extends React.Component {
     return settings && Object.keys(settings).length > 0;
   }
 
-  onRowExpand = (evt, row, target) => {
-    if (this.state.isShowRowExpand) return;
-    let viewportRightDom = document.querySelector('.timeline-viewport-right');
-    let { left: viewportRightLeft, width: viewportRightWidth } = viewportRightDom.getBoundingClientRect();
-    let { left: eventCellLeft, width: eventCellWidth } = evt.target.getBoundingClientRect();
-    let rowExpandOffsetLeft = 0;
-    if (Math.abs(eventCellLeft - viewportRightLeft) + eventCellWidth > viewportRightWidth) {
-      rowExpandOffsetLeft = -((eventCellLeft + eventCellWidth / 2) - evt.clientX);
-    }
-    this.setState({
-      isShowRowExpand: true,
-      rowExpandTarget: target,
-      expandedRow: row,
-      rowExpandOffsetLeft
+  isValidSettings = (settings) => {
+    let { name_column_name, start_time_column_name, end_time_column_name,
+      record_duration_column_name } = settings;
+    return name_column_name && start_time_column_name &&
+      (end_time_column_name || record_duration_column_name);
+  }
+
+  getName2ColumnMap = (columns) => {
+    let name_column_map = {};
+    columns.forEach((column) => {
+      name_column_map[column.name] = column;
     });
+    return name_column_map;
   }
 
-  onRowExpandToggle = () => {
-    this.setState({isShowRowExpand: !this.state.isShowRowExpand});
+  getColumnIconConfig = () => {
+    return this.dtable.getColumnIconConfig();
   }
 
-  onViewportRightScroll = () => {
-    this.onResetRowExpand();
-  }
-
-  onResetRowExpand = () => {
-    let { isShowRowExpand, rowExpandTarget } = this.state;
-    if (isShowRowExpand && rowExpandTarget) {
-      let rowExpandTargetDom = document.querySelector(`#${rowExpandTarget}`);
-      if (rowExpandTargetDom) {
-        let viewportRightDom = document.querySelector('.timeline-viewport-right');
-        let { left: viewportRightLeft, width: viewportRightWidth } = viewportRightDom.getBoundingClientRect();
-        let { left: rowExpandTargetLeft, width: rowExpandTargetWidth } = rowExpandTargetDom.getBoundingClientRect();
-        let popoverOffsetLeft = rowExpandTargetLeft - viewportRightLeft;
-        if (popoverOffsetLeft >= viewportRightWidth || popoverOffsetLeft <= -rowExpandTargetWidth) {
-          this.setState({
-            isShowRowExpand: false,
-            rowExpandTarget: '',
-            expandedRow: {}
-          });
-        }
-      }
+  getMediaUrl = () => {
+    if (window.dtable) {
+      return window.dtable.mediaUrl;
     }
+    return window.dtablePluginConfig.mediaUrl;
+  }
+
+  getUserCommonInfo = (email, avatar_size) => {
+    if (window.dtableWebAPI) {
+      return window.dtableWebAPI.getUserCommonInfo(email, avatar_size);
+    }
+    return Promise.reject();
+  }
+
+  getLinkCellValue = (linkId, table1Id, table2Id, rowId) => {
+    return this.dtable.getLinkCellValue(linkId, table1Id, table2Id, rowId);
+  }
+
+  getRowsByID = (tableId, rowIds) => {
+    return this.dtable.getRowsByID(tableId, rowIds);
+  }
+
+  getTableById = (table_id) => {
+    return this.dtable.getTableById(table_id);
   }
 
   render() {
-    let { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx, isShowRowExpand,
-      rowExpandTarget, expandedRow, rowExpandOffsetLeft} = this.state;
+    let { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx } = this.state;
     if (isLoading || !showDialog) {
       return '';
     }
@@ -392,9 +438,12 @@ class App extends React.Component {
     let tables = this.dtable.getTables();
     let selectedTable = this.getSelectedTable(tables, settings);
     let { name: tableName } = selectedTable || {};
+    let columns = this.dtable.getColumns(selectedTable);
+    let name_column_map = this.getName2ColumnMap(columns);
     let views = this.dtable.getViews(selectedTable);
     let selectedView = this.getSelectedView(selectedTable, settings) || views[0];
     let { name: viewName } = selectedView;
+    let isGroupView = this.dtable.isGroupView(selectedView, columns);
     let CellType = this.dtable.getCellType();
     let collaborators = this.getRelatedUsersFromLocal();
     let nameColumns = [
@@ -404,10 +453,25 @@ class App extends React.Component {
     let singleSelectColumns = this.dtable.getColumnsByType(selectedTable, CellType.SINGLE_SELECT);
     let dateColumns = this.dtable.getColumnsByType(selectedTable, CellType.DATE);
     let numberColumns = this.dtable.getColumnsByType(selectedTable, CellType.NUMBER);
-    let rows = this.getRows(tableName, viewName, CellType, collaborators, settings);
+    const isValidSettings = this.isValidSettings(settings);
+    const convertedRows = this.getConvertedRows(tableName, viewName);
+    let rows = [];
+    let groups = [];
+    if (isValidSettings) {
+      if (isGroupView) {
+        const convertedGroups = this.dtable.getGroupRows(selectedView, selectedTable);
+        groups = this.getGroups(convertedGroups, convertedRows, selectedTable, CellType, collaborators, settings);
+      } else {
+        rows = this.getRows(convertedRows, selectedTable, CellType, collaborators, settings);
+      }
+    }
     /* eslint-disable */
     console.log(`---------- Timeline plugin logs start ----------`);
-    console.log(rows);
+    if (isGroupView) {
+      console.log(groups);
+    } else {
+      console.log(rows);
+    }
     console.log(`----------- Timeline plugin logs end -----------`);
     return (
       <Modal isOpen={true} toggle={this.onPluginToggle} className="dtable-plugin timeline" size='lg'>
@@ -431,7 +495,12 @@ class App extends React.Component {
             tables={tables}
             views={views}
             selectedTable={selectedTable}
+            selectedView={selectedView}
             rows={rows}
+            isGroupView={isGroupView}
+            groups={groups}
+            columns={columns}
+            name_column_map={name_column_map}
             nameColumns={nameColumns}
             singleSelectColumns={singleSelectColumns}
             dateColumns={dateColumns}
@@ -439,34 +508,24 @@ class App extends React.Component {
             settings={settings}
             selectedTimelineView={selectedTimelineView}
             eventBus={this.eventBus}
+            cellType={CellType}
+            collaborators={collaborators}
             isShowTimelineSetting={isShowTimelineSetting}
             onTimelineSettingToggle={this.onTimelineSettingToggle}
-            onViewportRightScroll={this.onViewportRightScroll}
-            onRowExpand={this.onRowExpand}
+            getOriginalRow={this.dtable.getRowById}
+            getColumnByName={this.dtable.getColumnByName}
+            getColumnIconConfig={this.getColumnIconConfig}
+            getMediaUrl={this.getMediaUrl}
+            getUserCommonInfo={this.getUserCommonInfo}
+            getLinkCellValue={this.getLinkCellValue}
+            getRowsByID={this.getRowsByID}
+            getTableById={this.getTableById}
+            onResetRowExpand={this.onResetRowExpand}
             updateDateRange={this.updateDateRange}
             onModifyTimelineSettings={this.onModifyTimelineSettings}
             onHideTimelineSetting={this.onHideTimelineSetting}
           />
         </ModalBody>
-        {isShowRowExpand &&
-          <TimelinePopover
-            container={document.querySelector('.timeline-viewport-right')}
-            popperClassName={'popper-row-expand'}
-            target={rowExpandTarget}
-            offset={rowExpandOffsetLeft}
-             body={
-              <RowExpand
-                selectedTable={selectedTable}
-                expandedRow={expandedRow}
-                getOriginalRow={this.dtable.getRowById}
-                getColumnByName={this.dtable.getColumnByName}
-                cellType={CellType}
-                collaborators={collaborators}
-              />
-            }
-            onPopoverToggle={this.onRowExpandToggle}
-          />
-        }
       </Modal>
     );
   }

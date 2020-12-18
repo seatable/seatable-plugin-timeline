@@ -1,19 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import CanvasLeft from './canvas-left';
-
-const propTypes = {
-  renderedRows: PropTypes.array,
-  headerHeight: PropTypes.number,
-  topOffset: PropTypes.number,
-  bottomOffset: PropTypes.number,
-  onViewportLeftScroll: PropTypes.func,
-};
-
+import GroupCanvasLeft from './group-canvas-left';
 class ViewportLeft extends React.Component {
 
-  componentDidMount() {
-    this.viewportLeft.scrollTop = this.props.scrollTop;
+  renderCanvasLeft = () => {
+    let { isGroupView } = this.props;
+    let CustomCanvasLeft = CanvasLeft;
+    let canvasLeftProps = {};
+    if (isGroupView) {
+      let { groups, onExpandGroupToggle } = this.props;
+      CustomCanvasLeft = GroupCanvasLeft;
+      canvasLeftProps = {
+        groups,
+        onExpandGroupToggle
+      };
+    } else {
+      let { renderedRows } = this.props;
+      canvasLeftProps = {
+        renderedRows
+      };
+    }
+    return (
+      <CustomCanvasLeft {...canvasLeftProps} />
+    );
   }
 
   onViewportLeftScroll = (evt) => {
@@ -30,16 +40,12 @@ class ViewportLeft extends React.Component {
   }
 
   render() {
-    let { renderedRows, headerHeight, topOffset, bottomOffset } = this.props;
-    let viewportLeftStyle = {
-      height: `calc(100% - ${headerHeight + 18}px)`
-    };
+    let { topOffset, bottomOffset } = this.props;
     return (
       <div
-        className="timeline-viewport-left"
+        className="timeline-viewport-left h-100"
         ref={ref => this.viewportLeft = ref}
         onScroll={this.onViewportLeftScroll}
-        style={viewportLeftStyle}
       >
         <div
           className="canvas-left-wrapper"
@@ -48,15 +54,20 @@ class ViewportLeft extends React.Component {
             paddingBottom: bottomOffset
           }}
         >
-          <CanvasLeft
-            renderedRows={renderedRows}
-          />
+          {this.renderCanvasLeft()}
         </div>
       </div>
     );
   }
 }
 
-ViewportLeft.propTypes = propTypes;
+ViewportLeft.propTypes = {
+  renderedRows: PropTypes.array,
+  groups: PropTypes.array,
+  topOffset: PropTypes.number,
+  bottomOffset: PropTypes.number,
+  onViewportLeftScroll: PropTypes.func,
+  onExpandGroupToggle: PropTypes.func,
+};
 
 export default ViewportLeft;

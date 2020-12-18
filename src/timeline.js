@@ -2,41 +2,17 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import TimelineSetting from './components/timeline-setting';
-import TimelineToolbar from './components/timeline-toolbar';
-import ViewportLeft from './components/timeline-body/viewport-left';
+import Toolbar from './components/toolbar';
 import VIEWS from './components/timeline-grid-views';
+import TimelinePopover from './components/timeline-popover';
+import RowExpand from './components/row-expand';
 import { dates, getDtableUuid } from './utils';
-import {
-  getTimelineState,
-  getVisibleBoundaries,
-  getRowOverScanStartIdx,
-  getRowOverScanEndIdx
-} from './utils/timeline-utils';
-import { PLUGIN_NAME, NAVIGATE, GRID_VIEWS, zIndexs, DATE_FORMAT, ROW_HEIGHT, DATE_UNIT } from './constants';
+import { PLUGIN_NAME, NAVIGATE, GRID_VIEWS, DATE_FORMAT, DATE_UNIT } from './constants';
+import * as EventTypes from './constants/event-types';
 
 import './css/timeline.css';
 
 const KEY_SELECTED_GRID_VIEWS = `${PLUGIN_NAME}-selectedGridViews`;
-
-const propTypes = {
-  tables: PropTypes.array,
-  views: PropTypes.array,
-  selectedTable: PropTypes.object,
-  rows: PropTypes.array,
-  nameColumns: PropTypes.array,
-  singleSelectColumns: PropTypes.array,
-  dateColumns: PropTypes.array,
-  numberColumns: PropTypes.array,
-  selectedTimelineView: PropTypes.object,
-  settings: PropTypes.object,
-  isShowTimelineSetting: PropTypes.bool,
-  eventBus: PropTypes.object,
-  onTimelineSettingToggle: PropTypes.func,
-  onViewportRightScroll: PropTypes.func,
-  onRowExpand: PropTypes.func,
-  onModifyTimelineSettings: PropTypes.func,
-  onHideTimelineSetting: PropTypes.func,
-};
 
 class Timeline extends React.Component {
 
@@ -52,16 +28,6 @@ class Timeline extends React.Component {
       canNavigateToday: true,
       ...this.getInitDateRange()
     };
-    this.headerHeight = 68;
-  }
-
-  componentDidMount() {
-    let { rows } = this.props;
-    let timelineHeight = this.timeline.offsetHeight;
-    let viewportHeight = timelineHeight - this.headerHeight;
-    this.setState({
-      ...getTimelineState(viewportHeight, rows.length)
-    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -118,6 +84,9 @@ class Timeline extends React.Component {
 
   onSelectGridView = (selectedGridView) => {
     let { selectedDate, gridStartDate, gridEndDate } = this.state;
+    if (selectedGridView === this.state.selectedGridView) {
+      return;
+    }
 
     // not less than 3 years under the view of year.
     const diffs = moment(gridEndDate).diff(gridStartDate, DATE_UNIT.YEAR);
@@ -126,6 +95,7 @@ class Timeline extends React.Component {
       initDateRange = this.getInitDateRange();
       selectedDate = dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY);
     }
+    this.onResetRowExpand();
 
     this.setState({
       selectedDate,
@@ -186,34 +156,7 @@ class Timeline extends React.Component {
   }
 
   onResetViewportScroll = () => {
-    this.onViewportLeftScroll(0);
-    this.onCanvasRightScroll(0);
-  }
-
-  onViewportLeftScroll = (scrollTop) => {
-    this.timelineView && this.timelineView.setCanvasRightScroll(scrollTop);
-    this.updateScroll(scrollTop);
-  }
-
-  onCanvasRightScroll = (scrollTop) => {
-    this.viewportLeft && this.viewportLeft.setCanvasLeftScroll(scrollTop);
-    this.updateScroll(scrollTop);
-  }
-
-  updateScroll = (scrollTop) => {
-    this.scrollTop = scrollTop;
-    let { rows } = this.props;
-    let rowsCount = rows.length;
-    let viewportHeight = this.timeline.offsetHeight - this.headerHeight;
-    let { rowVisibleStartIdx, rowVisibleEndIdx } = getVisibleBoundaries(viewportHeight, scrollTop, rowsCount);
-    let rowOverScanStartIdx = getRowOverScanStartIdx(rowVisibleStartIdx);
-    let rowOverScanEndIdx = getRowOverScanEndIdx(rowVisibleEndIdx, rowsCount);
-    this.setState({
-      rowVisibleStartIdx,
-      rowVisibleEndIdx,
-      rowOverScanStartIdx,
-      rowOverScanEndIdx
-    });
+    this.props.eventBus.dispatch(EventTypes.RESET_VIEWPORT_SCROLL_TOP);
   }
 
   getGridViews = () => {
@@ -230,22 +173,13 @@ class Timeline extends React.Component {
     return views[selectedGridView];
   };
 
-  getRenderedRows = (rowOverScanStartIdx, rowOverScanEndIdx) => {
-    let { rows } = this.props;
-    let rowsLength = rows.length;
-    if (rowOverScanStartIdx >= rowsLength || rowOverScanEndIdx > rowsLength) {
-      return [];
-    }
-    let i = rowOverScanStartIdx, renderRows = [];
-    while (i < rowOverScanEndIdx) {
-      renderRows.push(rows[i]);
-      i++;
-    }
-    return renderRows;
+  onViewportLeftScroll = () => {
+    this.onResetRowExpand();
   }
 
   onViewportRightScroll = (viewportRightScrollLeft, viewportRightWidth, viewportRightScrollWidth) => {
     const { canScrollToLeft, canScrollToRight } = this.state;
+    this.onResetRowExpand();
     if (canScrollToLeft && viewportRightScrollLeft <= 0) {
       this.setState({canScrollToLeft: false});
     } else if (!canScrollToLeft && viewportRightScrollLeft > 0) {
@@ -256,8 +190,10 @@ class Timeline extends React.Component {
     } else if (!canScrollToRight && viewportRightScrollWidth - viewportRightWidth - viewportRightScrollLeft > 0) {
       this.setState({canScrollToRight: true});
     }
+  }
 
-    this.props.onViewportRightScroll();
+  onCanvasRightScroll = () => {
+    this.onResetRowExpand();
   }
 
   updateDateRange = (gridStartDate, gridEndDate) => {
@@ -275,78 +211,87 @@ class Timeline extends React.Component {
     });
   }
 
+  onRowExpand = (evt, row, target) => {
+    if (this.state.isShowRowExpand) return;
+    let viewportRightDom = this.getRowExpandPopoverContainer();
+    let { left: viewportRightLeft, width: viewportRightWidth } = viewportRightDom.getBoundingClientRect();
+    let { left: eventCellLeft, width: eventCellWidth } = evt.target.getBoundingClientRect();
+    let rowExpandOffsetLeft = 0;
+    if (Math.abs(eventCellLeft - viewportRightLeft) + eventCellWidth > viewportRightWidth) {
+      rowExpandOffsetLeft = -((eventCellLeft + eventCellWidth / 2) - evt.clientX);
+    }
+    this.setState({
+      isShowRowExpand: true,
+      rowExpandTarget: target,
+      expandedRow: row,
+      rowExpandOffsetLeft
+    });
+  }
+
+  getRowExpandPopoverContainer = () => {
+    let containerClassName = this.props.isGroupView ? 'timeline-group-viewport' : 'timeline-viewport';
+    return document.querySelector(`.${containerClassName}`);
+  }
+
+  onResetRowExpand = () => {
+    if (this.state.isShowRowExpand) {
+      this.setState({
+        isShowRowExpand: false,
+        rowExpandTarget: '',
+        expandedRow: {}
+      });
+    }
+  }
+
   render() {
-    let { isShowUsers, selectedGridView, selectedDate, changedSelectedByScroll, rowOverScanStartIdx,
-      rowOverScanEndIdx, gridStartDate, gridEndDate, canNavigateToday } = this.state;
-    let { tables, views, selectedTable, nameColumns, singleSelectColumns, dateColumns, numberColumns,
-      isShowTimelineSetting, settings } = this.props;
+    let { isShowUsers, selectedGridView, selectedDate, changedSelectedByScroll, gridStartDate, gridEndDate,
+      canNavigateToday, isShowRowExpand, rowExpandTarget, rowExpandOffsetLeft, expandedRow } = this.state;
+    let { tables, views, selectedTable, selectedView, columns, name_column_map, nameColumns, singleSelectColumns,
+      dateColumns, numberColumns, isShowTimelineSetting, settings, isGroupView, groups, getOriginalRow,
+      getColumnByName, cellType, collaborators, getColumnIconConfig, getMediaUrl, getUserCommonInfo, getLinkCellValue,
+      getRowsByID, getTableById } = this.props;
     let GridView = this.getGridView(selectedGridView);
     let isToday = this.isToday();
-    let rightPaneWrapperStyle = {
-      marginLeft: isShowUsers && 180
-    };
-    let blankZoneStyle = {
-      height: this.headerHeight
-    };
-    let rowsCount = this.props.rows.length;
-    let renderedRows = this.getRenderedRows(rowOverScanStartIdx, rowOverScanEndIdx);
-    let topOffset = rowOverScanStartIdx > 0 ? rowOverScanStartIdx * ROW_HEIGHT : 0;
-    let bottomOffset = (rowsCount - rowOverScanEndIdx) > 0 ? (rowsCount - rowOverScanEndIdx) * ROW_HEIGHT : 0;
-
+    let rowExpandPopoverContainer = this.getRowExpandPopoverContainer();
     return (
       <Fragment>
         <div className="timeline-container position-relative" ref={ref => this.timeline = ref}>
-          {isShowUsers &&
-            <div className="left-pane-wrapper position-absolute" style={{zIndex: zIndexs.LEFT_PANE_WRAPPER}}>
-              <div className="blank-zone" style={blankZoneStyle}></div>
-              <ViewportLeft
-                ref={node => this.viewportLeft = node}
-                scrollTop={this.scrollTop}
-                renderedRows={renderedRows}
-                topOffset={topOffset}
-                bottomOffset={bottomOffset}
-                headerHeight={this.headerHeight}
-                onViewportLeftScroll={this.onViewportLeftScroll}
-              />
-            </div>
-          }
-          <div className="right-pane-wrapper position-relative" style={rightPaneWrapperStyle}>
-            <TimelineToolbar
-              selectedGridView={selectedGridView}
-              selectedDate={selectedDate}
-              canNavigateToday={!isToday && canNavigateToday}
-              isShowUsers={isShowUsers}
-              eventBus={this.props.eventBus}
-              onShowUsersToggle={this.onShowUsersToggle}
-              onNavigate={this.onNavigate}
-              onTimelineSettingToggle={this.props.onTimelineSettingToggle}
-              onSelectGridView={this.onSelectGridView}
-            />
-            <GridView
-              ref={node => this.timelineView = node}
-              isShowUsers={isShowUsers}
-              changedSelectedByScroll={changedSelectedByScroll}
-              selectedGridView={selectedGridView}
-              selectedDate={selectedDate}
-              gridStartDate={gridStartDate}
-              gridEndDate={gridEndDate}
-              headerHeight={this.headerHeight}
-              renderedRows={renderedRows}
-              topOffset={topOffset}
-              bottomOffset={bottomOffset}
-              eventBus={this.props.eventBus}
-              updateSelectedDate={this.updateSelectedDate}
-              onCanvasRightScroll={this.onCanvasRightScroll}
-              onViewportRightScroll={this.onViewportRightScroll}
-              onRowExpand={this.props.onRowExpand}
-            />
-          </div>
+          <Toolbar
+            selectedGridView={selectedGridView}
+            selectedDate={selectedDate}
+            canNavigateToday={!isToday && canNavigateToday}
+            isShowUsers={isShowUsers}
+            eventBus={this.props.eventBus}
+            onShowUsersToggle={this.onShowUsersToggle}
+            onNavigate={this.onNavigate}
+            onTimelineSettingToggle={this.props.onTimelineSettingToggle}
+            onSelectGridView={this.onSelectGridView}
+          />
+          <GridView
+            ref={node => this.timelineView = node}
+            isShowUsers={isShowUsers}
+            changedSelectedByScroll={changedSelectedByScroll}
+            selectedGridView={selectedGridView}
+            selectedDate={selectedDate}
+            gridStartDate={gridStartDate}
+            gridEndDate={gridEndDate}
+            rows={this.props.rows}
+            isGroupView={isGroupView}
+            groups={groups}
+            eventBus={this.props.eventBus}
+            updateSelectedDate={this.updateSelectedDate}
+            onViewportLeftScroll={this.onViewportLeftScroll}
+            onViewportRightScroll={this.onViewportRightScroll}
+            onCanvasRightScroll={this.onCanvasRightScroll}
+            onRowExpand={this.onRowExpand}
+          />
         </div>
         {isShowTimelineSetting &&
           <TimelineSetting
             tables={tables}
             views={views}
-            selectedTable={selectedTable}
+            columns={columns}
+            name_column_map={name_column_map}
             nameColumns={nameColumns}
             singleSelectColumns={singleSelectColumns}
             dateColumns={dateColumns}
@@ -358,6 +303,34 @@ class Timeline extends React.Component {
             onModifyTimelineSettings={this.props.onModifyTimelineSettings}
             onHideTimelineSetting={this.props.onHideTimelineSetting}
             updateDateRange={this.updateDateRange}
+            getColumnIconConfig={getColumnIconConfig}
+          />
+        }
+        {(isShowRowExpand && rowExpandPopoverContainer) &&
+          <TimelinePopover
+            container={rowExpandPopoverContainer}
+            popperClassName={'popper-row-expand'}
+            target={rowExpandTarget}
+            offset={rowExpandOffsetLeft}
+            body={
+              <RowExpand
+                tables={tables}
+                selectedTable={selectedTable}
+                selectedView={selectedView}
+                settings={settings || {}}
+                expandedRow={expandedRow}
+                getOriginalRow={getOriginalRow}
+                getColumnByName={getColumnByName}
+                getMediaUrl={getMediaUrl}
+                getUserCommonInfo={getUserCommonInfo}
+                getLinkCellValue={getLinkCellValue}
+                getRowsByID={getRowsByID}
+                getTableById={getTableById}
+                cellType={cellType}
+                collaborators={collaborators}
+              />
+            }
+            onPopoverToggle={this.onResetRowExpand}
           />
         }
       </Fragment>
@@ -365,6 +338,37 @@ class Timeline extends React.Component {
   }
 }
 
-Timeline.propTypes = propTypes;
+Timeline.propTypes = {
+  tables: PropTypes.array,
+  views: PropTypes.array,
+  selectedTable: PropTypes.object,
+  selectedView: PropTypes.object,
+  selectedTimelineView: PropTypes.object,
+  rows: PropTypes.array,
+  isGroupView: PropTypes.bool,
+  groups: PropTypes.array,
+  columns: PropTypes.array,
+  name_column_map: PropTypes.object,
+  nameColumns: PropTypes.array,
+  singleSelectColumns: PropTypes.array,
+  dateColumns: PropTypes.array,
+  numberColumns: PropTypes.array,
+  collaborators: PropTypes.array,
+  cellType: PropTypes.object,
+  settings: PropTypes.object,
+  isShowTimelineSetting: PropTypes.bool,
+  eventBus: PropTypes.object,
+  getOriginalRow: PropTypes.func,
+  getColumnByName: PropTypes.func,
+  getColumnIconConfig: PropTypes.func,
+  getMediaUrl: PropTypes.func,
+  getUserCommonInfo: PropTypes.func,
+  getLinkCellValue: PropTypes.func,
+  getRowsByID: PropTypes.func,
+  getTableById: PropTypes.func,
+  onTimelineSettingToggle: PropTypes.func,
+  onModifyTimelineSettings: PropTypes.func,
+  onHideTimelineSetting: PropTypes.func,
+};
 
 export default Timeline;

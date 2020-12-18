@@ -16,7 +16,7 @@ const propTypes = {
 class HeaderYearMonths extends React.Component {
 
   render() {
-    let { overScanDates, renderedRows, columnWidth } = this.props;
+    let { overScanDates, columnWidth } = this.props;
     let todayIndex = overScanDates.indexOf(moment().startOf(DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY));
     let todayMarkStyle = {
       left: todayIndex * columnWidth + (columnWidth - 6) / 2,
@@ -32,7 +32,7 @@ class HeaderYearMonths extends React.Component {
             </div>
           );
         })}
-        {(todayIndex > -1 && Array.isArray(renderedRows) && renderedRows.length > 0) &&
+        {todayIndex > -1 &&
           <TodayMark style={todayMarkStyle} />
         }
       </div>

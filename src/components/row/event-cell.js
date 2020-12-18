@@ -1,16 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const propTypes = {
-  colorColumnKey: PropTypes.string,
-  formatter: PropTypes.node,
-  style: PropTypes.object,
-  id: PropTypes.string,
-  row: PropTypes.object,
-  title: PropTypes.string,
-  onRowExpand: PropTypes.func,
-};
-
 class EventCell extends React.PureComponent {
 
   onRowExpand = (evt) => {
@@ -36,10 +26,18 @@ class EventCell extends React.PureComponent {
       >
         {formatter}
       </div>
-    )
+    );
   }
 }
 
-EventCell.propTypes = propTypes;
+EventCell.propTypes = {
+  colorColumnKey: PropTypes.string,
+  formatter: PropTypes.node,
+  style: PropTypes.object,
+  id: PropTypes.string,
+  row: PropTypes.object,
+  title: PropTypes.string,
+  onRowExpand: PropTypes.func,
+};
 
 export default EventCell;

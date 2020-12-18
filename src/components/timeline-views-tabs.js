@@ -48,7 +48,7 @@ class TimelineViewsTabs extends React.Component {
   }
 
   onDropdownToggle = (evt) => {
-    evt.nativeEvent.stopImmediatePropagation()
+    evt.nativeEvent.stopImmediatePropagation();
     let { top, left, height } = this.btnViewDropdown.parentNode.getBoundingClientRect();
     this.setState({
       isShowViewDropdown: !this.state.isShowViewDropdown,
@@ -119,10 +119,10 @@ class TimelineViewsTabs extends React.Component {
                 <div
                   key={`timeline-views-${_id}`}
                   className={classnames({
-                    'view-item': true, 
+                    'view-item': true,
                     'active': isActiveView
-                  })
-                }>
+                  })}
+                >
                   <div
                     className="view-item-content d-flex align-items-center justify-content-center position-relative"
                     ref={this.setViewItem(i)}
@@ -144,12 +144,12 @@ class TimelineViewsTabs extends React.Component {
                                 <React.Fragment>
                                   <button className="dropdown-item" onClick={this.onRenameViewToggle}>
                                     <i className="item-icon dtable-font dtable-icon-rename"></i>
-                                    <span className="item-text">{intl.get('Rename_View')}</span>
+                                    <span className="item-text">{intl.get('Rename_view')}</span>
                                   </button>
                                   {views.length > 1 &&
                                     <button className="dropdown-item" onClick={this.props.onDeleteView.bind(this, _id)}>
                                       <i className="item-icon dtable-font dtable-icon-delete"></i>
-                                      <span className="item-text">{intl.get('Delete_View')}</span>
+                                      <span className="item-text">{intl.get('Delete_view')}</span>
                                     </button>
                                   }
                                 </React.Fragment>

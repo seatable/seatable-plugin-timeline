@@ -2,19 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import HeaderYears from '../header/header-years';
 import HeaderYearMonths from '../header/header-year-months';
-import ViewportRight from '../timeline-body/viewport-right';
+import Grid from '../grid';
 
 const propTypes = {
   isShowUsers: PropTypes.bool,
+  isGroupView: PropTypes.bool,
   changedSelectedByScroll: PropTypes.bool,
   selectedGridView: PropTypes.string,
   selectedDate: PropTypes.string,
   gridStartDate: PropTypes.string,
   gridEndDate: PropTypes.string,
-  headerHeight: PropTypes.number,
-  renderedRows: PropTypes.array,
-  topOffset: PropTypes.number,
-  bottomOffset: PropTypes.number,
+  rows: PropTypes.array,
+  groups: PropTypes.array,
   eventBus: PropTypes.object,
   updateSelectedDate: PropTypes.func,
   onCanvasRightScroll: PropTypes.func,
@@ -23,14 +22,6 @@ const propTypes = {
 };
 
 class Year extends React.Component {
-
-  setCanvasRightScroll = (scrollTop) => {
-    this.viewportRight.setCanvasRightScroll(scrollTop);
-  }
-
-  updateScroll = (selectedDate) => {
-    this.viewportRight.updateScroll({selectedDate});
-  }
 
   renderHeaderYears = (props) => {
     let { renderedDates, columnWidth } = props;
@@ -44,40 +35,38 @@ class Year extends React.Component {
   }
 
   renderHeaderDates = (props) => {
-    let { overScanDates, renderedRows, columnWidth } = props;
+    let { overScanDates, columnWidth } = props;
     return (
       <HeaderYearMonths
         overScanDates={overScanDates}
-        renderedRows={renderedRows}
         columnWidth={columnWidth}
       />
     );
   }
 
   render() {
-    let { isShowUsers, changedSelectedByScroll, headerHeight, renderedRows, selectedGridView, selectedDate,
-      gridStartDate, gridEndDate, updateSelectedDate, onCanvasRightScroll, onViewportRightScroll, onRowExpand,
-      topOffset, bottomOffset, eventBus } = this.props;
+    let { isShowUsers, isGroupView, changedSelectedByScroll, rows, groups, selectedGridView, selectedDate,
+      gridStartDate, gridEndDate, updateSelectedDate, onViewportLeftScroll, onCanvasRightScroll,
+      onViewportRightScroll, onRowExpand, eventBus } = this.props;
     return (
       <div className="timeline-year-view">
-        <ViewportRight
-          ref={node => this.viewportRight = node}
-          isShowUsers={isShowUsers}
-          changedSelectedByScroll={changedSelectedByScroll}
-          selectedGridView={selectedGridView}
-          selectedDate={selectedDate}
+        <Grid
           gridStartDate={gridStartDate}
           gridEndDate={gridEndDate}
-          headerHeight={headerHeight}
-          renderedRows={renderedRows}
-          topOffset={topOffset}
-          bottomOffset={bottomOffset}
-          eventBus={eventBus}
+          isShowUsers={isShowUsers}
+          selectedGridView={selectedGridView}
+          selectedDate={selectedDate}
+          isGroupView={isGroupView}
           renderHeaderYears={this.renderHeaderYears}
           renderHeaderDates={this.renderHeaderDates}
-          updateSelectedDate={updateSelectedDate}
-          onCanvasRightScroll={onCanvasRightScroll}
+          rows={rows}
+          groups={groups}
+          changedSelectedByScroll={changedSelectedByScroll}
+          eventBus={eventBus}
+          onViewportLeftScroll={onViewportLeftScroll}
           onViewportRightScroll={onViewportRightScroll}
+          onCanvasRightScroll={onCanvasRightScroll}
+          updateSelectedDate={updateSelectedDate}
           onRowExpand={onRowExpand}
         />
       </div>

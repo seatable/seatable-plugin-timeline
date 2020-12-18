@@ -55,7 +55,7 @@ class RenameViewDialog extends Component {
   render() {
     return (
       <Modal isOpen={true} toggle={this.toggle} autoFocus={false}>
-        <ModalHeader toggle={this.toggle}>{intl.get('Rename_View')}</ModalHeader>
+        <ModalHeader toggle={this.toggle}>{intl.get('Rename_view')}</ModalHeader>
         <ModalBody>
           <Form>
             <FormGroup>

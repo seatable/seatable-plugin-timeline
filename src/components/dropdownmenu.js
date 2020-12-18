@@ -1,21 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import intl from 'react-intl-universal';
-import { zIndexs } from '../constants'
+import { zIndexes } from '../constants';
 
 import '../css/dropdown-menu.css';
 
 const propTypes = {
   dropdownMenuPosition: PropTypes.object,
   options: PropTypes.node,
-}
+};
 
 class DropdownMenu extends React.Component {
 
   render() {
     let { dropdownMenuPosition, options } = this.props;
     let dropdownMenuStyle = {
-      zIndex: zIndexs.DROPDOWN_MENU,
+      zIndex: zIndexes.DROPDOWN_MENU,
       ...dropdownMenuPosition,
     };
     return (

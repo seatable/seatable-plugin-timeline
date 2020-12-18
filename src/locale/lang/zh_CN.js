@@ -1,8 +1,9 @@
+/* eslint-disable */
 const zh_CN = {
   "Timeline": "时间线",
-  "New_View": "新建视图",
-  "Rename_View": "重命名视图",
-  "Delete_View": "删除视图",
+  "New_view": "新建视图",
+  "Rename_view": "重命名视图",
+  "Delete_view": "删除视图",
   "Name": "名称",
   "Name_is_required": "名称必须存在",
   "Cancel": "取消",
@@ -15,10 +16,10 @@ const zh_CN = {
   "Settings": "设置",
   "Table": "表格",
   "View": "视图",
-  "Name_Column": "名称字段",
-  "Color_Column": "颜色标签字段",
-  "Start_Date": "开始日期",
-  "End_Date": "结束日期",
+  "Name_column": "名称字段",
+  "Color_column": "颜色标签字段",
+  "Start_date": "开始日期",
+  "End_date": "结束日期",
   "Duration": "时长",
   "Jan": "一月",
   "Feb": "二月",
@@ -34,7 +35,11 @@ const zh_CN = {
   "Dec": "十二",
   "days_range": "{startOfMonthDay} - {endOfMonthDay} 日",
   "No_options": "没有选项",
-  "Date_range": "日期范围"
+  "Date_range": "日期范围",
+  "Empty": "空",
+  "Other_columns": "其他列",
+  "Select_all": "选择全部",
+  "Hide_all": "隐藏全部",
 };
 
 export default zh_CN;

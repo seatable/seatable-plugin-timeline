@@ -1,24 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import EventRow from '../event-row';
-import EventCell from '../event-cell';
+import EventRow from '../row/event-row';
+import EventCell from '../row/event-cell';
 import NameFormatter from '../cell-formatter/name-formatter';
 
-const propTypes = {
-  renderedRows: PropTypes.array,
+const EventCells = ({name}) => {
+  return [
+    <EventCell
+      key={`timeline-left-event-cell-${name}`}
+      title={name}
+      formatter={<NameFormatter value={name} />}
+    />
+  ];
 };
 
 class CanvasLeft extends React.Component {
-
-  renderCells = (name) => {
-    return [
-      <EventCell
-        key={`timeline-left-event-cell-${name}`}
-        title={name}
-        formatter={<NameFormatter value={name} />}
-      />
-    ];
-  }
 
   render() {
     let { renderedRows } = this.props;
@@ -29,7 +25,11 @@ class CanvasLeft extends React.Component {
           return (
             <EventRow
               key={`timeline-name-row-${index}`}
-              cells={this.renderCells(name)}
+              cells={
+                <EventCells
+                  name={name}
+                />
+              }
             />
           );
         })}
@@ -38,6 +38,8 @@ class CanvasLeft extends React.Component {
   }
 }
 
-CanvasLeft.propTypes = propTypes;
+CanvasLeft.propTypes = {
+  renderedRows: PropTypes.array,
+};
 
 export default CanvasLeft;

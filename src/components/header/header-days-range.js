@@ -10,14 +10,13 @@ import '../../locale';
 const propTypes = {
   overScanDates: PropTypes.array,
   renderedDates: PropTypes.array,
-  renderedRows: PropTypes.array,
   columnWidth: PropTypes.number,
 };
 
 class HeaderDaysRange extends React.Component {
 
   render() {
-    let { overScanDates, renderedDates, renderedRows, columnWidth } = this.props;
+    let { overScanDates, renderedDates, columnWidth } = this.props;
     let todayIndex = overScanDates.indexOf(moment().format(DATE_FORMAT.YEAR_MONTH_DAY));
     let todayMarkStyle = {
       left: todayIndex * columnWidth + (columnWidth - 6) / 2,
@@ -40,7 +39,7 @@ class HeaderDaysRange extends React.Component {
             </div>
           );
         })}
-        {(todayIndex > -1 && Array.isArray(renderedRows) && renderedRows.length > 0) &&
+        {todayIndex > -1 &&
           <TodayMark style={todayMarkStyle} />
         }
       </div>

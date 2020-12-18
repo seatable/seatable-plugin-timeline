@@ -1,10 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ROW_HEIGHT } from '../constants';
-
-const propTypes = {
-  cells: PropTypes.array,
-};
+import { ROW_HEIGHT } from '../../constants';
 
 class EventRow extends React.Component {
 
@@ -18,6 +14,8 @@ class EventRow extends React.Component {
   }
 }
 
-EventRow.propTypes = propTypes;
+EventRow.propTypes = {
+  cells: PropTypes.object,
+};
 
 export default EventRow;
