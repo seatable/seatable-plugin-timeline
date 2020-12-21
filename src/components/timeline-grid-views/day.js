@@ -18,7 +18,6 @@ const propTypes = {
   groups: PropTypes.array,
   eventBus: PropTypes.object,
   updateSelectedDate: PropTypes.func,
-  onCanvasRightScroll: PropTypes.func,
   onViewportRightScroll: PropTypes.func,
   onRowExpand: PropTypes.func,
 };
@@ -47,29 +46,12 @@ class Day extends React.Component {
   }
 
   render() {
-    let { isShowUsers, isGroupView, changedSelectedByScroll, selectedGridView, selectedDate, gridStartDate,
-      gridEndDate, rows, groups, onViewportLeftScroll, onViewportRightScroll, onCanvasRightScroll,
-      onRowExpand, eventBus, updateSelectedDate } = this.props;
     return (
       <div className="timeline-day-view" >
         <Grid
-          gridStartDate={gridStartDate}
-          gridEndDate={gridEndDate}
-          isShowUsers={isShowUsers}
-          selectedGridView={selectedGridView}
-          selectedDate={selectedDate}
-          isGroupView={isGroupView}
+          {...this.props}
           renderHeaderYears={this.renderHeaderYears}
           renderHeaderDates={this.renderHeaderDates}
-          rows={rows}
-          groups={groups}
-          changedSelectedByScroll={changedSelectedByScroll}
-          eventBus={eventBus}
-          onViewportLeftScroll={onViewportLeftScroll}
-          onViewportRightScroll={onViewportRightScroll}
-          onCanvasRightScroll={onCanvasRightScroll}
-          updateSelectedDate={updateSelectedDate}
-          onRowExpand={onRowExpand}
         />
       </div>
     );

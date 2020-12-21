@@ -11,7 +11,7 @@ class GroupViewport extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      groups: props.groups || [],
+      foldedGroups: [],
       groupVisibleStartIdx: 0,
       groupVisibleEndIdx: 0,
     };
@@ -21,8 +21,9 @@ class GroupViewport extends Component {
   componentDidMount() {
     let groupViewportHeight = this.groupViewport.offsetHeight - HEADER_HEIGHT;
     let { groups } = this.props;
+    let { foldedGroups } = this.state;
     this.setState({
-      ...getGroupViewportState(groupViewportHeight, groups)
+      ...getGroupViewportState(groupViewportHeight, groups, foldedGroups)
     });
     this.unsubscribeResetScrollTop = this.props.eventBus.subscribe(EventTypes.RESET_VIEWPORT_SCROLL_TOP, this.onResetViewportScrollTop);
   }
@@ -37,18 +38,22 @@ class GroupViewport extends Component {
     this.updateScroll(0);
   }
 
-  onExpandGroupToggle = (groupIndex, isExpanded) => {
-    let {groups, groupVisibleStartIdx: oldGroupVisibleStartIdx } = this.state;
-    let newGroups = [...groups];
+  onExpandGroupToggle = (groupIndex) => {
+    let { groups } = this.props;
+    let { foldedGroups, groupVisibleStartIdx: oldGroupVisibleStartIdx } = this.state;
+    let newFoldedGroups = [...foldedGroups];
     let updatedGroupIndex = groupIndex + oldGroupVisibleStartIdx;
-    let updatedGroup = newGroups[groupIndex + oldGroupVisibleStartIdx];
+    let updatedGroup = groups[groupIndex + oldGroupVisibleStartIdx];
     if (!updatedGroup) return;
-    updatedGroup = {...updatedGroup, isExpanded};
-    newGroups[updatedGroupIndex] = updatedGroup;
+    if (newFoldedGroups.includes(updatedGroupIndex)) {
+      newFoldedGroups.splice(updatedGroupIndex, 1);
+    } else {
+      newFoldedGroups.push(updatedGroupIndex);
+    }
     let groupViewportHeight = this.groupViewport.offsetHeight - HEADER_HEIGHT;
-    let { groupVisibleStartIdx, groupVisibleEndIdx } = getGroupVisibleBoundaries(groupViewportHeight, this.scrollTop, newGroups);
+    let { groupVisibleStartIdx, groupVisibleEndIdx } = getGroupVisibleBoundaries(groupViewportHeight, this.scrollTop, groups, newFoldedGroups);
     this.setState({
-      groups: newGroups,
+      foldedGroups: newFoldedGroups,
       groupVisibleStartIdx,
       groupVisibleEndIdx
     });
@@ -69,20 +74,19 @@ class GroupViewport extends Component {
 
   onViewportLeftScroll = (scrollTop) => {
     this.viewportRight && this.viewportRight.setCanvasRightScroll(scrollTop);
-    this.props.onViewportLeftScroll();
     this.updateScroll(scrollTop);
   }
 
   onCanvasRightScroll = (scrollTop) => {
     this.viewportLeft && this.viewportLeft.setCanvasLeftScroll(scrollTop);
-    this.props.onCanvasRightScroll();
     this.updateScroll(scrollTop);
   }
 
   updateScroll = (scrollTop) => {
-    let { groups } = this.state;
+    let { groups } = this.props;
+    let { foldedGroups } = this.state;
     let groupViewportHeight = this.groupViewport.offsetHeight - HEADER_HEIGHT;
-    let { groupVisibleStartIdx, groupVisibleEndIdx } = getGroupVisibleBoundaries(groupViewportHeight, scrollTop, groups);
+    let { groupVisibleStartIdx, groupVisibleEndIdx } = getGroupVisibleBoundaries(groupViewportHeight, scrollTop, groups, foldedGroups);
     this.scrollTop = scrollTop;
     this.setState({
       groupVisibleStartIdx,
@@ -93,12 +97,12 @@ class GroupViewport extends Component {
   render() {
     let { gridStartDate, gridEndDate, isShowUsers, selectedGridView, selectedDate, renderHeaderYears,
       renderHeaderDates, updateSelectedDate, eventBus, onRowExpand, changedSelectedByScroll,
-      onViewportRightScroll } = this.props;
-    let { groups, groupVisibleStartIdx, groupVisibleEndIdx } = this.state;
+      onViewportRightScroll, groups } = this.props;
+    let { foldedGroups, groupVisibleStartIdx, groupVisibleEndIdx } = this.state;
     let groupsLen = groups.length;
     let renderedGroups = this.getRenderedGroups(groups, groupVisibleStartIdx, groupVisibleEndIdx);
-    let topOffset = groupVisibleStartIdx > 0 ? getGroupsHeight(groups, 0, groupVisibleStartIdx) : 0;
-    let bottomOffset = (groupsLen - groupVisibleEndIdx) > 0 ? getGroupsHeight(groups, groupVisibleEndIdx + 1, groupsLen) : 0;
+    let topOffset = groupVisibleStartIdx > 0 ? getGroupsHeight(groups, foldedGroups, 0, groupVisibleStartIdx) : 0;
+    let bottomOffset = (groupsLen - groupVisibleEndIdx) > 0 ? getGroupsHeight(groups, foldedGroups, groupVisibleEndIdx + 1, groupsLen) : 0;
     return (
       <div className="timeline-group-viewport h-100 position-relative" ref={ref => this.groupViewport = ref}>
         {isShowUsers &&
@@ -106,7 +110,9 @@ class GroupViewport extends Component {
             <ViewportLeft
               ref={node => this.viewportLeft = node}
               isGroupView={true}
+              groupVisibleStartIdx={groupVisibleStartIdx}
               groups={renderedGroups}
+              foldedGroups={foldedGroups}
               topOffset={topOffset}
               bottomOffset={bottomOffset}
               onExpandGroupToggle={this.onExpandGroupToggle}
@@ -120,7 +126,9 @@ class GroupViewport extends Component {
           isGroupView={true}
           gridStartDate={gridStartDate}
           gridEndDate={gridEndDate}
+          groupVisibleStartIdx={groupVisibleStartIdx}
           groups={renderedGroups}
+          foldedGroups={foldedGroups}
           topOffset={topOffset}
           bottomOffset={bottomOffset}
           selectedGridView={selectedGridView}

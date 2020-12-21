@@ -55,6 +55,7 @@ function EventCells({selectedGridView, selectedDate, overScanDates, events, colu
         id={`timeline_event_cell_${rowId}`}
         onRowExpand={onRowExpand}
         title={`${label}(${start} - ${end})`}
+        width={width}
         formatter={
           <EventFormatter
             label={formatterLabel}

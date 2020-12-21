@@ -7,13 +7,12 @@ class Grid extends Component {
 
   renderViewport = () => {
     let { isGroupView, gridStartDate, gridEndDate, isShowUsers, selectedGridView, selectedDate, renderHeaderYears,
-      renderHeaderDates, rows, groups, eventBus, changedSelectedByScroll, onViewportLeftScroll, onViewportRightScroll,
-      onCanvasRightScroll, updateSelectedDate, onRowExpand } = this.props;
+      renderHeaderDates, rows, groups, eventBus, changedSelectedByScroll, onViewportRightScroll, updateSelectedDate,
+      onRowExpand } = this.props;
     let CustomViewport = Viewport;
     let baseProps = { gridStartDate, gridEndDate, isShowUsers, selectedGridView, selectedDate,
       renderHeaderYears, renderHeaderDates, changedSelectedByScroll, eventBus, updateSelectedDate,
-      onRowExpand, onViewportLeftScroll, onViewportRightScroll, onCanvasRightScroll
-    };
+      onRowExpand, onViewportRightScroll };
     let customProps = {};
     if (isGroupView) {
       CustomViewport = GroupViewport;
@@ -47,9 +46,7 @@ Grid.propTypes = {
   eventBus: PropTypes.object,
   renderHeaderYears: PropTypes.func,
   renderHeaderDates: PropTypes.func,
-  onViewportLeftScroll: PropTypes.func,
   onViewportRightScroll: PropTypes.func,
-  onCanvasRightScroll: PropTypes.func,
   updateSelectedDate: PropTypes.func,
   onRowExpand: PropTypes.func,
 };

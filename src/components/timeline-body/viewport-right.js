@@ -104,9 +104,12 @@ class ViewportRight extends React.Component {
     let CustomCanvasRight = CanvasRight;
     let customProps = {};
     if (isGroupView) {
+      let { groupVisibleStartIdx, groups, foldedGroups } = this.props;
       CustomCanvasRight = GroupCanvasRight;
       customProps = {
-        groups: this.props.groups
+        groupVisibleStartIdx,
+        groups,
+        foldedGroups
       };
     } else {
       customProps = {
@@ -230,7 +233,9 @@ ViewportRight.propTypes = {
   gridStartDate: PropTypes.string,
   gridEndDate: PropTypes.string,
   renderedRows: PropTypes.array,
+  groupVisibleStartIdx: PropTypes.number,
   groups: PropTypes.array,
+  foldedGroups: PropTypes.array,
   topOffset: PropTypes.number,
   bottomOffset: PropTypes.number,
   eventBus: PropTypes.object,

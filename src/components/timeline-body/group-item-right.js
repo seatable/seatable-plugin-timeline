@@ -9,7 +9,7 @@ import { GROUP_HEADER_HEIGHT, zIndexes, ROW_HEIGHT } from '../../constants';
 class GroupItemRight extends Component {
 
   renderRows = (renderedRows) => {
-    let { selectedGridView, selectedDate, columnWidth, overScanDates, renderedDates, group, onRowExpand } = this.props;
+    let { selectedGridView, selectedDate, columnWidth, overScanDates, renderedDates, group, isExpanded, onRowExpand } = this.props;
     const bgCells = (
       <BgCells
         selectedGridView={selectedGridView}
@@ -36,7 +36,7 @@ class GroupItemRight extends Component {
         }
       />
     ];
-    if (group.isExpanded) {
+    if (isExpanded) {
       Array.isArray(renderedRows) && renderedRows.forEach((r, index) => {
         bgRows.push(
           <EventRow
@@ -74,8 +74,8 @@ class GroupItemRight extends Component {
   }
 
   render() {
-    let { group } = this.props;
-    let { isExpanded, rows } = group;
+    let { group, isExpanded } = this.props;
+    let { rows } = group;
     let groupItemHeight = isExpanded ? GROUP_HEADER_HEIGHT + rows.length * ROW_HEIGHT : GROUP_HEADER_HEIGHT;
     return (
       <div className="group-item-right position-relative" style={{height: groupItemHeight}}>
@@ -92,6 +92,7 @@ GroupItemRight.propTypes = {
   renderedDates: PropTypes.array,
   columnWidth: PropTypes.number,
   group: PropTypes.object,
+  isExpanded: PropTypes.bool,
   onRowExpand: PropTypes.func,
 };
 

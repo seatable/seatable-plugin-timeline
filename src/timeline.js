@@ -4,8 +4,6 @@ import moment from 'moment';
 import TimelineSetting from './components/timeline-setting';
 import Toolbar from './components/toolbar';
 import VIEWS from './components/timeline-grid-views';
-import TimelinePopover from './components/timeline-popover';
-import RowExpand from './components/row-expand';
 import { dates, getDtableUuid } from './utils';
 import { PLUGIN_NAME, NAVIGATE, GRID_VIEWS, DATE_FORMAT, DATE_UNIT } from './constants';
 import * as EventTypes from './constants/event-types';
@@ -28,10 +26,14 @@ class Timeline extends React.Component {
       canNavigateToday: true,
       ...this.getInitDateRange()
     };
+    this.gridViews = this.getGridViews();
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.selectedTimelineView && this.props.selectedTimelineView !== nextProps.selectedTimelineView) {
+    let { selectedTimelineView: oldSelectedTimelineView, settings: oldSettings } = this.props;
+    let { selectedTimelineView, settings } = nextProps;
+    if ((selectedTimelineView && oldSelectedTimelineView !== selectedTimelineView) ||
+      (settings && settings !== oldSettings)) {
       let { gridStartDate, gridEndDate } = this.state;
       let selectedGridView = this.getSelectedGridView(nextProps.selectedTimelineView._id);
       const diffs = moment(gridEndDate).diff(gridStartDate, DATE_UNIT.YEAR);
@@ -95,7 +97,6 @@ class Timeline extends React.Component {
       initDateRange = this.getInitDateRange();
       selectedDate = dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY);
     }
-    this.onResetRowExpand();
 
     this.setState({
       selectedDate,
@@ -169,17 +170,11 @@ class Timeline extends React.Component {
   }
 
   getGridView = (selectedGridView) => {
-    const views = this.getGridViews();
-    return views[selectedGridView];
+    return this.gridViews[selectedGridView];
   };
-
-  onViewportLeftScroll = () => {
-    this.onResetRowExpand();
-  }
 
   onViewportRightScroll = (viewportRightScrollLeft, viewportRightWidth, viewportRightScrollWidth) => {
     const { canScrollToLeft, canScrollToRight } = this.state;
-    this.onResetRowExpand();
     if (canScrollToLeft && viewportRightScrollLeft <= 0) {
       this.setState({canScrollToLeft: false});
     } else if (!canScrollToLeft && viewportRightScrollLeft > 0) {
@@ -190,10 +185,6 @@ class Timeline extends React.Component {
     } else if (!canScrollToRight && viewportRightScrollWidth - viewportRightWidth - viewportRightScrollLeft > 0) {
       this.setState({canScrollToRight: true});
     }
-  }
-
-  onCanvasRightScroll = () => {
-    this.onResetRowExpand();
   }
 
   updateDateRange = (gridStartDate, gridEndDate) => {
@@ -211,48 +202,13 @@ class Timeline extends React.Component {
     });
   }
 
-  onRowExpand = (evt, row, target) => {
-    if (this.state.isShowRowExpand) return;
-    let viewportRightDom = this.getRowExpandPopoverContainer();
-    let { left: viewportRightLeft, width: viewportRightWidth } = viewportRightDom.getBoundingClientRect();
-    let { left: eventCellLeft, width: eventCellWidth } = evt.target.getBoundingClientRect();
-    let rowExpandOffsetLeft = 0;
-    if (Math.abs(eventCellLeft - viewportRightLeft) + eventCellWidth > viewportRightWidth) {
-      rowExpandOffsetLeft = -((eventCellLeft + eventCellWidth / 2) - evt.clientX);
-    }
-    this.setState({
-      isShowRowExpand: true,
-      rowExpandTarget: target,
-      expandedRow: row,
-      rowExpandOffsetLeft
-    });
-  }
-
-  getRowExpandPopoverContainer = () => {
-    let containerClassName = this.props.isGroupView ? 'timeline-group-viewport' : 'timeline-viewport';
-    return document.querySelector(`.${containerClassName}`);
-  }
-
-  onResetRowExpand = () => {
-    if (this.state.isShowRowExpand) {
-      this.setState({
-        isShowRowExpand: false,
-        rowExpandTarget: '',
-        expandedRow: {}
-      });
-    }
-  }
-
   render() {
     let { isShowUsers, selectedGridView, selectedDate, changedSelectedByScroll, gridStartDate, gridEndDate,
-      canNavigateToday, isShowRowExpand, rowExpandTarget, rowExpandOffsetLeft, expandedRow } = this.state;
-    let { tables, views, selectedTable, selectedView, columns, name_column_map, nameColumns, singleSelectColumns,
-      dateColumns, numberColumns, isShowTimelineSetting, settings, isGroupView, groups, getOriginalRow,
-      getColumnByName, cellType, collaborators, getColumnIconConfig, getMediaUrl, getUserCommonInfo, getLinkCellValue,
-      getRowsByID, getTableById } = this.props;
-    let GridView = this.getGridView(selectedGridView);
+      canNavigateToday } = this.state;
+    let { tables, views, nameColumns, singleSelectColumns, dateColumns, numberColumns, isShowTimelineSetting,
+      settings, isGroupView, groups } = this.props;
+    let GridView = this.gridViews[selectedGridView];
     let isToday = this.isToday();
-    let rowExpandPopoverContainer = this.getRowExpandPopoverContainer();
     return (
       <Fragment>
         <div className="timeline-container position-relative" ref={ref => this.timeline = ref}>
@@ -280,18 +236,14 @@ class Timeline extends React.Component {
             groups={groups}
             eventBus={this.props.eventBus}
             updateSelectedDate={this.updateSelectedDate}
-            onViewportLeftScroll={this.onViewportLeftScroll}
             onViewportRightScroll={this.onViewportRightScroll}
-            onCanvasRightScroll={this.onCanvasRightScroll}
-            onRowExpand={this.onRowExpand}
+            onRowExpand={this.props.onRowExpand}
           />
         </div>
         {isShowTimelineSetting &&
           <TimelineSetting
             tables={tables}
             views={views}
-            columns={columns}
-            name_column_map={name_column_map}
             nameColumns={nameColumns}
             singleSelectColumns={singleSelectColumns}
             dateColumns={dateColumns}
@@ -303,34 +255,6 @@ class Timeline extends React.Component {
             onModifyTimelineSettings={this.props.onModifyTimelineSettings}
             onHideTimelineSetting={this.props.onHideTimelineSetting}
             updateDateRange={this.updateDateRange}
-            getColumnIconConfig={getColumnIconConfig}
-          />
-        }
-        {(isShowRowExpand && rowExpandPopoverContainer) &&
-          <TimelinePopover
-            container={rowExpandPopoverContainer}
-            popperClassName={'popper-row-expand'}
-            target={rowExpandTarget}
-            offset={rowExpandOffsetLeft}
-            body={
-              <RowExpand
-                tables={tables}
-                selectedTable={selectedTable}
-                selectedView={selectedView}
-                settings={settings || {}}
-                expandedRow={expandedRow}
-                getOriginalRow={getOriginalRow}
-                getColumnByName={getColumnByName}
-                getMediaUrl={getMediaUrl}
-                getUserCommonInfo={getUserCommonInfo}
-                getLinkCellValue={getLinkCellValue}
-                getRowsByID={getRowsByID}
-                getTableById={getTableById}
-                cellType={cellType}
-                collaborators={collaborators}
-              />
-            }
-            onPopoverToggle={this.onResetRowExpand}
           />
         }
       </Fragment>
@@ -341,34 +265,22 @@ class Timeline extends React.Component {
 Timeline.propTypes = {
   tables: PropTypes.array,
   views: PropTypes.array,
-  selectedTable: PropTypes.object,
-  selectedView: PropTypes.object,
   selectedTimelineView: PropTypes.object,
   rows: PropTypes.array,
   isGroupView: PropTypes.bool,
   groups: PropTypes.array,
   columns: PropTypes.array,
-  name_column_map: PropTypes.object,
   nameColumns: PropTypes.array,
   singleSelectColumns: PropTypes.array,
   dateColumns: PropTypes.array,
   numberColumns: PropTypes.array,
-  collaborators: PropTypes.array,
-  cellType: PropTypes.object,
   settings: PropTypes.object,
   isShowTimelineSetting: PropTypes.bool,
   eventBus: PropTypes.object,
-  getOriginalRow: PropTypes.func,
-  getColumnByName: PropTypes.func,
-  getColumnIconConfig: PropTypes.func,
-  getMediaUrl: PropTypes.func,
-  getUserCommonInfo: PropTypes.func,
-  getLinkCellValue: PropTypes.func,
-  getRowsByID: PropTypes.func,
-  getTableById: PropTypes.func,
   onTimelineSettingToggle: PropTypes.func,
   onModifyTimelineSettings: PropTypes.func,
   onHideTimelineSetting: PropTypes.func,
+  onRowExpand: PropTypes.func,
 };
 
 export default Timeline;

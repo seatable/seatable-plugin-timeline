@@ -250,6 +250,7 @@
 }
 
 .timeline-viewport-left {
+  padding-bottom: 200px;
   overflow-y: auto;
   -ms-overflow-style: none;
   overflow: -moz-scrollbars-none;
@@ -334,6 +335,10 @@
 .timeline-container .timeline-viewport-right .group-canvas-right {
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+.timeline-container .timeline-viewport-right .group-canvas-right {
+  padding-bottom: 200px;
 }
 
 .timeline-container .events-content {

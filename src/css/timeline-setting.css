@@ -48,11 +48,6 @@
   margin-bottom: 10px;
 }
 
-.plugin-timeline-setting .setting-item .btn-select-hide-all {
-  color: #ff8000;
-  cursor: pointer;
-}
-
 .plugin-timeline-setting .split-line {
   width: 100%;
   height: 1px;
@@ -129,61 +124,4 @@
 
 .timeline-setting-range-calendar .rc-calendar-range-middle {
   margin-left: -6px;
-}
-
-.plugin-timeline-setting .column-shown-control-item {
-  height: 30px;
-  margin: 0 -10px;
-  padding: 0 10px;
-  border-radius: 4px;
-}
-
-.plugin-timeline-setting .column-shown-control-item.can-drop {
-  background-color: #e9e9e9;
-}
-
-.plugin-timeline-setting .column-shown-control-item:hover {
-  background: #f0f0f0;
-}
-
-.plugin-timeline-setting .column-shown-control-item .drag-column-handle {
-  color: #c2c2c2;
-  font-size: 14px;
-  cursor: -webkit-grab;
-  cursor: grab;
-}
-
-.plugin-timeline-setting .column-shown-control-item .custom-switch {
-  width: 100%;
-  height: 100%;
-  padding: 0 6px;
-}
-
-.plugin-timeline-setting .column-shown-control-item .custom-switch:hover {
-  cursor: pointer;
-}
-
-.plugin-timeline-setting .column-shown-control-item .custom-switch .column-icon {
-  font-size: 14px;
-  margin-right: 8px;
-}
-
-.plugin-timeline-setting .column-shown-control-item .custom-switch-description {
-  flex: 1;
-  padding-right: 10px;
-}
-
-.plugin-timeline-setting .column-shown-control-item .custom-switch-indicator{
-  width: 22px;
-  height: 12px;
-  border-radius: 6px;
-}
-
-.plugin-timeline-setting .column-shown-control-item .custom-switch-indicator::before {
-  height: 8px;
-  width: 8px;
-}
-
-.plugin-timeline-setting .column-shown-control-item .custom-switch-input:checked~.custom-switch-indicator:before {
-  left: 12px;
 }

@@ -9,10 +9,12 @@ class ViewportLeft extends React.Component {
     let CustomCanvasLeft = CanvasLeft;
     let canvasLeftProps = {};
     if (isGroupView) {
-      let { groups, onExpandGroupToggle } = this.props;
+      let { groupVisibleStartIdx, groups, foldedGroups, onExpandGroupToggle } = this.props;
       CustomCanvasLeft = GroupCanvasLeft;
       canvasLeftProps = {
+        groupVisibleStartIdx,
         groups,
+        foldedGroups,
         onExpandGroupToggle
       };
     } else {
@@ -63,7 +65,9 @@ class ViewportLeft extends React.Component {
 
 ViewportLeft.propTypes = {
   renderedRows: PropTypes.array,
+  groupVisibleStartIdx: PropTypes.number,
   groups: PropTypes.array,
+  foldedGroups: PropTypes.array,
   topOffset: PropTypes.number,
   bottomOffset: PropTypes.number,
   onViewportLeftScroll: PropTypes.func,

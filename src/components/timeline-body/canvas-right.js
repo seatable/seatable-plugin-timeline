@@ -50,10 +50,10 @@ class CanvasRight extends React.Component {
     });
     return (
       <React.Fragment>
-        <div className="events-bg position-absolute" style={{zIndex: zIndexes.EVENTS_BG}}>
+        <div className="events-bg position-absolute" style={{zIndex: zIndexes.EVENTS_BG, paddingBottom: '200px'}}>
           {bgRows}
         </div>
-        <div className="events-rows position-absolute">
+        <div className="events-rows position-absolute" style={{paddingBottom: '200px'}}>
           {eventRows}
         </div>
       </React.Fragment>
@@ -132,7 +132,7 @@ class CanvasRight extends React.Component {
           className="event-rows-wrapper"
           style={{
             paddingTop: topOffset,
-            paddingBottom: bottomOffset
+            paddingBottom: bottomOffset,
           }}
         >
           <div className="position-relative" style={{width: '100%', height: '100%'}}>

@@ -5,9 +5,9 @@ class EventCell extends React.PureComponent {
 
   onRowExpand = (evt) => {
     evt.preventDefault();
-    let { id, row, onRowExpand } = this.props;
+    let { row, onRowExpand } = this.props;
     if (onRowExpand) {
-      onRowExpand(evt, row, id);
+      onRowExpand(row);
     }
   }
 

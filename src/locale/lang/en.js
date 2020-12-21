@@ -36,10 +36,7 @@ const en = {
   "days_range": "Day {startOfMonthDay} - {endOfMonthDay}",
   "No_options": "No options",
   "Date_range": "Date range",
-  "Empty": "Empty",
-  "Other_columns": "Other columns",
-  "Select_all": "Select all",
-  "Hide_all": "Hide all",
+  "Empty": "Empty"
 };
 
 export default en;

@@ -4,7 +4,6 @@ export default class Group {
     this.cell_value = object.cell_value || '';
     this.column_name = object.column_name || '';
     this.column_key = object.column_key || '';
-    this.isExpanded = object.isExpanded || true;
     this.subgroups = object.subgroups || null;
     this.min_date = object.min_date || '';
     this.max_date = object.max_date || '';

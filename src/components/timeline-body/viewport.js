@@ -42,13 +42,11 @@ class Viewport extends Component {
 
   onViewportLeftScroll = (scrollTop) => {
     this.viewportRight && this.viewportRight.setCanvasRightScroll(scrollTop);
-    this.props.onViewportLeftScroll();
     this.updateScroll(scrollTop);
   }
 
   onCanvasRightScroll = (scrollTop) => {
     this.viewportLeft && this.viewportLeft.setCanvasLeftScroll(scrollTop);
-    this.props.onCanvasRightScroll();
     this.updateScroll(scrollTop);
   }
 
@@ -131,9 +129,7 @@ Viewport.propTypes = {
   changedSelectedByScroll: PropTypes.bool,
   renderHeaderYears: PropTypes.func,
   renderHeaderDates: PropTypes.func,
-  onViewportLeftScroll: PropTypes.func,
   onViewportRightScroll: PropTypes.func,
-  onCanvasRightScroll: PropTypes.func,
   updateSelectedDate: PropTypes.func,
   onRowExpand: PropTypes.func,
 };

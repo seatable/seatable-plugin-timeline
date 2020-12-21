@@ -10,7 +10,7 @@ import View from './model/view';
 import Group from './model/group';
 import TimelineRow from './model/timeline-row';
 import Event from './model/event';
-import { PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR, DEFAULT_TEXT_COLOR, RECORD_END_TYPE, DATE_UNIT } from './constants';
+import { PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR, DEFAULT_TEXT_COLOR, RECORD_END_TYPE, DATE_UNIT, zIndexes } from './constants';
 import { generatorViewId, getDtableUuid } from './utils';
 import EventBus from './utils/event-bus';
 
@@ -222,7 +222,6 @@ class App extends React.Component {
         cell_value,
         column_name,
         column_key,
-        isExpanded: true,
         subgroups: null,
         min_date: minDate,
         max_date: maxDate,
@@ -388,14 +387,6 @@ class App extends React.Component {
       (end_time_column_name || record_duration_column_name);
   }
 
-  getName2ColumnMap = (columns) => {
-    let name_column_map = {};
-    columns.forEach((column) => {
-      name_column_map[column.name] = column;
-    });
-    return name_column_map;
-  }
-
   getColumnIconConfig = () => {
     return this.dtable.getColumnIconConfig();
   }
@@ -426,6 +417,13 @@ class App extends React.Component {
     return this.dtable.getTableById(table_id);
   }
 
+  onRowExpand = (table, row) => {
+    if (window.app.expandRow) {
+      let originRow = this.dtable.getRowById(table, row._id);
+      window.app.expandRow(originRow, table);
+    }
+  }
+
   render() {
     let { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx } = this.state;
     if (isLoading || !showDialog) {
@@ -438,7 +436,6 @@ class App extends React.Component {
     let selectedTable = this.getSelectedTable(tables, settings);
     let { name: tableName } = selectedTable || {};
     let columns = this.dtable.getColumns(selectedTable);
-    let name_column_map = this.getName2ColumnMap(columns);
     let views = this.dtable.getViews(selectedTable);
     let selectedView = this.getSelectedView(selectedTable, settings) || views[0];
     let { name: viewName } = selectedView;
@@ -465,15 +462,15 @@ class App extends React.Component {
       }
     }
     /* eslint-disable */
-    console.log(`---------- Timeline plugin logs start ----------`);
-    if (isGroupView) {
-      console.log(groups);
-    } else {
-      console.log(rows);
-    }
-    console.log(`----------- Timeline plugin logs end -----------`);
+    // console.log(`---------- Timeline plugin logs start ----------`);
+    // if (isGroupView) {
+    //   console.log(groups);
+    // } else {
+    //   console.log(rows);
+    // }
+    // console.log(`----------- Timeline plugin logs end -----------`);
     return (
-      <Modal isOpen={true} toggle={this.onPluginToggle} className="dtable-plugin timeline" size='lg'>
+      <Modal isOpen={true} toggle={this.onPluginToggle} className="dtable-plugin timeline" size='lg' zIndex={zIndexes.TIMELINE_DIALOG}>
         <ModalHeader className="plugin-header" close={this.renderBtnGroups()}>
           <div className="logo-title d-flex align-items-center">
             <img className="plugin-logo" src={timelineLogo} alt="" />
@@ -493,13 +490,10 @@ class App extends React.Component {
           <Timeline
             tables={tables}
             views={views}
-            selectedTable={selectedTable}
-            selectedView={selectedView}
             rows={rows}
             isGroupView={isGroupView}
             groups={groups}
             columns={columns}
-            name_column_map={name_column_map}
             nameColumns={nameColumns}
             singleSelectColumns={singleSelectColumns}
             dateColumns={dateColumns}
@@ -507,22 +501,11 @@ class App extends React.Component {
             settings={settings}
             selectedTimelineView={selectedTimelineView}
             eventBus={this.eventBus}
-            cellType={CellType}
-            collaborators={collaborators}
             isShowTimelineSetting={isShowTimelineSetting}
             onTimelineSettingToggle={this.onTimelineSettingToggle}
-            getOriginalRow={this.dtable.getRowById}
-            getColumnByName={this.dtable.getColumnByName}
-            getColumnIconConfig={this.getColumnIconConfig}
-            getMediaUrl={this.getMediaUrl}
-            getUserCommonInfo={this.getUserCommonInfo}
-            getLinkCellValue={this.getLinkCellValue}
-            getRowsByID={this.getRowsByID}
-            getTableById={this.getTableById}
-            onResetRowExpand={this.onResetRowExpand}
-            updateDateRange={this.updateDateRange}
             onModifyTimelineSettings={this.onModifyTimelineSettings}
             onHideTimelineSetting={this.onHideTimelineSetting}
+            onRowExpand={this.onRowExpand.bind(this, selectedTable)}
           />
         </ModalBody>
       </Modal>

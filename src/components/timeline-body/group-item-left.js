@@ -18,13 +18,12 @@ const EventCells = ({name}) => {
 class GroupItemLeft extends Component {
 
   onExpandGroupToggle = () => {
-    let isExpanded = !this.props.group.isExpanded;
-    this.props.onExpandGroupToggle(isExpanded);
+    this.props.onExpandGroupToggle();
   }
 
   render() {
-    let { group } = this.props;
-    let { cell_value, isExpanded, rows } = group;
+    let { group, isExpanded } = this.props;
+    let { cell_value, rows } = group;
     const rowsCount = Array.isArray(rows) ? rows.length : 0;
     return (
       <div className="group-item-left">
@@ -61,6 +60,7 @@ class GroupItemLeft extends Component {
 
 GroupItemLeft.propTypes = {
   group: PropTypes.object,
+  isExpanded: PropTypes.bool,
   onExpandGroupToggle: PropTypes.func,
 };
 

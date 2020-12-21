@@ -4,16 +4,19 @@ import moment from 'moment';
 import intl from 'react-intl-universal';
 import GroupItemRight from './group-item-right';
 import { GRID_VIEWS, DATE_UNIT, DATE_FORMAT, zIndexes } from '../../constants';
+import { isGroupExpanded } from '../../utils/group-viewport-utils';
 
 class GroupCanvasRight extends Component {
 
   renderGroups = () => {
-    let { selectedGridView, selectedDate, renderedDates, overScanDates, columnWidth, groups } = this.props;
+    let { selectedGridView, selectedDate, renderedDates, overScanDates, columnWidth, groupVisibleStartIdx,
+      groups, foldedGroups } = this.props;
     if (groups.length === 0) {
       return <div className="no-events d-flex align-items-center justify-content-center">{intl.get('There_are_no_records')}</div>;
     }
-    return (
-      groups.map((group) => (
+    return groups.map((group, index) => {
+      const isExpanded = isGroupExpanded(foldedGroups, index + groupVisibleStartIdx);
+      return (
         <GroupItemRight
           key={`group-item-right-${group.cell_value}`}
           selectedGridView={selectedGridView}
@@ -22,10 +25,11 @@ class GroupCanvasRight extends Component {
           overScanDates={overScanDates}
           columnWidth={columnWidth}
           group={group}
+          isExpanded={isExpanded}
           onRowExpand={this.props.onRowExpand}
         />
-      ))
-    );
+      );
+    });
   }
 
   renderTodayMarkLine = () => {
@@ -109,7 +113,9 @@ GroupCanvasRight.propTypes = {
   bottomOffset: PropTypes.number,
   startOffset: PropTypes.number,
   endOffset: PropTypes.number,
+  groupVisibleStartIdx: PropTypes.number,
   groups: PropTypes.array,
+  foldedGroups: PropTypes.array,
   onRowExpand: PropTypes.func,
   onCanvasRightScroll: PropTypes.func,
 };
