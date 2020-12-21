@@ -11,7 +11,9 @@ class GroupViewport extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      groups: props.groups || []
+      groups: props.groups || [],
+      groupVisibleStartIdx: 0,
+      groupVisibleEndIdx: 0,
     };
     this.scrollTop = 0;
   }
@@ -38,7 +40,11 @@ class GroupViewport extends Component {
   onExpandGroupToggle = (groupIndex, isExpanded) => {
     let {groups, groupVisibleStartIdx: oldGroupVisibleStartIdx } = this.state;
     let newGroups = [...groups];
-    newGroups[groupIndex + oldGroupVisibleStartIdx].isExpanded = isExpanded;
+    let updatedGroupIndex = groupIndex + oldGroupVisibleStartIdx;
+    let updatedGroup = newGroups[groupIndex + oldGroupVisibleStartIdx];
+    if (!updatedGroup) return;
+    updatedGroup = {...updatedGroup, isExpanded};
+    newGroups[updatedGroupIndex] = updatedGroup;
     let groupViewportHeight = this.groupViewport.offsetHeight - HEADER_HEIGHT;
     let { groupVisibleStartIdx, groupVisibleEndIdx } = getGroupVisibleBoundaries(groupViewportHeight, this.scrollTop, newGroups);
     this.setState({
@@ -48,8 +54,7 @@ class GroupViewport extends Component {
     });
   }
 
-  getRenderedGroups = (groupVisibleStartIdx, groupVisibleEndIdx) => {
-    let { groups } = this.props;
+  getRenderedGroups = (groups, groupVisibleStartIdx, groupVisibleEndIdx) => {
     let groupsLength = groups.length;
     if (groupVisibleStartIdx >= groupsLength || groupVisibleEndIdx > groupsLength) {
       return [];
@@ -75,10 +80,10 @@ class GroupViewport extends Component {
   }
 
   updateScroll = (scrollTop) => {
-    this.scrollTop = scrollTop;
     let { groups } = this.state;
     let groupViewportHeight = this.groupViewport.offsetHeight - HEADER_HEIGHT;
     let { groupVisibleStartIdx, groupVisibleEndIdx } = getGroupVisibleBoundaries(groupViewportHeight, scrollTop, groups);
+    this.scrollTop = scrollTop;
     this.setState({
       groupVisibleStartIdx,
       groupVisibleEndIdx,
@@ -91,7 +96,7 @@ class GroupViewport extends Component {
       onViewportRightScroll } = this.props;
     let { groups, groupVisibleStartIdx, groupVisibleEndIdx } = this.state;
     let groupsLen = groups.length;
-    let renderedGroups = this.getRenderedGroups(groupVisibleStartIdx, groupVisibleEndIdx);
+    let renderedGroups = this.getRenderedGroups(groups, groupVisibleStartIdx, groupVisibleEndIdx);
     let topOffset = groupVisibleStartIdx > 0 ? getGroupsHeight(groups, 0, groupVisibleStartIdx) : 0;
     let bottomOffset = (groupsLen - groupVisibleEndIdx) > 0 ? getGroupsHeight(groups, groupVisibleEndIdx + 1, groupsLen) : 0;
     return (
