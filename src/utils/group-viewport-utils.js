@@ -53,4 +53,4 @@ export const getGroupsHeight = (groups, foldedGroups, startIndex, endIndex) => {
 
 export const isGroupExpanded = (foldedGroups, groupIndex) => {
   return foldedGroups.indexOf(groupIndex) < 0;
-}
+};

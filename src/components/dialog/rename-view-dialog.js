@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
 import PropTypes from 'prop-types';
 import intl from 'react-intl-universal';
-import '../../locale';
 
 const propTypes = {
   viewName: PropTypes.string,

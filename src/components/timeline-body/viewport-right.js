@@ -95,32 +95,21 @@ class ViewportRight extends React.Component {
   }
 
   renderCanvasRight = (props) => {
-    let { isGroupView } = this.props;
-    let { overScanDates, renderedDates, startOffset, endOffset, columnWidth } = props;
-    let { selectedGridView, selectedDate, topOffset, bottomOffset, onRowExpand, eventBus,
-      onCanvasRightScroll } = this.props;
-    let baseProps = { overScanDates, renderedDates, topOffset, bottomOffset, startOffset, endOffset,
-      selectedGridView, selectedDate, columnWidth, onRowExpand, eventBus, onCanvasRightScroll };
-    let CustomCanvasRight = CanvasRight;
-    let customProps = {};
+    let { isGroupView, groupVisibleStartIdx, groups, foldedGroups, renderedRows, ...baseProps } = this.props;
+    let CustomCanvasRight, canvasRightProps;
     if (isGroupView) {
-      let { groupVisibleStartIdx, groups, foldedGroups } = this.props;
       CustomCanvasRight = GroupCanvasRight;
-      customProps = {
-        groupVisibleStartIdx,
-        groups,
-        foldedGroups
-      };
+      canvasRightProps = {groupVisibleStartIdx, groups, foldedGroups};
     } else {
-      customProps = {
-        renderedRows: this.props.renderedRows
-      };
+      CustomCanvasRight = CanvasRight;
+      canvasRightProps = {renderedRows};
     }
     return (
       <CustomCanvasRight
         ref={node => this.canvasRight = node}
+        {...canvasRightProps}
+        {...props}
         {...baseProps}
-        {...customProps}
       />
     );
   }
@@ -202,13 +191,9 @@ class ViewportRight extends React.Component {
     let endOffset = (this.allDates.length - overScanEndIndex) * columnWidth;
     let overScanDates = this.allDates.slice(overScanStartIndex, overScanEndIndex);
     let renderedDates = getRenderedDates(selectedGridView, overScanDates);
+    const viewportStyle = {marginLeft: isShowUsers && 180};
     return (
-      <div
-        className="timeline-viewport-right position-relative"
-        ref={ref => this.viewportRight = ref}
-        onScroll={this.onScroll}
-        style={{marginLeft: isShowUsers && 180}}
-      >
+      <div className="timeline-viewport-right" ref={ref => this.viewportRight = ref} onScroll={this.onScroll} style={viewportStyle}>
         <TimelineHeader
           selectedGridView={selectedGridView}
           selectedDate={selectedDate}

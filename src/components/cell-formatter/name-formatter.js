@@ -10,7 +10,7 @@ class NameFormatter extends React.Component {
   render() {
     let { value } = this.props;
     return (
-      <div className="cell-formatter grid-cell-type-name d-flex align-items-center">
+      <div className="cell-formatter grid-cell-type-name">
         <span className="d-inline-block">{value}</span>
       </div>
     );

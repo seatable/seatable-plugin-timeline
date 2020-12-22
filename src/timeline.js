@@ -211,7 +211,7 @@ class Timeline extends React.Component {
     let isToday = this.isToday();
     return (
       <Fragment>
-        <div className="timeline-container position-relative" ref={ref => this.timeline = ref}>
+        <div className="timeline-container" ref={ref => this.timeline = ref}>
           <Toolbar
             selectedGridView={selectedGridView}
             selectedDate={selectedDate}

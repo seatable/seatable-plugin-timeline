@@ -99,14 +99,14 @@ class GroupViewport extends Component {
       renderHeaderDates, updateSelectedDate, eventBus, onRowExpand, changedSelectedByScroll,
       onViewportRightScroll, groups } = this.props;
     let { foldedGroups, groupVisibleStartIdx, groupVisibleEndIdx } = this.state;
-    let groupsLen = groups.length;
-    let renderedGroups = this.getRenderedGroups(groups, groupVisibleStartIdx, groupVisibleEndIdx);
-    let topOffset = groupVisibleStartIdx > 0 ? getGroupsHeight(groups, foldedGroups, 0, groupVisibleStartIdx) : 0;
-    let bottomOffset = (groupsLen - groupVisibleEndIdx) > 0 ? getGroupsHeight(groups, foldedGroups, groupVisibleEndIdx + 1, groupsLen) : 0;
+    const groupsLen = groups.length;
+    const renderedGroups = this.getRenderedGroups(groups, groupVisibleStartIdx, groupVisibleEndIdx);
+    const topOffset = groupVisibleStartIdx > 0 ? getGroupsHeight(groups, foldedGroups, 0, groupVisibleStartIdx) : 0;
+    const bottomOffset = (groupsLen - groupVisibleEndIdx) > 0 ? getGroupsHeight(groups, foldedGroups, groupVisibleEndIdx + 1, groupsLen) : 0;
     return (
-      <div className="timeline-group-viewport h-100 position-relative" ref={ref => this.groupViewport = ref}>
+      <div className="timeline-group-viewport" ref={ref => this.groupViewport = ref}>
         {isShowUsers &&
-          <div className="left-pane-wrapper position-absolute" style={{zIndex: zIndexes.LEFT_PANE_WRAPPER}}>
+          <div className="left-pane-wrapper" style={{zIndex: zIndexes.LEFT_PANE_WRAPPER}}>
             <ViewportLeft
               ref={node => this.viewportLeft = node}
               isGroupView={true}

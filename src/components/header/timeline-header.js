@@ -23,7 +23,7 @@ class TimelineHeader extends React.Component {
       paddingRight: endOffset
     };
     return (
-      <div className="timeline-header position-absolute" style={headerStyle}>
+      <div className="timeline-header" style={headerStyle}>
         {renderHeaderYears({overScanDates, renderedDates, columnWidth})}
         {renderHeaderDates({overScanDates, renderedDates, columnWidth, startOffset, endOffset})}
       </div>

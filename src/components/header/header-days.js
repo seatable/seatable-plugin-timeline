@@ -19,12 +19,12 @@ class HeaderDays extends React.Component {
       left: todayIndex * columnWidth + (columnWidth - 6) / 2,
     };
     return (
-      <div className="header-days position-relative d-inline-flex">
+      <div className="header-days">
         {overScanDates.map((d) => {
           let day = dates.getDateWithUnit(d, DATE_UNIT.DAY);
           return (
-            <div className="date-item d-flex flex-column" name={d} key={`date-item-${d}`}>
-              <span key={`day-${d}`} className="day d-flex align-items-center justify-content-center">{day}</span>
+            <div className="date-item" name={d} key={`date-item-${d}`}>
+              <span key={`day-${d}`} className="day">{day}</span>
             </div>
           );
         })}

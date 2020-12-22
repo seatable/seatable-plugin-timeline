@@ -6,25 +6,17 @@ import GroupViewport from './timeline-body/group-viewport';
 class Grid extends Component {
 
   renderViewport = () => {
-    let { isGroupView, gridStartDate, gridEndDate, isShowUsers, selectedGridView, selectedDate, renderHeaderYears,
-      renderHeaderDates, rows, groups, eventBus, changedSelectedByScroll, onViewportRightScroll, updateSelectedDate,
-      onRowExpand } = this.props;
-    let CustomViewport = Viewport;
-    let baseProps = { gridStartDate, gridEndDate, isShowUsers, selectedGridView, selectedDate,
-      renderHeaderYears, renderHeaderDates, changedSelectedByScroll, eventBus, updateSelectedDate,
-      onRowExpand, onViewportRightScroll };
-    let customProps = {};
+    let { isGroupView, rows, groups, ...baseProps } = this.props;
+    let CustomViewport, viewportProps;
     if (isGroupView) {
       CustomViewport = GroupViewport;
-      customProps = { groups };
+      viewportProps = {groups, ...baseProps};
     } else {
-      customProps = { rows };
+      CustomViewport = Viewport;
+      viewportProps = {rows, ...baseProps};
     }
     return (
-      <CustomViewport
-        {...baseProps}
-        {...customProps}
-      />
+      <CustomViewport {...viewportProps} />
     );
   }
 

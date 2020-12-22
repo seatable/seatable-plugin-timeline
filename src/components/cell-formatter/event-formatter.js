@@ -17,9 +17,9 @@ class EventFormatter extends React.Component {
       backgroundColor: bgColor,
       color: textColor,
       ...formatterStyle,
-    }
+    };
     return (
-      <div className="cell-formatter grid-cell-type-single-select d-flex align-items-center" style={cellFormatterStyle}>
+      <div className="cell-formatter grid-cell-type-single-select" style={cellFormatterStyle}>
         <span className="d-inline-block">{label}</span>
       </div>
     );

@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Alert, Button } from 'reactstrap';
 import intl from 'react-intl-universal';
-import '../../locale';
 
 const propTypes = {
   onNewViewConfirm: PropTypes.func,

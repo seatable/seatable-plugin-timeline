@@ -6,13 +6,15 @@ import GroupItemRight from './group-item-right';
 import { GRID_VIEWS, DATE_UNIT, DATE_FORMAT, zIndexes } from '../../constants';
 import { isGroupExpanded } from '../../utils/group-viewport-utils';
 
+const noEventsTips = <div className="no-events">{intl.get('There_are_no_records')}</div>;
+
 class GroupCanvasRight extends Component {
 
   renderGroups = () => {
     let { selectedGridView, selectedDate, renderedDates, overScanDates, columnWidth, groupVisibleStartIdx,
       groups, foldedGroups } = this.props;
     if (groups.length === 0) {
-      return <div className="no-events d-flex align-items-center justify-content-center">{intl.get('There_are_no_records')}</div>;
+      return noEventsTips;
     }
     return groups.map((group, index) => {
       const isExpanded = isGroupExpanded(foldedGroups, index + groupVisibleStartIdx);
@@ -42,18 +44,14 @@ class GroupCanvasRight extends Component {
     today = today.format(DATE_FORMAT.YEAR_MONTH_DAY);
     let todayIndex = overScanDates.indexOf(today);
     if (todayIndex < 0) return null;
-    let left = todayIndex * columnWidth + columnWidth / 2;
+    const lineStyle = {
+      top: 0,
+      height: '100%',
+      left: todayIndex * columnWidth + columnWidth / 2,
+      zIndex: zIndexes.TODAY_MARK_LINE,
+    };
     return (
-      <div
-        className="today-mark-line position-absolute"
-        style={{
-          top: 0,
-          left,
-          height: '100%',
-          zIndex: zIndexes.TODAY_MARK_LINE,
-        }}
-      >
-      </div>
+      <div className="today-mark-line" style={lineStyle}></div>
     );
   }
 
@@ -73,26 +71,16 @@ class GroupCanvasRight extends Component {
 
   render() {
     let { overScanDates, columnWidth, topOffset, bottomOffset, startOffset, endOffset, groups } = this.props;
-    let canvasRightStyle = {
+    const canvasRightStyle = {
       width: overScanDates.length * columnWidth + startOffset + endOffset,
       paddingLeft: startOffset,
       paddingRight: endOffset,
       zIndex: zIndexes.CANVAS_RIGHT
     };
+    const groupsWrapperStyle = {paddingTop: topOffset, paddingBottom: bottomOffset};
     return (
-      <div
-        className="group-canvas-right h-100 position-relative"
-        ref={ref => this.groupCanvasRight = ref}
-        style={canvasRightStyle}
-        onScroll={this.onCanvasRightScroll}
-      >
-        <div
-          className="groups-wrapper"
-          style={{
-            paddingTop: topOffset,
-            paddingBottom: bottomOffset
-          }}
-        >
+      <div className="group-canvas-right" ref={ref => this.groupCanvasRight = ref} style={canvasRightStyle} onScroll={this.onCanvasRightScroll}>
+        <div className="groups-wrapper" style={groupsWrapperStyle}>
           <div className="position-relative" style={{width: '100%', height: '100%'}}>
             {this.renderGroups()}
             {groups.length > 0 && this.renderTodayMarkLine()}

@@ -78,12 +78,12 @@ class Viewport extends Component {
       renderHeaderDates, eventBus, onViewportRightScroll, updateSelectedDate, onRowExpand, changedSelectedByScroll } = this.props;
     const rowsCount = rows.length;
     const renderedRows = this.getRenderedRows(rowOverScanStartIdx, rowOverScanEndIdx);
-    let topOffset = rowOverScanStartIdx > 0 ? rowOverScanStartIdx * ROW_HEIGHT : 0;
-    let bottomOffset = (rowsCount - rowOverScanEndIdx) > 0 ? (rowsCount - rowOverScanEndIdx) * ROW_HEIGHT : 0;
+    const topOffset = rowOverScanStartIdx > 0 ? rowOverScanStartIdx * ROW_HEIGHT : 0;
+    const bottomOffset = (rowsCount - rowOverScanEndIdx) > 0 ? (rowsCount - rowOverScanEndIdx) * ROW_HEIGHT : 0;
     return (
-      <div className="timeline-viewport position-relative h-100" ref={ref => this.viewport = ref}>
+      <div className="timeline-viewport" ref={ref => this.viewport = ref}>
         {isShowUsers &&
-          <div className="left-pane-wrapper position-absolute" style={{zIndex: zIndexes.LEFT_PANE_WRAPPER}}>
+          <div className="left-pane-wrapper" style={{zIndex: zIndexes.LEFT_PANE_WRAPPER}}>
             <ViewportLeft
               ref={node => this.viewportLeft = node}
               renderedRows={renderedRows}

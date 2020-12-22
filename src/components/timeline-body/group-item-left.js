@@ -27,11 +27,11 @@ class GroupItemLeft extends Component {
     const rowsCount = Array.isArray(rows) ? rows.length : 0;
     return (
       <div className="group-item-left">
-        <div className="group-header d-flex align-items-center justify-content-between" style={{height: GROUP_HEADER_HEIGHT}}>
+        <div className="group-header" style={{height: GROUP_HEADER_HEIGHT}}>
           <span className="group-title text-truncate">{cell_value}</span>
           <span>
             <span className="rows-count">{rowsCount}</span>
-            <span className="btn-group-expand d-inline-flex align-items-center justify-content-center" onClick={this.onExpandGroupToggle}>
+            <span className="btn-group-expand" onClick={this.onExpandGroupToggle}>
               <i className={`group-expand-icon dtable-font ${isExpanded ? 'dtable-icon-drop-down' : 'dtable-icon-right-slide'}`}></i>
             </span>
           </span>

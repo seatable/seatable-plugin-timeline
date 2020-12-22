@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import intl from 'react-intl-universal';
 import EventRow from '../row/event-row';
 import EventCells from '../row/event-cells';
 import BgCells from '../row/bg-cells';
 import { DATE_UNIT, DATE_FORMAT, zIndexes, GRID_VIEWS, ROW_HEIGHT } from '../../constants';
-import intl from 'react-intl-universal';
-import '../../locale';
+
+const noEventsTips = <div className="no-events">{intl.get('There_are_no_records')}</div>;
 
 class CanvasRight extends React.Component {
 
@@ -14,7 +15,7 @@ class CanvasRight extends React.Component {
     let { selectedGridView, selectedDate, overScanDates, columnWidth, renderedRows,
       renderedDates, onRowExpand } = this.props;
     if (renderedRows.length === 0) {
-      return <div className="no-events d-flex align-items-center justify-content-center">{intl.get('There_are_no_records')}</div>;
+      return noEventsTips;
     }
     let bgRows = [], eventRows = [];
     let bgCells = (
@@ -50,12 +51,8 @@ class CanvasRight extends React.Component {
     });
     return (
       <React.Fragment>
-        <div className="events-bg position-absolute" style={{zIndex: zIndexes.EVENTS_BG, paddingBottom: '200px'}}>
-          {bgRows}
-        </div>
-        <div className="events-rows position-absolute" style={{paddingBottom: '200px'}}>
-          {eventRows}
-        </div>
+        <div className="events-bg" style={{zIndex: zIndexes.EVENTS_BG}}>{bgRows}</div>
+        <div className="events-rows">{eventRows}</div>
       </React.Fragment>
     );
   }
@@ -71,19 +68,14 @@ class CanvasRight extends React.Component {
     today = today.format(DATE_FORMAT.YEAR_MONTH_DAY);
     let todayIndex = overScanDates.indexOf(today);
     if (todayIndex < 0) return null;
-    let left = todayIndex * columnWidth + columnWidth / 2;
-    let height = renderedRowsLen * ROW_HEIGHT;
+    const lineStyle = {
+      top: 0,
+      height: renderedRowsLen * ROW_HEIGHT,
+      left: todayIndex * columnWidth + columnWidth / 2,
+      zIndex: zIndexes.TODAY_MARK_LINE,
+    };
     return (
-      <div
-        className="today-mark-line position-absolute"
-        style={{
-          top: 0,
-          height,
-          left,
-          zIndex: zIndexes.TODAY_MARK_LINE,
-        }}
-      >
-      </div>
+      <div className="today-mark-line" style={lineStyle}></div>
     );
   }
 
@@ -123,7 +115,7 @@ class CanvasRight extends React.Component {
     };
     return (
       <div
-        className="canvas-right h-100 position-relative"
+        className="canvas-right"
         ref={ref => this.canvasRight = ref}
         style={canvasRightStyle}
         onScroll={this.onCanvasRightScroll}

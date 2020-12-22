@@ -38,13 +38,14 @@ function BgCells({selectedGridView, columnWidth, renderedDates}) {
       _isWeekend = isWeekend(dates.getDate2Week(d));
       dateItemWidth = columnWidth;
     }
+    const dateBgClassName = classnames({
+      'timeline-date-bg': true,
+      'd-inline-block': true,
+      'sun-or-sat-day': _isWeekend,
+      'end-of-range': isEndRange
+    });
     return (
-      <div
-        key={`timeline-date-bg-${d}`}
-        name={d}
-        className={classnames({'timeline-date-bg': true, 'sun-or-sat-day': _isWeekend, 'd-inline-block': true, 'end-of-range': isEndRange})}
-        style={{width: dateItemWidth}}
-      ></div>
+      <div key={`timeline-date-bg-${d}`} name={d} className={dateBgClassName} style={{width: dateItemWidth}}></div>
     );
   });
 }

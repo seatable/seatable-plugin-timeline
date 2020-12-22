@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import intl from 'react-intl-universal';
 import ModalPortal from './dialog/modal-portal';
 import NewViewDialog from './dialog/new-view-dialog';
 import RenameViewDialog from './dialog/rename-view-dialog';
 import DropdownMenu from './dropdownmenu';
-import intl from 'react-intl-universal';
-import '../locale';
 
 const propTypes = {
   views: PropTypes.array,
@@ -109,7 +108,7 @@ class TimelineViewsTabs extends React.Component {
     let { isShowViewDropdown, dropdownMenuPosition, isShowNewViewDialog, isShowRenameViewDialog } = this.state;
     let selectedGridView = views[selectedViewIdx] || {};
     return (
-      <div className="timeline-views-tabs d-flex">
+      <div className="timeline-views-tabs">
         <div className="views-tabs-scroll" ref={ref => this.viewsTabsScroll = ref}>
           <div className="views d-inline-flex">
             {views.map((v, i) => {
@@ -124,14 +123,14 @@ class TimelineViewsTabs extends React.Component {
                   })}
                 >
                   <div
-                    className="view-item-content d-flex align-items-center justify-content-center position-relative"
+                    className="view-item-content"
                     ref={this.setViewItem(i)}
                     onClick={this.onSelectView.bind(this, _id, i)}
                   >
                     <div className="view-name">{name}</div>
                     {isActiveView &&
                       <div
-                        className="btn-view-dropdown d-flex align-items-center justify-content-center"
+                        className="btn-view-dropdown"
                         ref={ref => this.btnViewDropdown = ref}
                         onClick={this.onDropdownToggle}
                       >
@@ -165,7 +164,7 @@ class TimelineViewsTabs extends React.Component {
             })}
           </div>
         </div>
-        <div className="btn-add-view d-flex align-items-center" onClick={this.onNewViewToggle}>
+        <div className="btn-add-view" onClick={this.onNewViewToggle}>
           <i className="dtable-font dtable-icon-add-table"></i>
         </div>
         {isShowNewViewDialog &&

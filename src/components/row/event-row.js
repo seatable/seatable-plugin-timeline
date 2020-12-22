@@ -7,7 +7,7 @@ class EventRow extends React.Component {
   render() {
     let { cells } = this.props;
     return (
-      <div className="timeline-row position-relative" style={{height: ROW_HEIGHT}}>
+      <div className="timeline-row" style={{height: ROW_HEIGHT}}>
         {cells}
       </div>
     );

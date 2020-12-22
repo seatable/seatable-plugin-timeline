@@ -45,9 +45,6 @@ class App extends React.Component {
       isShowTimelineSetting: false,
       plugin_settings: {},
       selectedViewIdx: 0,
-      isShowRowExpand: false,
-      rowExpandTarget: '',
-      expandedRow: {},
     };
     this.eventBus = new EventBus();
     this.dtable = new DTable();
@@ -136,7 +133,7 @@ class App extends React.Component {
 
   renderBtnGroups = () => {
     return (
-      <div className="header-btn-list d-flex align-items-center">
+      <div className="header-btn-list">
         <span className="dtable-font dtable-icon-x btn-close" onClick={this.onPluginToggle}></span>
       </div>
     );
@@ -472,7 +469,7 @@ class App extends React.Component {
     return (
       <Modal isOpen={true} toggle={this.onPluginToggle} className="dtable-plugin timeline" size='lg' zIndex={zIndexes.TIMELINE_DIALOG}>
         <ModalHeader className="plugin-header" close={this.renderBtnGroups()}>
-          <div className="logo-title d-flex align-items-center">
+          <div className="logo-title">
             <img className="plugin-logo" src={timelineLogo} alt="" />
             <span className="plugin-title">{intl.get('Timeline')}</span>
           </div>
@@ -486,7 +483,7 @@ class App extends React.Component {
             onSelectView={this.onSelectView}
           />
         </ModalHeader>
-        <ModalBody className="plugin-body position-relative">
+        <ModalBody className="plugin-body">
           <Timeline
             tables={tables}
             views={views}

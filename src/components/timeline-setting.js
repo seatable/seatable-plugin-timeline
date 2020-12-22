@@ -2,13 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import moment from 'moment';
+import intl from 'react-intl-universal';
 import Picker from '@seafile/seafile-calendar/lib/Picker';
 import RangeCalendar from '@seafile/seafile-calendar/lib/RangeCalendar';
 import PluginSelect from './plugin-select';
 import { translateCalendar } from '../utils/seafile-calendar-translate';
 import { SETTING_KEY, zIndexes, RECORD_END_TYPE, GRID_VIEWS, DATE_UNIT, DATE_FORMAT } from '../constants';
-
-import intl from 'react-intl-universal';
 
 import '@seafile/seafile-calendar/assets/index.css';
 import '../css/timeline-setting.css';
@@ -218,10 +217,10 @@ class TimelineSetting extends React.Component {
   render() {
     let { tables, views, nameColumns, singleSelectColumns, dateColumns, onHideTimelineSetting } = this.props;
     return (
-      <div className="plugin-timeline-setting position-absolute" style={{zIndex: zIndexes.TIMELINE_SETTING}} ref={ref => this.timelineSetting = ref} onClick={this.onClick}>
+      <div className="plugin-timeline-setting" style={{zIndex: zIndexes.TIMELINE_SETTING}} ref={ref => this.timelineSetting = ref} onClick={this.onClick}>
         <div className="setting-container">
-          <div className="setting-header d-flex align-items-center">
-            <div className="setting-header-container d-flex">
+          <div className="setting-header">
+            <div className="setting-header-container">
               <div className="setting-header-title">{intl.get('Settings')}</div>
               <div className="dtable-font dtable-icon-x btn-close" onClick={onHideTimelineSetting}></div>
             </div>
@@ -256,7 +255,7 @@ class TimelineSetting extends React.Component {
               <div className="split-line"></div>
               <div className="setting-item date-range">
                 <div className="title">{intl.get('Date_range')}</div>
-                <div className="btn-date-range d-flex align-items-center">
+                <div className="btn-date-range">
                   {this.renderDatePicker()}
                 </div>
               </div>

@@ -63,12 +63,8 @@ class GroupItemRight extends Component {
     }
     return (
       <React.Fragment>
-        <div className="events-bg position-absolute" style={{zIndex: zIndexes.EVENTS_BG}}>
-          {bgRows}
-        </div>
-        <div className="events-rows position-absolute">
-          {eventRows}
-        </div>
+        <div className="events-bg" style={{zIndex: zIndexes.EVENTS_BG}}>{bgRows}</div>
+        <div className="events-rows">{eventRows}</div>
       </React.Fragment>
     );
   }
@@ -78,7 +74,7 @@ class GroupItemRight extends Component {
     let { rows } = group;
     let groupItemHeight = isExpanded ? GROUP_HEADER_HEIGHT + rows.length * ROW_HEIGHT : GROUP_HEADER_HEIGHT;
     return (
-      <div className="group-item-right position-relative" style={{height: groupItemHeight}}>
+      <div className="group-item-right" style={{height: groupItemHeight}}>
         {this.renderRows(rows)}
       </div>
     );

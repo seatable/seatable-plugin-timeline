@@ -18,7 +18,7 @@ class EventCell extends React.PureComponent {
     };
     return (
       <div
-        className="timeline-event-cell d-flex align-items-center"
+        className="timeline-event-cell"
         id={id || ''}
         style={eventCellStyle}
         title={title}

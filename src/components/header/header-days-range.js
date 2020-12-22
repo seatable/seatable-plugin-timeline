@@ -1,11 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import intl from 'react-intl-universal';
 import TodayMark from './today-mark';
 import { DATE_UNIT, DATE_FORMAT } from '../../constants';
-import intl from 'react-intl-universal';
-
-import '../../locale';
 
 const propTypes = {
   overScanDates: PropTypes.array,
@@ -24,7 +22,7 @@ class HeaderDaysRange extends React.Component {
     };
 
     return (
-      <div className="header-days-range position-relative d-inline-flex align-items-end">
+      <div className="header-days-range">
         {renderedDates.map(d => {
           let startOfMonth = moment(d).startOf(DATE_UNIT.MONTH);
           let endOfMonth = moment(d).endOf(DATE_UNIT.MONTH);
@@ -34,8 +32,8 @@ class HeaderDaysRange extends React.Component {
             displayDate = intl.get('days_range', {startOfMonthDay: startOfMonth.format('D'), endOfMonthDay: endOfMonth.format('D')});
           }
           return (
-            <div className="date-item d-flex flex-column" name={d} key={`date-item-${d}`} style={{width: dateItemWidth}}>
-              <span key={`month-${d}`} className="days-range-item d-flex align-items-center justify-content-center">{displayDate}</span>
+            <div className="date-item" name={d} key={`date-item-${d}`} style={{width: dateItemWidth}}>
+              <span key={`month-${d}`} className="days-range-item">{displayDate}</span>
             </div>
           );
         })}

@@ -2,26 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CanvasLeft from './canvas-left';
 import GroupCanvasLeft from './group-canvas-left';
+
 class ViewportLeft extends React.Component {
 
   renderCanvasLeft = () => {
-    let { isGroupView } = this.props;
-    let CustomCanvasLeft = CanvasLeft;
-    let canvasLeftProps = {};
+    let { isGroupView, groupVisibleStartIdx, renderedRows, groups, onExpandGroupToggle, foldedGroups } = this.props;
+    let CustomCanvasLeft, canvasLeftProps;
     if (isGroupView) {
-      let { groupVisibleStartIdx, groups, foldedGroups, onExpandGroupToggle } = this.props;
       CustomCanvasLeft = GroupCanvasLeft;
-      canvasLeftProps = {
-        groupVisibleStartIdx,
-        groups,
-        foldedGroups,
-        onExpandGroupToggle
-      };
+      canvasLeftProps = { groupVisibleStartIdx, groups, foldedGroups, onExpandGroupToggle };
     } else {
-      let { renderedRows } = this.props;
-      canvasLeftProps = {
-        renderedRows
-      };
+      CustomCanvasLeft = CanvasLeft;
+      canvasLeftProps = { renderedRows };
     }
     return (
       <CustomCanvasLeft {...canvasLeftProps} />
@@ -44,18 +36,8 @@ class ViewportLeft extends React.Component {
   render() {
     let { topOffset, bottomOffset } = this.props;
     return (
-      <div
-        className="timeline-viewport-left h-100"
-        ref={ref => this.viewportLeft = ref}
-        onScroll={this.onViewportLeftScroll}
-      >
-        <div
-          className="canvas-left-wrapper"
-          style={{
-            paddingTop: topOffset,
-            paddingBottom: bottomOffset
-          }}
-        >
+      <div className="timeline-viewport-left" ref={ref => this.viewportLeft = ref} onScroll={this.onViewportLeftScroll}>
+        <div className="canvas-left-wrapper" style={{paddingTop: topOffset, paddingBottom: bottomOffset}}>
           {this.renderCanvasLeft()}
         </div>
       </div>

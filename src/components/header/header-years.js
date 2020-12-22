@@ -35,8 +35,8 @@ class HeaderYears extends React.Component {
         displayDate = moment(d).format(displayFormat);
       }
       return (
-        <div className="year-item d-flex flex-column" name={d} key={`date-item-${d}`} style={{width: dateItemWidth}}>
-          <span key={`year-${d}`} className="month d-flex align-items-center">{displayDate}</span>
+        <div className="year-item" name={d} key={`date-item-${d}`} style={{width: dateItemWidth}}>
+          <span key={`year-${d}`} className="month">{displayDate}</span>
         </div>
       );
     });
@@ -44,7 +44,7 @@ class HeaderYears extends React.Component {
 
   render() {
     return (
-      <div className="header-years position-relative d-inline-flex align-items-center">
+      <div className="header-years">
         {this.renderYearDates()}
       </div>
     );

@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import intl from 'react-intl-universal';
 import TodayMark from './today-mark';
 import { dates } from '../../utils';
 import { DATE_UNIT, DATE_FORMAT } from '../../constants';
-import intl from 'react-intl-universal';
-import '../../locale';
 
 const propTypes = {
   overScanDates: PropTypes.array,
@@ -23,12 +22,12 @@ class HeaderYearMonths extends React.Component {
       top: 23
     };
     return (
-      <div className="header-year-months position-relative d-inline-flex align-items-end">
+      <div className="header-year-months">
         {overScanDates.map((d) => {
           let displayDate = intl.get(dates.getDate2Month(d));
           return (
-            <div className="date-item d-flex flex-column" name={d} key={`date-item-${d}`}>
-              <span key={`month-${d}`} className="month d-flex align-items-center justify-content-center">{displayDate}</span>
+            <div className="date-item" name={d} key={`date-item-${d}`}>
+              <span key={`month-${d}`} className="month">{displayDate}</span>
             </div>
           );
         })}
