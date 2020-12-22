@@ -114,19 +114,8 @@ class CanvasRight extends React.Component {
       zIndex: zIndexes.CANVAS_RIGHT
     };
     return (
-      <div
-        className="canvas-right"
-        ref={ref => this.canvasRight = ref}
-        style={canvasRightStyle}
-        onScroll={this.onCanvasRightScroll}
-      >
-        <div
-          className="event-rows-wrapper"
-          style={{
-            paddingTop: topOffset,
-            paddingBottom: bottomOffset,
-          }}
-        >
+      <div className="canvas-right" ref={ref => this.canvasRight = ref} style={canvasRightStyle} onScroll={this.onCanvasRightScroll}>
+        <div className="event-rows-wrapper" style={{paddingTop: topOffset, paddingBottom: bottomOffset}}>
           <div className="position-relative" style={{width: '100%', height: '100%'}}>
             {this.renderRows()}
             {this.renderTodayMarkLine()}

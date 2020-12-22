@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { dates } from '../../utils';
 import { DATE_FORMAT, DATE_UNIT, GRID_VIEWS } from '../../constants';
 
-
 function BgCells({selectedGridView, columnWidth, renderedDates}) {
   const isWeekend = (week) => {
     if (selectedGridView === GRID_VIEWS.DAY) {

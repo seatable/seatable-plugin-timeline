@@ -10,13 +10,13 @@ class Grid extends Component {
     let CustomViewport, viewportProps;
     if (isGroupView) {
       CustomViewport = GroupViewport;
-      viewportProps = {groups, ...baseProps};
+      viewportProps = {groups};
     } else {
       CustomViewport = Viewport;
-      viewportProps = {rows, ...baseProps};
+      viewportProps = {rows};
     }
     return (
-      <CustomViewport {...viewportProps} />
+      <CustomViewport {...viewportProps} {...baseProps} />
     );
   }
 
