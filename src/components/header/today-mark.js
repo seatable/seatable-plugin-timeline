@@ -10,7 +10,7 @@ function TodayMark(props) {
   let todayMarkStyle = {
     ...style
   };
-  return <div className="today-mark position-absolute" style={todayMarkStyle}></div>;
+  return <div className="today-mark" style={todayMarkStyle}></div>;
 }
 
 TodayMark.propTypes = propTypes;

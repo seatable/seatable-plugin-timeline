@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import { NAVIGATE, GRID_VIEWS, zIndexs, DATE_UNIT, DATE_FORMAT } from '../constants';
-import * as EventTypes from '../constants/event-types';
-
 import intl from 'react-intl-universal';
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { NAVIGATE, GRID_VIEWS, zIndexes, DATE_UNIT, DATE_FORMAT } from '../constants';
+import * as EventTypes from '../constants/event-types';
 
 const propTypes = {
   selectedGridView: PropTypes.string,
@@ -19,7 +18,7 @@ const propTypes = {
   onSelectGridView: PropTypes.func,
 };
 
-class TimelineToolbar extends React.Component {
+class Toolbar extends React.Component {
 
   constructor(props) {
     super(props);
@@ -58,7 +57,7 @@ class TimelineToolbar extends React.Component {
     if (selectedGridView === GRID_VIEWS.DAY) {
       const { currentDate } = this.state;
       return (
-        <div className="current-date d-flex align-items-center">
+        <div className="current-date">
           <span className="year">{moment(currentDate).format(DATE_FORMAT.YEAR)}</span>
           -
           <span className="month" ref={ref => this.currentDateOfMonth = ref}>{moment(currentDate).format(DATE_FORMAT.MONTH)}</span>
@@ -96,14 +95,15 @@ class TimelineToolbar extends React.Component {
     let { onShowUsersToggle, isShowUsers, canNavigateToday, onNavigate, onTimelineSettingToggle } = this.props;
     let displaySelectedGridView = this.getDisplaySelectedGridView();
     return (
-      <div className="timeline-toolbar d-flex align-items-center justify-content-between">
-        <div className="toolbar-left d-flex justify-content-center position-absolute" style={{zIndex: zIndexs.TOOLBAR}}>
+      <div className="timeline-toolbar">
+        {isShowUsers && <div className="blank-zone" style={{zIndex: zIndexes.TOOLBAR_BLANK_ZONE}}></div>}
+        <div className="toolbar-left" style={{zIndex: zIndexes.TOOLBAR, left: isShowUsers ? 180 : 0}}>
           <div className="toggle-drawer-btn" onClick={onShowUsersToggle}>
             <i className={`dtable-font ${isShowUsers ? 'dtable-icon-retract-com' : 'dtable-icon-open-com'}`}></i>
           </div>
           {this.renderCurrentDate()}
         </div>
-        <div className="toolbar-right d-flex align-items-center position-absolute" style={{zIndex: zIndexs.TOOLBAR}}>
+        <div className="toolbar-right" style={{zIndex: zIndexes.TOOLBAR}}>
           <div className="btn-select-view">
             <Dropdown group isOpen={this.state.isSelectViewDropdownOpen} size="sm" toggle={this.onSelectViewToggle}>
               <DropdownToggle caret>
@@ -138,6 +138,6 @@ class TimelineToolbar extends React.Component {
   }
 }
 
-TimelineToolbar.propTypes = propTypes;
+Toolbar.propTypes = propTypes;
 
-export default TimelineToolbar;
+export default Toolbar;

@@ -26,4 +26,9 @@ export const getDtableUuid = () => {
     return window.dtable.dtableUuid;
   }
   return window.dtablePluginConfig.dtableUuid;
-}
+};
+
+export const isValidEmail = (email) => {
+  const reg = /^[A-Za-zd]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,6}$/;
+  return reg.test(email);
+};

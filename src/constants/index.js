@@ -1,5 +1,5 @@
 import * as SETTING_KEY from './setting-key';
-import * as zIndexs from './zIndexs';
+import * as zIndexes from './zIndexes';
 import {
   DATE_UNIT,
   DATE_FORMAT,
@@ -11,13 +11,17 @@ const GRID_VIEWS = {
   YEAR: 'year',
   MONTH: 'month',
   DAY: 'day',
-}
+};
 
 const NAVIGATE = {
   PREVIOUS: 'previous',
   NEXT: 'next',
   TODAY: 'today'
-}
+};
+
+const HEADER_HEIGHT = 68;
+
+const GROUP_HEADER_HEIGHT = 32;
 
 const ROW_HEIGHT = 32;
 
@@ -37,7 +41,9 @@ export {
   DATE_UNIT,
   DATE_FORMAT,
   NAVIGATE,
-  zIndexs,
+  zIndexes,
+  HEADER_HEIGHT,
+  GROUP_HEADER_HEIGHT,
   ROW_HEIGHT,
   DEFAULT_BG_COLOR,
   DEFAULT_TEXT_COLOR,

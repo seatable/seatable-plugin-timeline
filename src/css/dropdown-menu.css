@@ -3,6 +3,9 @@
 }
 
 .timeline-modal-portal .dropdown-menu .no-options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 40px;
   color: #c2c2c2;
 }

@@ -2,13 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import moment from 'moment';
+import intl from 'react-intl-universal';
 import Picker from '@seafile/seafile-calendar/lib/Picker';
 import RangeCalendar from '@seafile/seafile-calendar/lib/RangeCalendar';
 import PluginSelect from './plugin-select';
 import { translateCalendar } from '../utils/seafile-calendar-translate';
-import { SETTING_KEY, zIndexs, RECORD_END_TYPE, GRID_VIEWS, DATE_UNIT, DATE_FORMAT } from '../constants';
-
-import intl from 'react-intl-universal';
+import { SETTING_KEY, zIndexes, RECORD_END_TYPE, GRID_VIEWS, DATE_UNIT, DATE_FORMAT } from '../constants';
 
 import '@seafile/seafile-calendar/assets/index.css';
 import '../css/timeline-setting.css';
@@ -74,7 +73,7 @@ class TimelineSetting extends React.Component {
     let { record_end_type } = settings;
     record_end_type = record_end_type || RECORD_END_TYPE.END_TIME;
     return RECORD_END_TYPES.map((r) => {
-      let displayType = r === RECORD_END_TYPE.END_TIME ? 'End_Date' : 'Duration';
+      let displayType = r === RECORD_END_TYPE.END_TIME ? 'End_date' : 'Duration';
       return (
         <div
           key={`record_end_type_${r}`}
@@ -132,7 +131,7 @@ class TimelineSetting extends React.Component {
       <Picker
         value={dateRange}
         calendar={this.renderRangeCalendar()}
-        style={{ zIndex: zIndexs.RC_CALENDAR }}
+        style={{ zIndex: zIndexes.RC_CALENDAR }}
         onOpenChange={this.onOpenChange}
         onChange={this.onDatePickerChange}
       >
@@ -218,10 +217,10 @@ class TimelineSetting extends React.Component {
   render() {
     let { tables, views, nameColumns, singleSelectColumns, dateColumns, onHideTimelineSetting } = this.props;
     return (
-      <div className="plugin-timeline-setting position-absolute" style={{zIndex: zIndexs.TIMELINE_SETTING}} ref={ref => this.timelineSetting = ref} onClick={this.onClick}>
+      <div className="plugin-timeline-setting" style={{zIndex: zIndexes.TIMELINE_SETTING}} ref={ref => this.timelineSetting = ref} onClick={this.onClick}>
         <div className="setting-container">
-          <div className="setting-header d-flex align-items-center">
-            <div className="setting-header-container d-flex">
+          <div className="setting-header">
+            <div className="setting-header-container">
               <div className="setting-header-title">{intl.get('Settings')}</div>
               <div className="dtable-font dtable-icon-x btn-close" onClick={onHideTimelineSetting}></div>
             </div>
@@ -238,24 +237,25 @@ class TimelineSetting extends React.Component {
               </div>
               <div className="split-line"></div>
               <div className="setting-item name">
-                <div className="title">{intl.get('Name_Column')}</div>
+                <div className="title">{intl.get('Name_column')}</div>
                 {this.renderSelector(nameColumns, SETTING_KEY.NAME_COLUMN_NAME, 'name', 'name')}
               </div>
               <div className="setting-item color">
-                <div className="title">{intl.get('Color_Column')}</div>
+                <div className="title">{intl.get('Color_column')}</div>
                 {this.renderSelector(singleSelectColumns, SETTING_KEY.SINGLE_SELECT_COLUMN_NAME, 'name', 'name')}
               </div>
               <div className="split-line"></div>
               <div className="setting-item start-time">
-                <div className="title">{intl.get('Start_Date')}</div>
+                <div className="title">{intl.get('Start_date')}</div>
                 {this.renderSelector(dateColumns, SETTING_KEY.START_TIME_COLUMN_NAME, 'name', 'name')}
               </div>
               <div className="split-line"></div>
               <div className="setting-item record-end-type">{this.renderRecordEndType()}</div>
               {this.renderRecordEndItem()}
+              <div className="split-line"></div>
               <div className="setting-item date-range">
                 <div className="title">{intl.get('Date_range')}</div>
-                <div className="btn-date-range d-flex align-items-center">
+                <div className="btn-date-range">
                   {this.renderDatePicker()}
                 </div>
               </div>

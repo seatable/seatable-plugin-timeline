@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TimelineHeader from '../header/timeline-header';
 import CanvasRight from './canvas-right';
+import GroupCanvasRight from './group-canvas-right';
 import {
   getGridInitState,
   getGridDatesBoundaries,
@@ -11,27 +12,9 @@ import {
   getColumnWidth,
   getRenderedDates,
   canUpdateSelectedDate,
-} from '../../utils/viewport-utils';
+} from '../../utils/viewport-right-utils';
 import * as dates from '../../utils/dates';
 import * as EventTypes from '../../constants/event-types';
-
-const propTypes = {
-  isShowUsers: PropTypes.bool,
-  changedSelectedByScroll: PropTypes.bool,
-  selectedGridView: PropTypes.string,
-  selectedDate: PropTypes.string,
-  gridStartDate: PropTypes.string,
-  gridEndDate: PropTypes.string,
-  headerHeight: PropTypes.number,
-  renderedRows: PropTypes.array,
-  topOffset: PropTypes.number,
-  bottomOffset: PropTypes.number,
-  eventBus: PropTypes.object,
-  renderHeaderDates: PropTypes.func,
-  updateSelectedDate: PropTypes.func,
-  onCanvasRightScroll: PropTypes.func,
-  onViewportRightScroll: PropTypes.func,
-};
 
 class ViewportRight extends React.Component {
 
@@ -65,7 +48,7 @@ class ViewportRight extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     let { selectedGridView: newSelectedGridView, selectedDate: newSelectedDate, gridStartDate: newGridStartDate,
-      gridEndDate: newGridEndDate  } = nextProps;
+      gridEndDate: newGridEndDate } = nextProps;
     let columnWidth = getColumnWidth(newSelectedGridView);
     let viewportRightWidth = this.viewportRight.offsetWidth;
     if (this.props.isShowUsers !== nextProps.isShowUsers) {
@@ -109,6 +92,26 @@ class ViewportRight extends React.Component {
         ...initState
       });
     }
+  }
+
+  renderCanvasRight = (props) => {
+    let { isGroupView, groupVisibleStartIdx, groups, foldedGroups, renderedRows, ...baseProps } = this.props;
+    let CustomCanvasRight, canvasRightProps;
+    if (isGroupView) {
+      CustomCanvasRight = GroupCanvasRight;
+      canvasRightProps = {groupVisibleStartIdx, groups, foldedGroups};
+    } else {
+      CustomCanvasRight = CanvasRight;
+      canvasRightProps = {renderedRows};
+    }
+    return (
+      <CustomCanvasRight
+        ref={node => this.canvasRight = node}
+        {...canvasRightProps}
+        {...props}
+        {...baseProps}
+      />
+    );
   }
 
   onScroll = (evt) => {
@@ -182,53 +185,50 @@ class ViewportRight extends React.Component {
 
   render() {
     let { overScanStartIndex, overScanEndIndex } = this.state;
-    let { selectedGridView, selectedDate, headerHeight, renderedRows, renderHeaderYears, renderHeaderDates, topOffset, bottomOffset } = this.props;
+    let { selectedGridView, selectedDate, isShowUsers, renderHeaderYears, renderHeaderDates } = this.props;
     let columnWidth = getColumnWidth(selectedGridView);
     let startOffset = overScanStartIndex * columnWidth;
     let endOffset = (this.allDates.length - overScanEndIndex) * columnWidth;
     let overScanDates = this.allDates.slice(overScanStartIndex, overScanEndIndex);
     let renderedDates = getRenderedDates(selectedGridView, overScanDates);
-
+    const viewportStyle = {marginLeft: isShowUsers && 180};
     return (
-      <div
-        className="timeline-viewport-right"
-        ref={ref => this.viewportRight = ref}
-        onScroll={this.onScroll}
-      >
+      <div className="timeline-viewport-right" ref={ref => this.viewportRight = ref} onScroll={this.onScroll} style={viewportStyle}>
         <TimelineHeader
           selectedGridView={selectedGridView}
           selectedDate={selectedDate}
           overScanDates={overScanDates}
           renderedDates={renderedDates}
-          headerHeight={headerHeight}
-          renderedRows={renderedRows}
           renderHeaderYears={renderHeaderYears}
           renderHeaderDates={renderHeaderDates}
           columnWidth={columnWidth}
           startOffset={startOffset}
           endOffset={endOffset}
         />
-        <CanvasRight
-          ref={node => this.canvasRight = node}
-          overScanDates={overScanDates}
-          renderedDates={renderedDates}
-          renderedRows={renderedRows}
-          topOffset={topOffset}
-          bottomOffset={bottomOffset}
-          selectedGridView={selectedGridView}
-          selectedDate={selectedDate}
-          headerHeight={headerHeight}
-          columnWidth={columnWidth}
-          startOffset={startOffset}
-          endOffset={endOffset}
-          onCanvasRightScroll={this.props.onCanvasRightScroll}
-          onRowExpand={this.props.onRowExpand}
-        />
+        {this.renderCanvasRight({columnWidth, startOffset, endOffset, overScanDates, renderedDates})}
       </div>
     );
   }
 }
 
-ViewportRight.propTypes = propTypes;
+ViewportRight.propTypes = {
+  isShowUsers: PropTypes.bool,
+  selectedGridView: PropTypes.string,
+  selectedDate: PropTypes.string,
+  gridStartDate: PropTypes.string,
+  gridEndDate: PropTypes.string,
+  renderedRows: PropTypes.array,
+  groupVisibleStartIdx: PropTypes.number,
+  groups: PropTypes.array,
+  foldedGroups: PropTypes.array,
+  topOffset: PropTypes.number,
+  bottomOffset: PropTypes.number,
+  eventBus: PropTypes.object,
+  changedSelectedByScroll: PropTypes.bool,
+  renderHeaderDates: PropTypes.func,
+  updateSelectedDate: PropTypes.func,
+  onCanvasRightScroll: PropTypes.func,
+  onViewportRightScroll: PropTypes.func,
+};
 
 export default ViewportRight;
