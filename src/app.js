@@ -459,13 +459,13 @@ class App extends React.Component {
       }
     }
     /* eslint-disable */
-    // console.log(`---------- Timeline plugin logs start ----------`);
-    // if (isGroupView) {
-    //   console.log(groups);
-    // } else {
-    //   console.log(rows);
-    // }
-    // console.log(`----------- Timeline plugin logs end -----------`);
+    console.log(`---------- Timeline plugin logs start ----------`);
+    if (isGroupView) {
+      console.log(groups);
+    } else {
+      console.log(rows);
+    }
+    console.log(`----------- Timeline plugin logs end -----------`);
     return (
       <Modal isOpen={true} toggle={this.onPluginToggle} className="dtable-plugin timeline" size='lg' zIndex={zIndexes.TIMELINE_DIALOG}>
         <ModalHeader className="plugin-header" close={this.renderBtnGroups()}>
