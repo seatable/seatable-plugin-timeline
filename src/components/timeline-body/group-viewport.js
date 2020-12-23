@@ -43,10 +43,11 @@ class GroupViewport extends Component {
     let { foldedGroups, groupVisibleStartIdx: oldGroupVisibleStartIdx } = this.state;
     let newFoldedGroups = [...foldedGroups];
     let updatedGroupIndex = groupIndex + oldGroupVisibleStartIdx;
-    let updatedGroup = groups[groupIndex + oldGroupVisibleStartIdx];
+    let updatedGroup = groups[updatedGroupIndex];
     if (!updatedGroup) return;
-    if (newFoldedGroups.includes(updatedGroupIndex)) {
-      newFoldedGroups.splice(updatedGroupIndex, 1);
+    let targetIndex = newFoldedGroups.indexOf(updatedGroupIndex);
+    if (targetIndex > -1) {
+      newFoldedGroups.splice(targetIndex, 1);
     } else {
       newFoldedGroups.push(updatedGroupIndex);
     }
