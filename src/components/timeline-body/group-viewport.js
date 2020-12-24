@@ -19,6 +19,7 @@ class GroupViewport extends Component {
   }
 
   componentDidMount() {
+    window.timelineViewport = this;
     let groupViewportHeight = this.groupViewport.offsetHeight - HEADER_HEIGHT;
     let { groups } = this.props;
     let { foldedGroups } = this.state;

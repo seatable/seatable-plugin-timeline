@@ -189,11 +189,12 @@ class Timeline extends React.Component {
 
   updateDateRange = (gridStartDate, gridEndDate) => {
     const { selectedGridView } = this.state;
+    const viewport = window.timelineViewport;
     const days = moment(gridEndDate).diff(gridStartDate, DATE_UNIT.DAY);
     const middleDate = moment(gridStartDate).add(Math.floor(days / 2), DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
     const today = dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY);
     const canNavigateToday = dates.isDateInRange(today, gridStartDate, gridEndDate) &&
-      this.timelineView.viewportRight.canNavigateToday(selectedGridView, today, gridStartDate, gridEndDate);
+      viewport.viewportRight.canNavigateToday(selectedGridView, today, gridStartDate, gridEndDate);
     this.setState({
       gridStartDate,
       gridEndDate,

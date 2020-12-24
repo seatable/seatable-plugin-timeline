@@ -14,6 +14,7 @@ class Viewport extends Component {
   }
 
   componentDidMount() {
+    window.timelineViewport = this;
     let viewportHeight = this.viewport.offsetHeight - HEADER_HEIGHT;
     let { rows } = this.props;
     this.setState({
