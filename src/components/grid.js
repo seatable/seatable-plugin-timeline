@@ -16,7 +16,10 @@ class Grid extends Component {
       viewportProps = {rows};
     }
     return (
-      <CustomViewport {...viewportProps} {...baseProps} />
+      <CustomViewport
+        {...viewportProps}
+        {...baseProps}
+      />
     );
   }
 
