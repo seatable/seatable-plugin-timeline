@@ -66,7 +66,7 @@ class GroupViewport extends Component {
       return [];
     }
     let i = groupVisibleStartIdx, renderGroups = [];
-    while (i < groupVisibleEndIdx) {
+    while (i <= groupVisibleEndIdx) {
       renderGroups.push(groups[i]);
       i++;
     }
