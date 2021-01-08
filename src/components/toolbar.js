@@ -91,8 +91,20 @@ class Toolbar extends React.Component {
     }
   }
 
+  onSelectGridView = (view) => {
+    if (Object.prototype.toString.call(this.props.onSelectGridView) === '[object Function]') {
+      this.props.onSelectGridView(view);
+    }
+  }
+
+  onNavigate = (action) => {
+    if (Object.prototype.toString.call(this.props.onNavigate) === '[object Function]') {
+      this.props.onNavigate(action);
+    }
+  }
+
   render() {
-    let { onShowUsersToggle, isShowUsers, canNavigateToday, onNavigate, onTimelineSettingToggle } = this.props;
+    let { onShowUsersToggle, isShowUsers, canNavigateToday, onTimelineSettingToggle } = this.props;
     let displaySelectedGridView = this.getDisplaySelectedGridView();
     return (
       <div className="timeline-toolbar">
@@ -110,24 +122,24 @@ class Toolbar extends React.Component {
                 {displaySelectedGridView}
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem onClick={this.props.onSelectGridView.bind(this, GRID_VIEWS.YEAR)}>{intl.get('Grid_view_year')}</DropdownItem>
-                <DropdownItem onClick={this.props.onSelectGridView.bind(this, GRID_VIEWS.MONTH)}>{intl.get('Grid_view_month')}</DropdownItem>
-                <DropdownItem onClick={this.props.onSelectGridView.bind(this, GRID_VIEWS.DAY)}>{intl.get('Grid_view_day')}</DropdownItem>
+                <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.YEAR)}>{intl.get('Grid_view_year')}</DropdownItem>
+                <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.MONTH)}>{intl.get('Grid_view_month')}</DropdownItem>
+                <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.DAY)}>{intl.get('Grid_view_day')}</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
           <div className="btn-switch-group">
-            <span className="btn-switch-icon" onClick={onNavigate.bind(this, NAVIGATE.PREVIOUS)}>
+            <span className="btn-switch-icon" onClick={this.onNavigate.bind(this, NAVIGATE.PREVIOUS)}>
               <i className="dtable-font dtable-icon-left"></i>
             </span>
             <span className="btn-switch-split-line"></span>
-            <span className="btn-switch-icon" onClick={onNavigate.bind(this, NAVIGATE.NEXT)}>
+            <span className="btn-switch-icon" onClick={this.onNavigate.bind(this, NAVIGATE.NEXT)}>
               <i className="dtable-font dtable-icon-right"></i>
             </span>
           </div>
           <div
             className={`btn-today ${!canNavigateToday && 'btn-today-disabled'}`}
-            onClick={canNavigateToday ? onNavigate.bind(this, NAVIGATE.TODAY) : undefined}
+            onClick={canNavigateToday ? this.onNavigate.bind(this, NAVIGATE.TODAY) : undefined}
           >{intl.get('Today')}</div>
           <div className="btn-setting" id="btn_setting" onClick={onTimelineSettingToggle}>
             <i className="dtable-font dtable-icon-settings"></i>

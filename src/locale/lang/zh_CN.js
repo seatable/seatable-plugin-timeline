@@ -36,7 +36,8 @@ const zh_CN = {
   "days_range": "{startOfMonthDay} - {endOfMonthDay} 日",
   "No_options": "没有选项",
   "Date_range": "日期范围",
-  "Empty": "空"
+  "Empty": "空",
+  "Exporting": "正在导出...",
 };
 
 export default zh_CN;

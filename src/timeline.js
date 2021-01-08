@@ -1,12 +1,15 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import html2canvas from 'html2canvas';
 import TimelineSetting from './components/timeline-setting';
 import Toolbar from './components/toolbar';
 import VIEWS from './components/timeline-grid-views';
+import LoadingDialog from './components/dialog/loading-dialog';
 import { dates, getDtableUuid } from './utils';
 import { PLUGIN_NAME, NAVIGATE, GRID_VIEWS, DATE_FORMAT, DATE_UNIT } from './constants';
 import * as EventTypes from './constants/event-types';
+import { ExportViewGenerator } from './components/export/export-view-generator';
 
 import './css/timeline.css';
 
@@ -24,6 +27,7 @@ class Timeline extends React.Component {
       canScrollToLeft: true,
       canScrollToRight: true,
       canNavigateToday: true,
+      isShowExportLoadingModal: false,
       ...this.getInitDateRange()
     };
     this.gridViews = this.getGridViews();
@@ -203,11 +207,38 @@ class Timeline extends React.Component {
     });
   }
 
+  onExportAsImage = () => {
+    let { isShowUsers, selectedGridView, selectedDate, gridStartDate, gridEndDate } = this.state;
+    let { selectedTimelineView, rows, isGroupView, groups, eventBus } = this.props;
+    let GridView = this.gridViews[selectedGridView];
+    let isToday = this.isToday();
+    this.setState({isShowExportLoadingModal: true});
+    ExportViewGenerator({isShowUsers, selectedGridView, selectedDate, gridStartDate, gridEndDate, rows,
+      isGroupView, groups, GridView, isToday, eventBus });
+    setTimeout(() => {
+      const ele = document.querySelector('#timeline-export-container .timeline-container');
+      html2canvas(ele, {
+        windowWidth: ele.scrollWidth,
+        windowHeight: ele.scrollHeight,
+        ignoreElements: (element) => {
+          return ['toolbar-left', 'toolbar-right'].includes(element.className);
+        }
+      }).then(canvas => {
+        this.setState({isShowExportLoadingModal: false});
+        let eleA = document.createElement('a');
+        eleA.href = canvas.toDataURL('image/png');
+        eleA.download = `${selectedTimelineView.name}.png`;
+        eleA.click();
+        document.body.removeChild(document.querySelector('#timeline-export-container'));
+      });
+    });
+  }
+
   render() {
     let { isShowUsers, selectedGridView, selectedDate, changedSelectedByScroll, gridStartDate, gridEndDate,
-      canNavigateToday } = this.state;
+      canNavigateToday, isShowExportLoadingModal } = this.state;
     let { tables, views, nameColumns, singleSelectColumns, dateColumns, numberColumns, isShowTimelineSetting,
-      settings, isGroupView, groups } = this.props;
+      settings, rows, isGroupView, groups } = this.props;
     let GridView = this.gridViews[selectedGridView];
     let isToday = this.isToday();
     return (
@@ -232,7 +263,7 @@ class Timeline extends React.Component {
             selectedDate={selectedDate}
             gridStartDate={gridStartDate}
             gridEndDate={gridEndDate}
-            rows={this.props.rows}
+            rows={rows}
             isGroupView={isGroupView}
             groups={groups}
             eventBus={this.props.eventBus}
@@ -257,6 +288,9 @@ class Timeline extends React.Component {
             onHideTimelineSetting={this.props.onHideTimelineSetting}
             updateDateRange={this.updateDateRange}
           />
+        }
+        {isShowExportLoadingModal &&
+          <LoadingDialog />
         }
       </Fragment>
     );

@@ -168,7 +168,9 @@ class ViewportRight extends React.Component {
         this.props.eventBus.dispatch(EventTypes.VIEWPORT_RIGHT_SCROLL, {visibleStartDate, scrollLeft});
         this.viewportRight.scrollLeft = scrollLeft;
         this.canUpdateScrollLeft = false;
-        this.props.onViewportRightScroll(scrollLeft, viewportRightWidth, scrollWidth);
+        if (Object.prototype.toString.call(this.props.onSelectGridView) === '[object Function]') {
+          this.props.onViewportRightScroll(scrollLeft, viewportRightWidth, scrollWidth);
+        }
       }
     });
   }
@@ -185,11 +187,18 @@ class ViewportRight extends React.Component {
 
   render() {
     let { overScanStartIndex, overScanEndIndex } = this.state;
-    let { selectedGridView, selectedDate, isShowUsers, renderHeaderYears, renderHeaderDates } = this.props;
+    let { selectedGridView, selectedDate, isShowUsers, renderHeaderYears, renderHeaderDates, isRenderAll } = this.props;
     let columnWidth = getColumnWidth(selectedGridView);
-    let startOffset = overScanStartIndex * columnWidth;
-    let endOffset = (this.allDates.length - overScanEndIndex) * columnWidth;
-    let overScanDates = this.allDates.slice(overScanStartIndex, overScanEndIndex);
+    let overScanDates, startOffset, endOffset;
+    if (isRenderAll) {
+      overScanDates = [...this.allDates];
+      startOffset = 0;
+      endOffset = 0;
+    } else {
+      overScanDates = this.allDates.slice(overScanStartIndex, overScanEndIndex);
+      startOffset = overScanStartIndex * columnWidth;
+      endOffset = (this.allDates.length - overScanEndIndex) * columnWidth;
+    }
     let renderedDates = getRenderedDates(selectedGridView, overScanDates);
     const viewportStyle = {marginLeft: isShowUsers && 180};
     return (
