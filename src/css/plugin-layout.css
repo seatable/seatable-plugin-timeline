@@ -167,22 +167,3 @@
 .timeline .btn-close {
   font-weight: 700;
 }
-
-.timeline-loading-dialog {
-  height: 160px;
-}
-
-.timeline-loading-dialog .modal-content {
-  height: 100%;
-}
-
-.timeline-loading-dialog .loading-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
-.timeline-loading-dialog .loading-content .loading-icon {
-  margin: 0 .75rem 0 0;
-}
