@@ -37,6 +37,8 @@ const en = {
   "No_options": "No options",
   "Date_range": "Date range",
   "Empty": "Empty",
+  "Select_the_date_range_to_export": "Select the date range to export",
+  "Export": "Export",
   "Exporting": "Exporting..."
 };
 

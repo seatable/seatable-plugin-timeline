@@ -156,7 +156,7 @@ class TimelineSetting extends React.Component {
     const { dateRange } = this.state;
     return (
       <RangeCalendar
-        className={'timeline-setting-range-calendar'}
+        className={'timeline-date-range-calendar'}
         locale={translateCalendar()}
         showToday={false}
         mode={[DATE_UNIT.YEAR, DATE_UNIT.YEAR]}

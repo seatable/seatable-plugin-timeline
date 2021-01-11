@@ -37,7 +37,9 @@ const zh_CN = {
   "No_options": "没有选项",
   "Date_range": "日期范围",
   "Empty": "空",
-  "Exporting": "正在导出...",
+  "Select_the_date_range_for_export": "选择要导出的日期范围",
+  "Export": "导出",
+  "Exporting": "正在导出",
 };
 
 export default zh_CN;
