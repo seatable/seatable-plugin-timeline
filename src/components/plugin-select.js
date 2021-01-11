@@ -59,7 +59,6 @@ class PluginSelect extends React.Component {
         placeholder={placeholder}
         isSearchable={isSearchable}
         menuPosition={'fixed'}
-        menuShouldBlockScroll={true}
         menuShouldScrollIntoView
         menuPortalTarget={this.getMenuPortalTarget()}
       />
