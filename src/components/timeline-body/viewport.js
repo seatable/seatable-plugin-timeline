@@ -76,13 +76,21 @@ class Viewport extends Component {
   render() {
     let { rowOverScanStartIdx, rowOverScanEndIdx } = this.state;
     let { isShowUsers, selectedGridView, selectedDate, gridStartDate, gridEndDate, rows, renderHeaderYears,
-      renderHeaderDates, eventBus, onViewportRightScroll, updateSelectedDate, onRowExpand, changedSelectedByScroll } = this.props;
+      renderHeaderDates, eventBus, onViewportRightScroll, updateSelectedDate, onRowExpand, changedSelectedByScroll,
+      isRenderAll } = this.props;
     const rowsCount = rows.length;
-    const renderedRows = this.getRenderedRows(rowOverScanStartIdx, rowOverScanEndIdx);
-    const topOffset = rowOverScanStartIdx > 0 ? rowOverScanStartIdx * ROW_HEIGHT : 0;
-    const bottomOffset = (rowsCount - rowOverScanEndIdx) > 0 ? (rowsCount - rowOverScanEndIdx) * ROW_HEIGHT : 0;
+    let renderedRows, topOffset, bottomOffset;
+    if (isRenderAll) {
+      renderedRows = [...rows];
+      topOffset = 0;
+      bottomOffset = 0;
+    } else {
+      renderedRows = this.getRenderedRows(rowOverScanStartIdx, rowOverScanEndIdx);
+      topOffset = rowOverScanStartIdx > 0 ? rowOverScanStartIdx * ROW_HEIGHT : 0;
+      bottomOffset = (rowsCount - rowOverScanEndIdx) > 0 ? (rowsCount - rowOverScanEndIdx) * ROW_HEIGHT : 0;
+    }
     return (
-      <div className="timeline-viewport" ref={ref => this.viewport = ref}>
+      <div className="timeline-viewport viewport" ref={ref => this.viewport = ref}>
         {isShowUsers &&
           <div className="left-pane-wrapper" style={{zIndex: zIndexes.LEFT_PANE_WRAPPER}}>
             <ViewportLeft
@@ -107,6 +115,7 @@ class Viewport extends Component {
           bottomOffset={bottomOffset}
           renderHeaderYears={renderHeaderYears}
           renderHeaderDates={renderHeaderDates}
+          isRenderAll={isRenderAll}
           eventBus={eventBus}
           changedSelectedByScroll={changedSelectedByScroll}
           onViewportRightScroll={onViewportRightScroll}

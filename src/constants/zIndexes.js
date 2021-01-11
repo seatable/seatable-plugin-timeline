@@ -23,5 +23,5 @@ export const TIMELINE_DIALOG = 1048;
 // Timeline dialog is 1048, then dropdown menu is 1049.
 export const DROPDOWN_MENU = 1049;
 
-// Timeline dialog is 1048, then rc-calendar container is 1049.
-export const RC_CALENDAR = 1049;
+// Timeline dialog is 1048, then rc-calendar container is 1050.
+export const RC_CALENDAR = 1050;

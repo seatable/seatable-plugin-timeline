@@ -134,6 +134,7 @@ class App extends React.Component {
   renderBtnGroups = () => {
     return (
       <div className="header-btn-list">
+        <span className="dtable-font dtable-icon-download btn-export-image" onClick={this.onExportAsImage}></span>
         <span className="dtable-font dtable-icon-x btn-close" onClick={this.onPluginToggle}></span>
       </div>
     );
@@ -421,6 +422,10 @@ class App extends React.Component {
     }
   }
 
+  onExportAsImage = () => {
+    this.timeline.onExportAsImage();
+  }
+
   render() {
     let { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx } = this.state;
     if (isLoading || !showDialog) {
@@ -485,6 +490,7 @@ class App extends React.Component {
         </ModalHeader>
         <ModalBody className="plugin-body">
           <Timeline
+            ref={ref => this.timeline = ref}
             tables={tables}
             views={views}
             rows={rows}

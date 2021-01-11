@@ -146,16 +146,24 @@
 .timeline .header-btn-list {
   display: flex;
   align-items: center;
-  width: 24px;
+  width: 48px;
   height: 100%;
 }
 
-.timeline .btn-close {
+.timeline .btn-close,
+.timeline .btn-export-image {
   height: 24px;
   width: 24px;
   text-align: center;
   cursor: pointer;
   color: #000;
   opacity: 0.5;
+}
+
+.timeline .btn-export-image {
+  margin-right: 10px;
+}
+
+.timeline .btn-close {
   font-weight: 700;
 }

@@ -45,7 +45,7 @@ class Year extends React.Component {
 
   render() {
     return (
-      <div className="timeline-year-view">
+      <div className="timeline-year-view timeline-grid-view">
         <Grid
           {...this.props}
           renderHeaderYears={this.renderHeaderYears}

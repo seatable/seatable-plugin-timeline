@@ -99,14 +99,21 @@ class GroupViewport extends Component {
   render() {
     let { gridStartDate, gridEndDate, isShowUsers, selectedGridView, selectedDate, renderHeaderYears,
       renderHeaderDates, updateSelectedDate, eventBus, onRowExpand, changedSelectedByScroll,
-      onViewportRightScroll, groups } = this.props;
+      onViewportRightScroll, groups, isRenderAll } = this.props;
     let { foldedGroups, groupVisibleStartIdx, groupVisibleEndIdx } = this.state;
     const groupsLen = groups.length;
-    const renderedGroups = this.getRenderedGroups(groups, groupVisibleStartIdx, groupVisibleEndIdx);
-    const topOffset = groupVisibleStartIdx > 0 ? getGroupsHeight(groups, foldedGroups, 0, groupVisibleStartIdx) : 0;
-    const bottomOffset = (groupsLen - groupVisibleEndIdx) > 0 ? getGroupsHeight(groups, foldedGroups, groupVisibleEndIdx + 1, groupsLen) : 0;
+    let renderedGroups, topOffset, bottomOffset;
+    if (isRenderAll) {
+      renderedGroups = [...groups];
+      topOffset = 0;
+      bottomOffset = 0;
+    } else {
+      renderedGroups = this.getRenderedGroups(groups, groupVisibleStartIdx, groupVisibleEndIdx);
+      topOffset = groupVisibleStartIdx > 0 ? getGroupsHeight(groups, foldedGroups, 0, groupVisibleStartIdx) : 0;
+      bottomOffset = (groupsLen - groupVisibleEndIdx) > 0 ? getGroupsHeight(groups, foldedGroups, groupVisibleEndIdx + 1, groupsLen) : 0;
+    }
     return (
-      <div className="timeline-group-viewport" ref={ref => this.groupViewport = ref}>
+      <div className="timeline-group-viewport viewport" ref={ref => this.groupViewport = ref}>
         {isShowUsers &&
           <div className="left-pane-wrapper" style={{zIndex: zIndexes.LEFT_PANE_WRAPPER}}>
             <ViewportLeft
@@ -139,6 +146,7 @@ class GroupViewport extends Component {
           changedSelectedByScroll={changedSelectedByScroll}
           renderHeaderYears={renderHeaderYears}
           renderHeaderDates={renderHeaderDates}
+          isRenderAll={isRenderAll}
           updateSelectedDate={updateSelectedDate}
           onRowExpand={onRowExpand}
           onCanvasRightScroll={this.onCanvasRightScroll}

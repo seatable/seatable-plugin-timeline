@@ -47,7 +47,7 @@ class Day extends React.Component {
 
   render() {
     return (
-      <div className="timeline-day-view" >
+      <div className="timeline-day-view timeline-grid-view">
         <Grid
           {...this.props}
           renderHeaderYears={this.renderHeaderYears}

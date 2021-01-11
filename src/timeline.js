@@ -1,12 +1,15 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import html2canvas from 'html2canvas';
 import TimelineSetting from './components/timeline-setting';
 import Toolbar from './components/toolbar';
 import VIEWS from './components/timeline-grid-views';
+import SelectExportDateRangeDialog from './components/dialog/select-export-date-range-dialog';
 import { dates, getDtableUuid } from './utils';
 import { PLUGIN_NAME, NAVIGATE, GRID_VIEWS, DATE_FORMAT, DATE_UNIT } from './constants';
 import * as EventTypes from './constants/event-types';
+import { ExportViewGenerator } from './components/export/export-view-generator';
 
 import './css/timeline.css';
 
@@ -24,6 +27,8 @@ class Timeline extends React.Component {
       canScrollToLeft: true,
       canScrollToRight: true,
       canNavigateToday: true,
+      isShowSelectExportDateRangeDialog: false,
+      isExporting: false,
       ...this.getInitDateRange()
     };
     this.gridViews = this.getGridViews();
@@ -203,11 +208,53 @@ class Timeline extends React.Component {
     });
   }
 
+  onExportAsImage = () => {
+    this.setState({isShowSelectExportDateRangeDialog: true});
+  }
+
+  onSelectDateRangeToggle = () => {
+    this.setState({
+      isExporting: false,
+      isShowSelectExportDateRangeDialog: !this.state.isShowSelectExportDateRangeDialog
+    });
+  }
+
+  onConfirmExport = (gridStartDate, gridEndDate) => {
+    let { isShowUsers, selectedGridView, selectedDate } = this.state;
+    let { selectedTimelineView, rows, isGroupView, groups, eventBus } = this.props;
+    const GridView = this.gridViews[selectedGridView];
+    const isToday = this.isToday();
+    this.setState({isExporting: true});
+    ExportViewGenerator({isShowUsers, selectedGridView, selectedDate, gridStartDate, gridEndDate, rows,
+      isGroupView, groups, GridView, isToday, eventBus });
+    setTimeout(() => {
+      const ele = document.querySelector('#timeline-export-container .timeline-container');
+      if (!ele) return;
+      html2canvas(ele, {
+        windowWidth: ele.scrollWidth,
+        windowHeight: ele.scrollHeight,
+        ignoreElements: (element) => {
+          return ['toolbar-left', 'toolbar-right'].includes(element.className);
+        }
+      }).then(canvas => {
+        this.setState({
+          isExporting: false,
+          isShowSelectExportDateRangeDialog: false
+        });
+        let eleA = document.createElement('a');
+        eleA.href = canvas.toDataURL('image/png');
+        eleA.download = `${selectedTimelineView.name}.png`;
+        eleA.click();
+        document.body.removeChild(document.querySelector('#timeline-export-container'));
+      });
+    });
+  }
+
   render() {
     let { isShowUsers, selectedGridView, selectedDate, changedSelectedByScroll, gridStartDate, gridEndDate,
-      canNavigateToday } = this.state;
+      canNavigateToday, isShowSelectExportDateRangeDialog, isExporting } = this.state;
     let { tables, views, nameColumns, singleSelectColumns, dateColumns, numberColumns, isShowTimelineSetting,
-      settings, isGroupView, groups } = this.props;
+      settings, rows, isGroupView, groups } = this.props;
     let GridView = this.gridViews[selectedGridView];
     let isToday = this.isToday();
     return (
@@ -232,7 +279,7 @@ class Timeline extends React.Component {
             selectedDate={selectedDate}
             gridStartDate={gridStartDate}
             gridEndDate={gridEndDate}
-            rows={this.props.rows}
+            rows={rows}
             isGroupView={isGroupView}
             groups={groups}
             eventBus={this.props.eventBus}
@@ -256,6 +303,13 @@ class Timeline extends React.Component {
             onModifyTimelineSettings={this.props.onModifyTimelineSettings}
             onHideTimelineSetting={this.props.onHideTimelineSetting}
             updateDateRange={this.updateDateRange}
+          />
+        }
+        {isShowSelectExportDateRangeDialog &&
+          <SelectExportDateRangeDialog
+            isExporting={isExporting}
+            onSelectDateRangeToggle={this.onSelectDateRangeToggle}
+            onConfirmExportDateRange={this.onConfirmExport}
           />
         }
       </Fragment>

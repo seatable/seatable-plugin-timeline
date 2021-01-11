@@ -506,3 +506,118 @@
   border: 1px solid #dedede;
   filter: none;
 }
+
+.timeline-export-container {
+  position: absolute;
+  top: 99999px;
+  left: 99999px;
+}
+
+.timeline-export-container,
+.timeline-export-container .viewport {
+  display: flex;
+}
+
+.timeline-export-container .timeline-viewport-left,
+.timeline-export-container .timeline-viewport-right,
+.timeline-export-container .canvas-right {
+  overflow-y: unset !important;
+}
+
+.timeline-export-container .timeline-viewport-right,
+.timeline-export-container .canvas-right {
+  overflow-x: unset !important;
+}
+
+.timeline-export-container .timeline-grid-view,
+.timeline-export-container .left-pane-wrapper {
+  display: flex;
+}
+
+.timeline-export-container .left-pane-wrapper {
+  position: unset;
+  width: 180px;
+  border-right: 2px solid rgba(77,77,77,0.3);
+}
+
+.timeline-export-container .timeline-toolbar .blank-zone {
+  border-right: 2px solid rgba(77,77,77,0.3);
+}
+
+.timeline-export-container .timeline-viewport-left {
+  width: 100%;
+}
+
+.timeline-export-container .timeline-header {
+  position: unset;
+}
+
+.timeline-export-container .timeline-viewport-right {
+  padding-top: 0;
+  margin-left: 0 !important;
+}
+
+.timeline-export-container .events-bg {
+  position: unset;
+}
+
+/* rc-calendar */
+.timeline-date-range-calendar .rc-calendar-selected-day .rc-calendar-date,
+.timeline-date-range-calendar .rc-calendar-month-panel-selected-cell,
+.timeline-date-range-calendar .rc-calendar-year-panel-selected-cell {
+  color: #fff;
+}
+
+.timeline-date-range-calendar .rc-calendar-selected-day .rc-calendar-date,
+.timeline-date-range-calendar .rc-calendar-month-panel-selected-cell .rc-calendar-month-panel-month,
+.timeline-date-range-calendar .rc-calendar-year-panel-selected-cell .rc-calendar-year-panel-year {
+  background-color: #3b88fd;
+}
+
+.timeline-date-range-calendar .rc-calendar-today .rc-calendar-date,
+.timeline-date-range-calendar .rc-calendar-selected-day .rc-calendar-date {
+  border-color: #3b88fd;
+}
+
+.timeline-date-range-calendar .rc-calendar-selected-day .rc-calendar-date:hover,
+.timeline-date-range-calendar .rc-calendar-month-panel-selected-cell .rc-calendar-month-panel-month:hover,
+.timeline-date-range-calendar .rc-calendar-month-panel-selected-cell .rc-calendar-year-panel-year:hover {
+  background-color: #3b88fd;
+}
+
+.timeline-date-range-calendar .rc-calendar-date:hover,
+.timeline-date-range-calendar .rc-calendar-month-panel-month:hover,
+.timeline-date-range-calendar .rc-calendar-year-panel-year:hover {
+  background-color: rgba(59, 136, 253, .1);
+}
+
+.timeline-date-range-calendar .rc-calendar-range-middle {
+  margin-left: -6px;
+}
+
+/* export select date range */
+.timeline-export-select-date-range .selected-date-range {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid hsl(0,0%,80%);;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.timeline-export-select-date-range .selected-date-range>span {
+  display: inline-block;
+  width: 100%;
+  height: 36px;
+}
+
+.timeline-export-select-date-range .ant-calendar-picker-input {
+  width: 100%;
+  height: 100%;
+  padding: 0 8px;
+  border: none;
+}
+
+.timeline-export-select-date-range .btn.disabled:hover {
+  cursor: default;
+}

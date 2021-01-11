@@ -46,7 +46,7 @@ class Month extends React.Component {
 
   render() {
     return (
-      <div className="timeline-month-view">
+      <div className="timeline-month-view timeline-grid-view">
         <Grid
           {...this.props}
           renderHeaderYears={this.renderHeaderYears}
