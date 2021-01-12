@@ -132,15 +132,6 @@ class App extends React.Component {
     this.setState({isShowTimelineSetting: false});
   }
 
-  renderBtnGroups = () => {
-    return (
-      <div className="header-btn-list">
-        <span className="dtable-font dtable-icon-download btn-export-image" onClick={this.onExportAsImage}></span>
-        <span className="dtable-font dtable-icon-x btn-close" onClick={this.onPluginToggle}></span>
-      </div>
-    );
-  }
-
   onModifyTimelineSettings = (updated) => {
     let { plugin_settings, selectedViewIdx } = this.state;
     let { views: updatedViews } = plugin_settings;
@@ -427,6 +418,13 @@ class App extends React.Component {
     this.timeline.onExportAsImage();
   }
 
+  onTimelineClick = () => {
+    const { isShowTimelineSetting } = this.state;
+    if (isShowTimelineSetting) {
+      this.onHideTimelineSetting();
+    }
+  }
+
   render() {
     let { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx } = this.state;
     if (isLoading || !showDialog) {
@@ -473,7 +471,7 @@ class App extends React.Component {
     }
     console.log(`----------- Timeline plugin logs end -----------`);
     return (
-      <div className="dtable-plugin plugin-timeline" ref={ref => this.plugin = ref}>
+      <div className="dtable-plugin plugin-timeline" ref={ref => this.plugin = ref} onClick={this.onTimelineClick}>
         <div className="plugin-header">
           <div className="plugin-logo">
             <img className="plugin-logo-icon" src={timelineLogo} alt="timeline" />

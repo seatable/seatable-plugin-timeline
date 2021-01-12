@@ -728,7 +728,7 @@
 
 .timeline-date-range-calendar .rc-calendar-selected-day .rc-calendar-date:hover,
 .timeline-date-range-calendar .rc-calendar-month-panel-selected-cell .rc-calendar-month-panel-month:hover,
-.timeline-date-range-calendar .rc-calendar-month-panel-selected-cell .rc-calendar-year-panel-year:hover {
+.timeline-date-range-calendar .rc-calendar-year-panel-selected-cell .rc-calendar-year-panel-year:hover {
   background-color: #3b88fd;
 }
 
