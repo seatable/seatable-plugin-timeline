@@ -214,10 +214,15 @@ class TimelineSetting extends React.Component {
     }
   }
 
+  onTimelineSettingClick = (evt) => {
+    evt.preventDefault();
+    evt.stopPropagation();
+  }
+
   render() {
     let { tables, views, nameColumns, singleSelectColumns, dateColumns, onHideTimelineSetting } = this.props;
     return (
-      <div className="plugin-timeline-setting" style={{zIndex: zIndexes.TIMELINE_SETTING}} ref={ref => this.timelineSetting = ref} onClick={this.onClick}>
+      <div className="plugin-timeline-setting" style={{zIndex: zIndexes.TIMELINE_SETTING}} ref={ref => this.timelineSetting = ref} onClick={this.onTimelineSettingClick}>
         <div className="setting-container">
           <div className="setting-header">
             <div className="setting-header-container">

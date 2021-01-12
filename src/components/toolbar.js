@@ -14,7 +14,6 @@ const propTypes = {
   canNavigateToday: PropTypes.bool,
   onShowUsersToggle: PropTypes.func,
   onNavigate: PropTypes.func,
-  onTimelineSettingToggle: PropTypes.func,
   onSelectGridView: PropTypes.func,
 };
 
@@ -104,7 +103,7 @@ class Toolbar extends React.Component {
   }
 
   render() {
-    let { onShowUsersToggle, isShowUsers, canNavigateToday, onTimelineSettingToggle } = this.props;
+    let { onShowUsersToggle, isShowUsers, canNavigateToday } = this.props;
     let displaySelectedGridView = this.getDisplaySelectedGridView();
     return (
       <div className="timeline-toolbar">
@@ -141,9 +140,6 @@ class Toolbar extends React.Component {
             className={`btn-today ${!canNavigateToday && 'btn-today-disabled'}`}
             onClick={canNavigateToday ? this.onNavigate.bind(this, NAVIGATE.TODAY) : undefined}
           >{intl.get('Today')}</div>
-          <div className="btn-setting" id="btn_setting" onClick={onTimelineSettingToggle}>
-            <i className="dtable-font dtable-icon-settings"></i>
-          </div>
         </div>
       </div>
     );
