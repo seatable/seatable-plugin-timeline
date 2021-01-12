@@ -11,8 +11,6 @@ import { PLUGIN_NAME, NAVIGATE, GRID_VIEWS, DATE_FORMAT, DATE_UNIT } from './con
 import * as EventTypes from './constants/event-types';
 import { ExportViewGenerator } from './components/export/export-view-generator';
 
-import './css/timeline.css';
-
 const KEY_SELECTED_GRID_VIEWS = `${PLUGIN_NAME}-selectedGridViews`;
 
 class Timeline extends React.Component {
@@ -29,9 +27,18 @@ class Timeline extends React.Component {
       canNavigateToday: true,
       isShowSelectExportDateRangeDialog: false,
       isExporting: false,
+      isAfterDelay: false,
       ...this.getInitDateRange()
     };
     this.gridViews = this.getGridViews();
+  }
+
+  componentDidMount() {
+    this.timer = setTimeout(() => {
+      this.setState({isAfterDelay: true});
+      clearTimeout(this.timer);
+      this.timer = null;
+    }, 300);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -252,42 +259,44 @@ class Timeline extends React.Component {
 
   render() {
     let { isShowUsers, selectedGridView, selectedDate, changedSelectedByScroll, gridStartDate, gridEndDate,
-      canNavigateToday, isShowSelectExportDateRangeDialog, isExporting } = this.state;
+      canNavigateToday, isShowSelectExportDateRangeDialog, isExporting, isAfterDelay } = this.state;
     let { tables, views, nameColumns, singleSelectColumns, dateColumns, numberColumns, isShowTimelineSetting,
       settings, rows, isGroupView, groups } = this.props;
     let GridView = this.gridViews[selectedGridView];
     let isToday = this.isToday();
     return (
-      <Fragment>
-        <div className="timeline-container" ref={ref => this.timeline = ref}>
-          <Toolbar
-            selectedGridView={selectedGridView}
-            selectedDate={selectedDate}
-            canNavigateToday={!isToday && canNavigateToday}
-            isShowUsers={isShowUsers}
-            eventBus={this.props.eventBus}
-            onShowUsersToggle={this.onShowUsersToggle}
-            onNavigate={this.onNavigate}
-            onTimelineSettingToggle={this.props.onTimelineSettingToggle}
-            onSelectGridView={this.onSelectGridView}
-          />
-          <GridView
-            ref={node => this.timelineView = node}
-            isShowUsers={isShowUsers}
-            changedSelectedByScroll={changedSelectedByScroll}
-            selectedGridView={selectedGridView}
-            selectedDate={selectedDate}
-            gridStartDate={gridStartDate}
-            gridEndDate={gridEndDate}
-            rows={rows}
-            isGroupView={isGroupView}
-            groups={groups}
-            eventBus={this.props.eventBus}
-            updateSelectedDate={this.updateSelectedDate}
-            onViewportRightScroll={this.onViewportRightScroll}
-            onRowExpand={this.props.onRowExpand}
-          />
-        </div>
+      <div className="timeline-container" ref={ref => this.timeline = ref}>
+        {isAfterDelay &&
+          <Fragment>
+            <Toolbar
+              selectedGridView={selectedGridView}
+              selectedDate={selectedDate}
+              canNavigateToday={!isToday && canNavigateToday}
+              isShowUsers={isShowUsers}
+              eventBus={this.props.eventBus}
+              onShowUsersToggle={this.onShowUsersToggle}
+              onNavigate={this.onNavigate}
+              onTimelineSettingToggle={this.props.onTimelineSettingToggle}
+              onSelectGridView={this.onSelectGridView}
+            />
+            <GridView
+              ref={node => this.timelineView = node}
+              isShowUsers={isShowUsers}
+              changedSelectedByScroll={changedSelectedByScroll}
+              selectedGridView={selectedGridView}
+              selectedDate={selectedDate}
+              gridStartDate={gridStartDate}
+              gridEndDate={gridEndDate}
+              rows={rows}
+              isGroupView={isGroupView}
+              groups={groups}
+              eventBus={this.props.eventBus}
+              updateSelectedDate={this.updateSelectedDate}
+              onViewportRightScroll={this.onViewportRightScroll}
+              onRowExpand={this.props.onRowExpand}
+            />
+          </Fragment>
+        }
         {isShowTimelineSetting &&
           <TimelineSetting
             tables={tables}
@@ -312,7 +321,7 @@ class Timeline extends React.Component {
             onConfirmExportDateRange={this.onConfirmExport}
           />
         }
-      </Fragment>
+      </div>
     );
   }
 }
@@ -332,7 +341,6 @@ Timeline.propTypes = {
   settings: PropTypes.object,
   isShowTimelineSetting: PropTypes.bool,
   eventBus: PropTypes.object,
-  onTimelineSettingToggle: PropTypes.func,
   onModifyTimelineSettings: PropTypes.func,
   onHideTimelineSetting: PropTypes.func,
   onRowExpand: PropTypes.func,

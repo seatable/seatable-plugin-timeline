@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import moment from 'moment';
 import intl from 'react-intl-universal';
 import DTable from 'dtable-sdk';
@@ -10,14 +9,14 @@ import View from './model/view';
 import Group from './model/group';
 import TimelineRow from './model/timeline-row';
 import Event from './model/event';
-import { PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR, DEFAULT_TEXT_COLOR, RECORD_END_TYPE, DATE_UNIT, zIndexes } from './constants';
+import { PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR, DEFAULT_TEXT_COLOR, RECORD_END_TYPE, DATE_UNIT } from './constants';
 import { generatorViewId, getDtableUuid } from './utils';
 import EventBus from './utils/event-bus';
 
 import './locale';
 import timelineLogo from './assets/image/timeline.png';
 
-import './css/plugin-layout.css';
+import './css/timeline.css';
 
 const DEFAULT_PLUGIN_SETTINGS = {
   views: [
@@ -119,7 +118,9 @@ class App extends React.Component {
   }
 
   onPluginToggle = () => {
-    this.setState({showDialog: false});
+    setTimeout(() => {
+      this.setState({showDialog: false});
+    }, 500);
     window.app.onClosePlugin && window.app.onClosePlugin();
   }
 
@@ -472,11 +473,11 @@ class App extends React.Component {
     }
     console.log(`----------- Timeline plugin logs end -----------`);
     return (
-      <Modal isOpen={true} toggle={this.onPluginToggle} className="dtable-plugin timeline" size='lg' zIndex={zIndexes.TIMELINE_DIALOG}>
-        <ModalHeader className="plugin-header" close={this.renderBtnGroups()}>
-          <div className="logo-title">
-            <img className="plugin-logo" src={timelineLogo} alt="" />
-            <span className="plugin-title">{intl.get('Timeline')}</span>
+      <div className="dtable-plugin plugin-timeline" ref={ref => this.plugin = ref}>
+        <div className="plugin-header">
+          <div className="plugin-logo">
+            <img className="plugin-logo-icon" src={timelineLogo} alt="timeline" />
+            <span>{intl.get('Timeline')}</span>
           </div>
           <TimelineViewsTabs
             ref={ref => this.viewsTabs = ref}
@@ -487,31 +488,33 @@ class App extends React.Component {
             onDeleteView={this.onDeleteView}
             onSelectView={this.onSelectView}
           />
-        </ModalHeader>
-        <ModalBody className="plugin-body">
-          <Timeline
-            ref={ref => this.timeline = ref}
-            tables={tables}
-            views={views}
-            rows={rows}
-            isGroupView={isGroupView}
-            groups={groups}
-            columns={columns}
-            nameColumns={nameColumns}
-            singleSelectColumns={singleSelectColumns}
-            dateColumns={dateColumns}
-            numberColumns={numberColumns}
-            settings={settings}
-            selectedTimelineView={selectedTimelineView}
-            eventBus={this.eventBus}
-            isShowTimelineSetting={isShowTimelineSetting}
-            onTimelineSettingToggle={this.onTimelineSettingToggle}
-            onModifyTimelineSettings={this.onModifyTimelineSettings}
-            onHideTimelineSetting={this.onHideTimelineSetting}
-            onRowExpand={this.onRowExpand.bind(this, selectedTable)}
-          />
-        </ModalBody>
-      </Modal>
+          <div className="timeline-operators">
+            <span className="timeline-operator dtable-font dtable-icon-download btn-export-image" onClick={this.onExportAsImage}></span>
+            <span className="timeline-operator dtable-font dtable-icon-settings btn-settings" onClick={this.onTimelineSettingToggle}></span>
+            <span className="timeline-operator dtable-font dtable-icon-x btn-close" onClick={this.onPluginToggle}></span>
+          </div>
+        </div>
+        <Timeline
+          ref={ref => this.timeline = ref}
+          tables={tables}
+          views={views}
+          rows={rows}
+          isGroupView={isGroupView}
+          groups={groups}
+          columns={columns}
+          nameColumns={nameColumns}
+          singleSelectColumns={singleSelectColumns}
+          dateColumns={dateColumns}
+          numberColumns={numberColumns}
+          settings={settings}
+          selectedTimelineView={selectedTimelineView}
+          eventBus={this.eventBus}
+          isShowTimelineSetting={isShowTimelineSetting}
+          onModifyTimelineSettings={this.onModifyTimelineSettings}
+          onHideTimelineSetting={this.onHideTimelineSetting}
+          onRowExpand={this.onRowExpand.bind(this, selectedTable)}
+        />
+      </div>
     );
   }
 }
