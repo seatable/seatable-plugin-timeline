@@ -38,11 +38,11 @@ class GroupItemLeft extends Component {
         </div>
         {(isExpanded && rowsCount > 0) &&
           <div className="group-item-left-rows" style={{height: rowsCount * ROW_HEIGHT}}>
-            {rows.map((row) => {
+            {rows.map((row, index) => {
               let { name } = row;
               return (
                 <EventRow
-                  key={`timeline-name-row-${name}`}
+                  key={`timeline-name-row-${name}-${index}`}
                   cells={
                     <EventCells
                       name={name}

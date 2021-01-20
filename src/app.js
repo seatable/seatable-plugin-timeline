@@ -201,12 +201,13 @@ class App extends React.Component {
     let { data: singleSelectColumnData } = singleSelectColumn || {};
     let options = singleSelectColumnData ? singleSelectColumn.data.options : [];
     let { type: nameColumnType } = nameColumn || {};
+    const ignoreGroupRow = nameColumn.key === convertedGroups[0].column_key;
     let groups = [];
     convertedGroups.forEach((group) => {
       let { cell_value, column_name, column_key, rows } = group;
       let convertedRows = rows.map((r) => this.Id2ConvertedRowMap[r._id]);
-      cell_value = cell_value || cell_value === 0  ? cell_value : `(${intl.get('Empty')})`;
-      let groupedRows = this.getGroupedRows(convertedRows, nameColumnType, settings, options, cellType, collaborators);
+      cell_value = cell_value || cell_value === 0 ? cell_value : `(${intl.get('Empty')})`;
+      let groupedRows = this.getGroupedRows(convertedRows, nameColumnType, settings, options, cellType, collaborators, ignoreGroupRow);
       let {minDate, maxDate} = this.getGroupBoundaryDates(groupedRows);
       groups.push(new Group({
         cell_value,
@@ -231,7 +232,7 @@ class App extends React.Component {
     return {minDate, maxDate};
   }
 
-  getGroupedRows = (rows, nameColumnType, settings, options, cellType, collaborators) => {
+  getGroupedRows = (rows, nameColumnType, settings, options, cellType, collaborators, ignoreGroupRow = false) => {
     let { name_column_name, single_select_column_name, start_time_column_name,
       end_time_column_name, record_duration_column_name, record_end_type,
     } = settings;
@@ -258,25 +259,25 @@ class App extends React.Component {
         name += '';
       }
       name = name || `(${intl.get('Empty')})`;
-      if (nameColumnType === cellType.TEXT) {
-        this.updateRows(groupedRows, name, row, label, bgColor, textColor, start, end, minDate, maxDate);
-      } else if (nameColumnType === cellType.COLLABORATOR) {
+      if (nameColumnType === cellType.COLLABORATOR && Array.isArray(name)) {
         name.forEach((item) => {
           let collaborator = collaborators.find(c => c.email === item);
           if (collaborator) {
-            this.updateRows(groupedRows, collaborator.name, row, label, bgColor, textColor, start, end, minDate, maxDate);
+            this.updateRows(groupedRows, collaborator.name, row, label, bgColor, textColor, start, end, minDate, maxDate, ignoreGroupRow);
           }
         });
+      } else {
+        this.updateRows(groupedRows, name, row, label, bgColor, textColor, start, end, minDate, maxDate, ignoreGroupRow);
       }
     });
     return groupedRows;
   }
 
-  updateRows = (rows, name, row, label, bgColor, textColor, start, end, minDate, maxDate) => {
+  updateRows = (rows, name, row, label, bgColor, textColor, start, end, minDate, maxDate, ignoreGroupRow) => {
     let formattedName = name ? (name + '').trim() : '';
     let index = rows.findIndex(r => r.name === formattedName);
     let event = new Event({row, label, bgColor, textColor, start, end});
-    if (index > -1) {
+    if (!ignoreGroupRow && index > -1) {
       rows[index].events.push(event);
     } else {
       rows.push(new TimelineRow({
