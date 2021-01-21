@@ -10,7 +10,7 @@ import Group from './model/group';
 import TimelineRow from './model/timeline-row';
 import Event from './model/event';
 import { PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR, DEFAULT_TEXT_COLOR, RECORD_END_TYPE, DATE_UNIT } from './constants';
-import { generatorViewId, getDtableUuid } from './utils';
+import { generatorViewId, getDtableUuid, getValidCollaborators } from './utils';
 import EventBus from './utils/event-bus';
 
 import './locale';
@@ -183,42 +183,68 @@ class App extends React.Component {
   }
 
   getRows = (originRows, table, cellType, collaborators, settings = {}) => {
-    let { name_column_name, single_select_column_name } = settings;
+    let { name_column_name, single_select_column_name, start_time_column_name,
+      end_time_column_name, record_duration_column_name, record_end_type, } = settings;
     let nameColumn = this.dtable.getColumnByName(table, name_column_name);
     let singleSelectColumn = this.dtable.getColumnByName(table, single_select_column_name);
     let { data: singleSelectColumnData } = singleSelectColumn || {};
     let options = singleSelectColumnData ? singleSelectColumn.data.options : [];
     let { type: nameColumnType } = nameColumn || {};
-    return this.getGroupedRows(originRows, nameColumnType, settings, options, cellType, collaborators);
+    let minDate, maxDate, groupedRows = [];
+    originRows.forEach((row) => {
+      let { name, label, bgColor, textColor, start, end } = this.getEventData(
+        row, nameColumnType, name_column_name, single_select_column_name,
+        start_time_column_name, end_time_column_name, record_duration_column_name,
+        record_end_type, cellType, options, collaborators);
+      minDate = !minDate || moment(start).isBefore(minDate) ? start : minDate;
+      maxDate = !maxDate || moment(end).isAfter(maxDate) ? end : maxDate;
+      let event = new Event({row, label, bgColor, textColor, start, end});
+      this.updateRows(groupedRows, name, event, minDate, maxDate);
+    });
+    return groupedRows;
   }
 
   getGroups = (convertedGroups, originRows, table, cellType, collaborators, settings = {}) => {
     if (!Array.isArray(convertedGroups) || convertedGroups.length === 0 ||
     !Array.isArray(originRows) || originRows.length === 0) return [];
-    let { name_column_name, single_select_column_name } = settings;
+    let { name_column_name, single_select_column_name, start_time_column_name,
+      end_time_column_name, record_duration_column_name, record_end_type, } = settings;
     let nameColumn = this.dtable.getColumnByName(table, name_column_name);
     let singleSelectColumn = this.dtable.getColumnByName(table, single_select_column_name);
     let { data: singleSelectColumnData } = singleSelectColumn || {};
     let options = singleSelectColumnData ? singleSelectColumn.data.options : [];
     let { type: nameColumnType } = nameColumn || {};
-    let groups = [];
-    convertedGroups.forEach((group) => {
+    return convertedGroups.map((group) => {
       let { cell_value, column_name, column_key, rows } = group;
       let convertedRows = rows.map((r) => this.Id2ConvertedRowMap[r._id]);
-      cell_value = cell_value || cell_value === 0  ? cell_value : `(${intl.get('Empty')})`;
-      let groupedRows = this.getGroupedRows(convertedRows, nameColumnType, settings, options, cellType, collaborators);
-      let {minDate, maxDate} = this.getGroupBoundaryDates(groupedRows);
-      groups.push(new Group({
+      cell_value = cell_value || cell_value === 0 ? cell_value : `(${intl.get('Empty')})`;
+      let timelineRows = [];
+      convertedRows.forEach((row) => {
+        let { name, label, bgColor, textColor, start, end } = this.getEventData(
+          row, nameColumnType, name_column_name, single_select_column_name,
+          start_time_column_name, end_time_column_name, record_duration_column_name,
+          record_end_type, cellType, options, collaborators);
+        let timelineRow = new TimelineRow({
+          name,
+          min_date: start,
+          max_date: end,
+          events: [
+            new Event({row, label, bgColor, textColor, start, end})
+          ]
+        });
+        timelineRows.push(timelineRow);
+      });
+      let {minDate, maxDate} = this.getGroupBoundaryDates(timelineRows);
+      return new Group({
         cell_value,
         column_name,
         column_key,
         subgroups: null,
         min_date: minDate,
         max_date: maxDate,
-        rows: groupedRows
-      }));
+        rows: timelineRows
+      });
     });
-    return groups;
   }
 
   getGroupBoundaryDates = (groupedRows) => {
@@ -231,51 +257,9 @@ class App extends React.Component {
     return {minDate, maxDate};
   }
 
-  getGroupedRows = (rows, nameColumnType, settings, options, cellType, collaborators) => {
-    let { name_column_name, single_select_column_name, start_time_column_name,
-      end_time_column_name, record_duration_column_name, record_end_type,
-    } = settings;
-    let minDate, maxDate, groupedRows = [];
-    rows.forEach((row) => {
-      let name = row[name_column_name];
-      let label = row[single_select_column_name];
-      let option = options.find(item => item.name === label) || {};
-      let bgColor = option.color || DEFAULT_BG_COLOR;
-      let textColor = option.textColor || DEFAULT_TEXT_COLOR;
-      let start = row[start_time_column_name];
-      let end;
-      if (record_end_type === RECORD_END_TYPE.RECORD_DURATION) {
-        let duration = row[record_duration_column_name];
-        if (duration && duration !== 0) {
-          end = moment(start).add(Math.ceil(duration) - 1, DATE_UNIT.DAY).format('YYYY-MM-DD');
-        }
-      } else {
-        end = row[end_time_column_name];
-      }
-      minDate = !minDate || moment(start).isBefore(minDate) ? start : minDate;
-      maxDate = !maxDate || moment(end).isAfter(maxDate) ? end : maxDate;
-      if (Object.prototype.toString.call(name) === '[object Number]') {
-        name += '';
-      }
-      name = name || `(${intl.get('Empty')})`;
-      if (nameColumnType === cellType.TEXT) {
-        this.updateRows(groupedRows, name, row, label, bgColor, textColor, start, end, minDate, maxDate);
-      } else if (nameColumnType === cellType.COLLABORATOR) {
-        name.forEach((item) => {
-          let collaborator = collaborators.find(c => c.email === item);
-          if (collaborator) {
-            this.updateRows(groupedRows, collaborator.name, row, label, bgColor, textColor, start, end, minDate, maxDate);
-          }
-        });
-      }
-    });
-    return groupedRows;
-  }
-
-  updateRows = (rows, name, row, label, bgColor, textColor, start, end, minDate, maxDate) => {
+  updateRows = (rows, name, event, minDate, maxDate) => {
     let formattedName = name ? (name + '').trim() : '';
     let index = rows.findIndex(r => r.name === formattedName);
-    let event = new Event({row, label, bgColor, textColor, start, end});
     if (index > -1) {
       rows[index].events.push(event);
     } else {
@@ -286,6 +270,37 @@ class App extends React.Component {
         events: [event]
       }));
     }
+  }
+
+  getEventData = (originalRow, nameColumnType, name_column_name, single_select_column_name,
+    start_time_column_name, end_time_column_name, record_duration_column_name, record_end_type,
+    cellType, options, collaborators) => {
+    let name = originalRow[name_column_name];
+    let label = originalRow[single_select_column_name];
+    let option = options.find(item => item.name === label) || {};
+    let bgColor = option.color || DEFAULT_BG_COLOR;
+    let textColor = option.textColor || DEFAULT_TEXT_COLOR;
+    let start = originalRow[start_time_column_name];
+    let end;
+    if (record_end_type === RECORD_END_TYPE.RECORD_DURATION) {
+      let duration = originalRow[record_duration_column_name];
+      if (duration && duration !== 0) {
+        end = moment(start).add(Math.ceil(duration) - 1, DATE_UNIT.DAY).format('YYYY-MM-DD');
+      }
+    } else {
+      end = originalRow[end_time_column_name];
+    }
+    if (Object.prototype.toString.call(name) === '[object Number]') {
+      name += '';
+    }
+    name = name || `(${intl.get('Empty')})`;
+    if (nameColumnType === cellType.COLLABORATOR && Array.isArray(name)) {
+      const validCollaborators = getValidCollaborators(collaborators, name);
+      name = validCollaborators.map((item) => {
+        return collaborators.find(c => c.email === item).name;
+      }).join(', ');
+    }
+    return {name, label, bgColor, textColor, start, end};
   }
 
   onAddView = (viewName) => {
