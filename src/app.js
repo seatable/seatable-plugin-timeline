@@ -217,7 +217,21 @@ class App extends React.Component {
     return convertedGroups.map((group) => {
       let { cell_value, column_name, column_key, rows } = group;
       let convertedRows = rows.map((r) => this.Id2ConvertedRowMap[r._id]);
-      cell_value = cell_value || cell_value === 0 ? cell_value : `(${intl.get('Empty')})`;
+
+      const groupColumn = this.dtable.getColumnByName(table, column_name);
+      const { type, data = {} } = groupColumn;
+      if (type == 'link') {
+        const { link_id, other_table_id, table_id, display_column_key } = data;
+        const currentTableID = table._id;
+        const linkedTableID = table_id == currentTableID ? other_table_id : table_id;
+        const linkedTable = this.dtable.getTableById(linkedTableID);
+        const linkedRowIDs = this.dtable.getLinkCellValue(link_id, currentTableID, linkedTableID, rows[0]._id);
+        const linkedRows = this.dtable.getRowsByID(linkedTableID, linkedRowIDs);
+        cell_value = linkedRows[0][display_column_key]; // only show the first one
+      } else {
+        cell_value = cell_value || cell_value === 0 ? cell_value : `(${intl.get('Empty')})`;
+      }
+
       let timelineRows = [];
       convertedRows.forEach((row) => {
         let { name, label, bgColor, textColor, start, end } = this.getEventData(
