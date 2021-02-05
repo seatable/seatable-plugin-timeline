@@ -214,10 +214,32 @@ class App extends React.Component {
     let { data: singleSelectColumnData } = singleSelectColumn || {};
     let options = singleSelectColumnData ? singleSelectColumn.data.options : [];
     let { type: nameColumnType } = nameColumn || {};
+    const EMPTY = `(${intl.get('Empty')})`;
     return convertedGroups.map((group) => {
       let { cell_value, column_name, column_key, rows } = group;
       let convertedRows = rows.map((r) => this.Id2ConvertedRowMap[r._id]);
-      cell_value = cell_value || cell_value === 0 ? cell_value : `(${intl.get('Empty')})`;
+
+      const groupColumn = this.dtable.getColumnByName(table, column_name);
+      const { type, data = {} } = groupColumn;
+      if (type == 'link') {
+        const { link_id, other_table_id, table_id, display_column_key } = data;
+        const currentTableID = table._id;
+        const linkedTableID = table_id == currentTableID ? other_table_id : table_id;
+        const linkedTable = this.dtable.getTableById(linkedTableID);
+        if (linkedTable) {
+          const linkedRowIDs = this.dtable.getLinkCellValue(link_id, currentTableID, linkedTableID, rows[0]._id);
+          const linkedRows = this.dtable.getRowsByID(linkedTableID, linkedRowIDs);
+          // only show the first one
+          const linkedRow = linkedRows[0];
+          cell_value = linkedRow ? linkedRow[display_column_key] : EMPTY;
+          cell_value = cell_value || cell_value === 0 ? cell_value : EMPTY;
+        } else {
+          cell_value = EMPTY;
+        }
+      } else {
+        cell_value = cell_value || cell_value === 0 ? cell_value : EMPTY;
+      }
+
       let timelineRows = [];
       convertedRows.forEach((row) => {
         let { name, label, bgColor, textColor, start, end } = this.getEventData(
