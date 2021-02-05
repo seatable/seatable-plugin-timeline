@@ -137,7 +137,7 @@ class App extends React.Component {
     let { views: updatedViews } = plugin_settings;
     let updatedView = plugin_settings.views[selectedViewIdx];
     let { settings: updatedSettings} = updatedView || {};
-    updatedSettings = Object.assign({}, updatedSettings, updated);
+    updatedSettings = updated;
     updatedView.settings = updatedSettings;
     updatedViews[selectedViewIdx] = updatedView;
     plugin_settings.views = updatedViews;
