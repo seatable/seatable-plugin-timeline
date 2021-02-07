@@ -136,9 +136,7 @@ class App extends React.Component {
     let { plugin_settings, selectedViewIdx } = this.state;
     let { views: updatedViews } = plugin_settings;
     let updatedView = plugin_settings.views[selectedViewIdx];
-    let { settings: updatedSettings} = updatedView || {};
-    updatedSettings = updated;
-    updatedView.settings = updatedSettings;
+    updatedView.settings = updated;
     updatedViews[selectedViewIdx] = updatedView;
     plugin_settings.views = updatedViews;
     this.setState({plugin_settings}, () => {
