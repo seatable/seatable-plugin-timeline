@@ -2,7 +2,7 @@ export const DATE_UNIT = {
   YEAR: 'year',
   MONTH: 'month',
   DAY: 'day',
-}
+};
 
 export const DATE_FORMAT = {
   YEAR_MONTH_DAY: 'YYYY-MM-DD',
@@ -10,4 +10,4 @@ export const DATE_FORMAT = {
   YEAR: 'YYYY',
   MONTH: 'MM',
   DAY: 'DD'
-}
+};

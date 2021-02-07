@@ -2,21 +2,23 @@ import moment from 'moment';
 import { DATE_FORMAT, DATE_UNIT, GRID_VIEWS } from '../constants';
 
 export const getEventWidth = (selectedGridView, columnWidth, eventStartDate, eventEndDate) => {
-  let duration = 0;
+  let duration;
   if (selectedGridView === GRID_VIEWS.YEAR) {
     duration = moment(eventEndDate).diff(eventStartDate, DATE_UNIT.MONTH) + 1;
   } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
     duration = moment(eventEndDate).diff(eventStartDate, DATE_UNIT.DAY) + 1;
   }
-  return duration * columnWidth;
+  return (duration || 0) * columnWidth;
 };
 
 export const getEventLeft = (selectedGridView, columnWidth, overScanStartDate, startDate) => {
+  let duration;
   if (selectedGridView === GRID_VIEWS.YEAR) {
     let formattedOverScanStartDate = moment(overScanStartDate).format(DATE_FORMAT.YEAR_MONTH);
     let formattedStartDate = moment(startDate).format(DATE_FORMAT.YEAR_MONTH);
-    return moment(formattedStartDate).diff(formattedOverScanStartDate, DATE_UNIT.MONTH) * columnWidth;
+    duration = moment(formattedStartDate).diff(formattedOverScanStartDate, DATE_UNIT.MONTH);
   } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
-    return moment(startDate).diff(overScanStartDate, DATE_UNIT.DAY) * columnWidth;
+    duration = moment(startDate).diff(overScanStartDate, DATE_UNIT.DAY);
   }
+  return (duration || 0) * columnWidth
 };

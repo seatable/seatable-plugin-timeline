@@ -17,7 +17,7 @@ class GroupCanvasLeft extends Component {
           const isExpanded = isGroupExpanded(foldedGroups, index + groupVisibleStartIdx);
           return (
             <GroupItemLeft
-              key={`group-item-left-${group.cell_value}`}
+              key={`group-item-left-${group.key}`}
               group={group}
               isExpanded={isExpanded}
               onExpandGroupToggle={this.onExpandGroupToggle.bind(this, index)}

@@ -20,7 +20,7 @@ class GroupCanvasRight extends Component {
       const isExpanded = isGroupExpanded(foldedGroups, index + groupVisibleStartIdx);
       return (
         <GroupItemRight
-          key={`group-item-right-${group.cell_value}`}
+          key={`group-item-right-${group.key}`}
           selectedGridView={selectedGridView}
           selectedDate={selectedDate}
           renderedDates={renderedDates}

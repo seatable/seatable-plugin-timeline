@@ -217,6 +217,7 @@ class App extends React.Component {
     const EMPTY = `(${intl.get('Empty')})`;
     return convertedGroups.map((group) => {
       let { cell_value, column_name, column_key, rows } = group;
+      const key = cell_value + '';
       let convertedRows = rows.map((r) => this.Id2ConvertedRowMap[r._id]);
 
       const groupColumn = this.dtable.getColumnByName(table, column_name);
@@ -258,6 +259,7 @@ class App extends React.Component {
       });
       let {minDate, maxDate} = this.getGroupBoundaryDates(timelineRows);
       return new Group({
+        key,
         cell_value,
         column_name,
         column_key,
