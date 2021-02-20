@@ -17,7 +17,6 @@ const RECORD_END_TYPES = [RECORD_END_TYPE.END_TIME, RECORD_END_TYPE.RECORD_DURAT
 const propTypes = {
   tables: PropTypes.array,
   views: PropTypes.array,
-  nameColumns: PropTypes.array,
   singleSelectColumns: PropTypes.array,
   dateColumns: PropTypes.array,
   numberColumns: PropTypes.array,
@@ -220,7 +219,7 @@ class TimelineSetting extends React.Component {
   }
 
   render() {
-    let { tables, views, nameColumns, singleSelectColumns, dateColumns, onHideTimelineSetting } = this.props;
+    let { tables, views, singleSelectColumns, dateColumns, onHideTimelineSetting } = this.props;
     return (
       <div className="plugin-timeline-setting" style={{zIndex: zIndexes.TIMELINE_SETTING}} ref={ref => this.timelineSetting = ref} onClick={this.onTimelineSettingClick}>
         <div className="setting-container">
@@ -241,10 +240,6 @@ class TimelineSetting extends React.Component {
                 {this.renderSelector(views, SETTING_KEY.VIEW_NAME, 'name', 'name')}
               </div>
               <div className="split-line"></div>
-              <div className="setting-item name">
-                <div className="title">{intl.get('Name_column')}</div>
-                {this.renderSelector(nameColumns, SETTING_KEY.NAME_COLUMN_NAME, 'name', 'name')}
-              </div>
               <div className="setting-item color">
                 <div className="title">{intl.get('Color_column')}</div>
                 {this.renderSelector(singleSelectColumns, SETTING_KEY.SINGLE_SELECT_COLUMN_NAME, 'name', 'name')}

@@ -16,7 +16,6 @@ const de = {
   "Settings": "Einstellungen",
   "Table": "Tabelle",
   "View": "Ansicht",
-  "Name_column": "Name",
   "Color_column": "Farbe",
   "Start_date": "Startdatum",
   "End_date": "Enddatum",

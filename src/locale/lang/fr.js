@@ -16,7 +16,6 @@ const fr = {
   "Settings": "Paramètres",
   "Table": "Tableau",
   "View": "Vue",
-  "Name_column": "Name",
   "Color_column": "Farbe",
   "Start_date": "Date de départ",
   "End_date": "Date de fin",
