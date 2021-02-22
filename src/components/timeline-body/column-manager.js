@@ -10,8 +10,7 @@ class ColumnManager extends React.Component {
     super(props);
     this.state = {
       isDropdownOpen: false,
-      keyword: '', // for 'search a column'
-      columns: this.props.columns
+      keyword: '' // for 'search a column'
     };
   }
 
@@ -22,22 +21,20 @@ class ColumnManager extends React.Component {
   }
 
   searchColumn = (e) => {
-    let keyword = e.target.value;
-    let columns = this.props.columns;
+    this.setState({
+      keyword: e.target.value
+    });
+  }
+
+  render() {
+    const { isDropdownOpen, keyword } = this.state;
+    let { columns } = this.props;
     if (keyword.trim()) {
       columns = columns.filter((column) => {
         return column.name.toLowerCase().indexOf(keyword.trim().toLowerCase()) != -1;
       });
     }
-    this.setState({
-      keyword: keyword,
-      columns: columns
-    });
-  }
 
-  render() {
-    let { renderedRows } = this.props;
-    const { isDropdownOpen, keyword, columns } = this.state;
     return (
       <ButtonDropdown isOpen={isDropdownOpen} toggle={this.toggle} className="ml-4 mt-2">
       <DropdownToggle caret>
