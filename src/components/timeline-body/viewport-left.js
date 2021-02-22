@@ -50,29 +50,18 @@ class ViewportLeft extends React.Component {
     this.props.onModifyTimelineSettings(settings);
   }
 
-  moveColumn = (source, target) => {
+  moveColumn = (targetColumnKey, targetIndexColumn) => {
     const { columns, settings } = this.props;
     const configuredColumns = settings.columns || columns.map((item, index) => {
       item.shown = index == 0; // show the first column by default
       return item;
     }); 
-    let sourceIndex, targetIndex, movedColumnName, unMovedColumnsName = []; 
-    configuredColumns.forEach((column_name, index) => {
-      if (column_name === source) {
-        sourceIndex = index;
-        movedColumnName = column_name;
-      } else {
-        if (column_name === target) {
-          targetIndex = index;
-        }   
-        unMovedColumnsName.push(column_name);
-      }   
-    }); 
-    let target_index = unMovedColumnsName.findIndex(column_name => column_name === target);
-    if (sourceIndex < targetIndex) {
-      target_index = target_index + 1;
-    }   
-    settings.columns = unMovedColumnsName.splice(target_index, 0, movedColumnName);
+    const targetColumn = configuredColumns.filter(column => column.key == targetColumnKey)[0];
+    const originalIndex = configuredColumns.indexOf(targetColumn);
+    const targetIndex = configuredColumns.indexOf(targetIndexColumn);
+    configuredColumns.splice(originalIndex, 1);
+    configuredColumns.splice(targetIndex, 0, targetColumn);
+    settings.columns = configuredColumns;
     this.props.onModifyTimelineSettings(settings);
   }
 

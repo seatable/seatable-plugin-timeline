@@ -28,8 +28,7 @@ class ColumnSetting extends React.Component {
     let ref = this.galleryItemRef;
     event.dataTransfer.setDragImage(ref, 10, 10);
     event.dataTransfer.effectAllowed = 'move';
-    let dragStartItemData = JSON.stringify(this.props.column);
-    event.dataTransfer.setData('text/plain', dragStartItemData);
+    event.dataTransfer.setData('text/plain', this.props.column.key);
   }
 
   onTableDragEnter = (event) => {
@@ -65,13 +64,12 @@ class ColumnSetting extends React.Component {
     event.preventDefault();
     this.enteredCounter = 0;
     this.setState({isItemDropTipShow: false});
-    let sourceColumn = event.dataTransfer.getData("text/plain");
-    sourceColumn = JSON.parse(sourceColumn);
+    const droppedColumnKey = event.dataTransfer.getData("text/plain");
     const { column } = this.props;
-    if (sourceColumn.name === column.name) {
+    if (droppedColumnKey == column.key) {
       return;
     }
-    this.props.moveColumn(sourceColumn, column);
+    this.props.moveColumn(droppedColumnKey, column);
   }
 
   render() {
