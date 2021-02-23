@@ -7,16 +7,20 @@ class ColumnsShow extends React.Component {
   render() {
     let { columns } = this.props;
     return (
-      <ul>
-        {columns.map((column, index) => {
-          return (
-            <li key={index}>
-            <i className={`dtable-font ${COLUMNS_ICON_CONFIG[column.type]}`}></i>
-            <span>{column.name}</span>
-            </li>
-          );
-        })}
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            {columns.map((column, index) => {
+              return (
+                <td key={index} className="timeline-column-header" style={{'width': column.width}}>
+                <i className={`dtable-font ${COLUMNS_ICON_CONFIG[column.type]} mr-1 timeline-column-icon`}></i>
+                <span>{column.name}</span>
+                </td>
+              );
+            })}
+          </tr>
+        </thead>
+      </table>
     );
   }
 }

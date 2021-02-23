@@ -480,11 +480,6 @@ class App extends React.Component {
     let isGroupView = this.dtable.isGroupView(selectedView, columns);
     let CellType = this.dtable.getCellType();
     let collaborators = this.getRelatedUsersFromLocal();
-    // TODO: check it.
-    let nameColumns = [
-      ...this.dtable.getColumnsByType(selectedTable, CellType.COLLABORATOR),
-      ...this.dtable.getColumnsByType(selectedTable, CellType.TEXT)
-    ];
     let singleSelectColumns = this.dtable.getColumnsByType(selectedTable, CellType.SINGLE_SELECT);
     let dateColumns = this.dtable.getColumnsByType(selectedTable, CellType.DATE);
     let numberColumns = this.dtable.getColumnsByType(selectedTable, CellType.NUMBER);

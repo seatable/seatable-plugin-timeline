@@ -329,7 +329,7 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: 400px; /*TODO: it's temp*/
+  width: 500px; /*TODO: it's temp*/
   height: 100%;
   box-shadow: rgba(136, 136, 136, 0.3) 5px 0px 5px -2px;
 }
@@ -833,4 +833,18 @@
 
 .timeline-export-select-date-range .btn.disabled:hover {
   cursor: default;
+}
+
+.timeline-column-header {
+  background: #f9f9f9;
+  padding: 8px;
+  font-weight: 400;
+  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+  color: #202428;
+}
+.timeline-column-icon {
+  font-size: 14px;
+  color: #aaa;
 }
