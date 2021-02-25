@@ -77,7 +77,7 @@ class Viewport extends Component {
     let { rowOverScanStartIdx, rowOverScanEndIdx } = this.state;
     let { isShowUsers, selectedGridView, selectedDate, gridStartDate, gridEndDate, rows, renderHeaderYears,
       renderHeaderDates, eventBus, onViewportRightScroll, updateSelectedDate, onRowExpand, changedSelectedByScroll,
-      isRenderAll, columns } = this.props;
+      isRenderAll, columns, collaborators } = this.props;
     const rowsCount = rows.length;
     let renderedRows, topOffset, bottomOffset;
     if (isRenderAll) {
@@ -101,6 +101,7 @@ class Viewport extends Component {
               onViewportLeftScroll={this.onViewportLeftScroll}
               eventBus={eventBus}
               columns={columns}
+              collaborators={collaborators}
               settings={this.props.settings}
               onModifyTimelineSettings={this.props.onModifyTimelineSettings}
             />

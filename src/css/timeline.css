@@ -835,7 +835,7 @@
   cursor: default;
 }
 
-.timeline-column-header {
+.timeline-grid-cell {
   background: #f9f9f9;
   padding: 8px;
   font-weight: 400;

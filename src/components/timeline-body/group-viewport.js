@@ -99,7 +99,7 @@ class GroupViewport extends Component {
   render() {
     let { gridStartDate, gridEndDate, isShowUsers, selectedGridView, selectedDate, renderHeaderYears,
       renderHeaderDates, updateSelectedDate, eventBus, onRowExpand, changedSelectedByScroll,
-      onViewportRightScroll, groups, isRenderAll, columns } = this.props;
+      onViewportRightScroll, groups, isRenderAll, columns, collaborators } = this.props;
     let { foldedGroups, groupVisibleStartIdx, groupVisibleEndIdx } = this.state;
     const groupsLen = groups.length;
     let renderedGroups, topOffset, bottomOffset;
@@ -127,6 +127,7 @@ class GroupViewport extends Component {
               onExpandGroupToggle={this.onExpandGroupToggle}
               onViewportLeftScroll={this.onViewportLeftScroll}
               columns={columns}
+              collaborators={collaborators}
               settings={this.props.settings}
               onModifyTimelineSettings={this.props.onModifyTimelineSettings}
             />

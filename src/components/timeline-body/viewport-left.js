@@ -7,15 +7,15 @@ import ColumnsShown from './columns-shown';
 
 class ViewportLeft extends React.Component {
 
-  renderCanvasLeft = () => {
-    let { isGroupView, groupVisibleStartIdx, renderedRows, groups, onExpandGroupToggle, foldedGroups } = this.props;
+  renderCanvasLeft = (shownColumns) => {
+    let { isGroupView, groupVisibleStartIdx, renderedRows, groups, onExpandGroupToggle, foldedGroups, collaborators } = this.props;
     let CustomCanvasLeft, canvasLeftProps;
     if (isGroupView) {
       CustomCanvasLeft = GroupCanvasLeft;
-      canvasLeftProps = { groupVisibleStartIdx, groups, foldedGroups, onExpandGroupToggle };
+      canvasLeftProps = { groupVisibleStartIdx, groups, foldedGroups, onExpandGroupToggle, shownColumns, collaborators };
     } else {
       CustomCanvasLeft = CanvasLeft;
-      canvasLeftProps = { renderedRows };
+      canvasLeftProps = { renderedRows, shownColumns, collaborators };
     }
     return (
       <CustomCanvasLeft {...canvasLeftProps} />
@@ -71,6 +71,7 @@ class ViewportLeft extends React.Component {
       item.shown = index == 0; // show the first column by default
       return item;
     });
+    const shownColumns = configuredColumns.filter(item => item.shown);
     return (
       <div className="timeline-viewport-left" ref={ref => this.viewportLeft = ref} onScroll={this.onViewportLeftScroll}>
         <ColumnManager
@@ -78,9 +79,9 @@ class ViewportLeft extends React.Component {
           updateColumn={this.updateColumn}
           moveColumn={this.moveColumn}
         />
-        <ColumnsShown columns={configuredColumns.filter(item => item.shown)} />
+        <ColumnsShown columns={shownColumns} />
         <div className="canvas-left-wrapper" style={{paddingTop: topOffset, paddingBottom: bottomOffset}}>
-          {this.renderCanvasLeft()}
+          {this.renderCanvasLeft(shownColumns)}
         </div>
       </div>
     );

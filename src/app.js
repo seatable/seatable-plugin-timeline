@@ -181,23 +181,22 @@ class App extends React.Component {
   }
 
   getRows = (originRows, table, cellType, collaborators, settings = {}) => {
-    let { name_column_name, single_select_column_name, start_time_column_name,
+    let { single_select_column_name, start_time_column_name,
       end_time_column_name, record_duration_column_name, record_end_type, } = settings;
-    let nameColumn = this.dtable.getColumnByName(table, name_column_name);
     let singleSelectColumn = this.dtable.getColumnByName(table, single_select_column_name);
     let { data: singleSelectColumnData } = singleSelectColumn || {};
     let options = singleSelectColumnData ? singleSelectColumn.data.options : [];
-    let { type: nameColumnType } = nameColumn || {};
     let minDate, maxDate, groupedRows = [];
     originRows.forEach((row) => {
-      let { name, label, bgColor, textColor, start, end } = this.getEventData(
-        row, nameColumnType, name_column_name, single_select_column_name,
+      let { label, bgColor, textColor, start, end } = this.getEventData(
+        row, single_select_column_name,
         start_time_column_name, end_time_column_name, record_duration_column_name,
         record_end_type, cellType, options, collaborators);
       minDate = !minDate || moment(start).isBefore(minDate) ? start : minDate;
       maxDate = !maxDate || moment(end).isAfter(maxDate) ? end : maxDate;
-      let event = new Event({row, label, bgColor, textColor, start, end});
-      this.updateRows(groupedRows, name, event, minDate, maxDate);
+      const event = new Event({row, label, bgColor, textColor, start, end});
+      const formattedRow = this.dtable.getRowById(table, row._id);
+      this.updateRows(groupedRows, formattedRow, event, minDate, maxDate);
     });
     return groupedRows;
   }
@@ -205,13 +204,11 @@ class App extends React.Component {
   getGroups = (convertedGroups, originRows, table, cellType, collaborators, settings = {}) => {
     if (!Array.isArray(convertedGroups) || convertedGroups.length === 0 ||
     !Array.isArray(originRows) || originRows.length === 0) return [];
-    let { name_column_name, single_select_column_name, start_time_column_name,
+    let { single_select_column_name, start_time_column_name,
       end_time_column_name, record_duration_column_name, record_end_type, } = settings;
-    let nameColumn = this.dtable.getColumnByName(table, name_column_name);
     let singleSelectColumn = this.dtable.getColumnByName(table, single_select_column_name);
     let { data: singleSelectColumnData } = singleSelectColumn || {};
     let options = singleSelectColumnData ? singleSelectColumn.data.options : [];
-    let { type: nameColumnType } = nameColumn || {};
     const EMPTY = `(${intl.get('Empty')})`;
     return convertedGroups.map((group) => {
       let { cell_value, column_name, column_key, rows } = group;
@@ -241,12 +238,13 @@ class App extends React.Component {
 
       let timelineRows = [];
       convertedRows.forEach((row) => {
-        let { name, label, bgColor, textColor, start, end } = this.getEventData(
-          row, nameColumnType, name_column_name, single_select_column_name,
-          start_time_column_name, end_time_column_name, record_duration_column_name,
+        let { label, bgColor, textColor, start, end } = this.getEventData(
+          row, single_select_column_name, start_time_column_name,
+          end_time_column_name, record_duration_column_name,
           record_end_type, cellType, options, collaborators);
+        const formattedRow = this.dtable.getRowById(table, row._id);
         let timelineRow = new TimelineRow({
-          name,
+          row: formattedRow,
           min_date: start,
           max_date: end,
           events: [
@@ -279,25 +277,18 @@ class App extends React.Component {
     return {minDate, maxDate};
   }
 
-  updateRows = (rows, name, event, minDate, maxDate) => {
-    let formattedName = name ? (name + '').trim() : '';
-    let index = rows.findIndex(r => r.name === formattedName);
-    if (index > -1) {
-      rows[index].events.push(event);
-    } else {
-      rows.push(new TimelineRow({
-        name: formattedName,
-        min_date: minDate,
-        max_date: maxDate,
-        events: [event]
-      }));
-    }
+  updateRows = (rows, formattedRow, ev, minDate, maxDate) => {
+    rows.push(new TimelineRow({
+      row: formattedRow,
+      min_date: minDate,
+      max_date: maxDate,
+      events: [ev]
+    }));
   }
 
-  getEventData = (originalRow, nameColumnType, name_column_name, single_select_column_name,
+  getEventData = (originalRow, single_select_column_name,
     start_time_column_name, end_time_column_name, record_duration_column_name, record_end_type,
     cellType, options, collaborators) => {
-    let name = originalRow[name_column_name];
     let label = originalRow[single_select_column_name];
     let option = options.find(item => item.name === label) || {};
     let bgColor = option.color || DEFAULT_BG_COLOR;
@@ -312,17 +303,7 @@ class App extends React.Component {
     } else {
       end = originalRow[end_time_column_name];
     }
-    if (Object.prototype.toString.call(name) === '[object Number]') {
-      name += '';
-    }
-    name = name || `(${intl.get('Empty')})`;
-    if (nameColumnType === cellType.COLLABORATOR && Array.isArray(name)) {
-      const validCollaborators = getValidCollaborators(collaborators, name);
-      name = validCollaborators.map((item) => {
-        return collaborators.find(c => c.email === item).name;
-      }).join(', ');
-    }
-    return {name, label, bgColor, textColor, start, end};
+    return {label, bgColor, textColor, start, end};
   }
 
   onAddView = (viewName) => {
@@ -408,9 +389,9 @@ class App extends React.Component {
   }
 
   isValidSettings = (settings) => {
-    let { name_column_name, start_time_column_name, end_time_column_name,
+    const { start_time_column_name, end_time_column_name,
       record_duration_column_name } = settings;
-    return name_column_name && start_time_column_name &&
+    return start_time_column_name &&
       (end_time_column_name || record_duration_column_name);
   }
 
@@ -533,6 +514,7 @@ class App extends React.Component {
           isGroupView={isGroupView}
           groups={groups}
           columns={columns}
+          collaborators={collaborators}
           singleSelectColumns={singleSelectColumns}
           dateColumns={dateColumns}
           numberColumns={numberColumns}

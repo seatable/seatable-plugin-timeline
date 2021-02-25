@@ -12,7 +12,7 @@ class ColumnsShow extends React.Component {
           <tr>
             {columns.map((column, index) => {
               return (
-                <td key={index} className="timeline-column-header" style={{'width': column.width}}>
+                <td key={index} className="timeline-grid-cell" style={{'width': column.width}}>
                 <i className={`dtable-font ${COLUMNS_ICON_CONFIG[column.type]} mr-1 timeline-column-icon`}></i>
                 <span>{column.name}</span>
                 </td>

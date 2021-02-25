@@ -1,19 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { GROUP_HEADER_HEIGHT, ROW_HEIGHT } from '../../constants';
-import EventRow from '../row/event-row';
-import EventCell from '../row/event-cell';
-import NameFormatter from '../cell-formatter/name-formatter';
-
-const EventCells = ({name}) => {
-  return [
-    <EventCell
-      key={`timeline-left-event-cell-${name}`}
-      title={name}
-      formatter={<NameFormatter value={name} />}
-    />
-  ];
-};
+import Rows from './rows';
 
 class GroupItemLeft extends Component {
 
@@ -22,7 +10,7 @@ class GroupItemLeft extends Component {
   }
 
   render() {
-    let { group, isExpanded } = this.props;
+    let { group, isExpanded, shownColumns, collaborators } = this.props;
     let { cell_value, rows } = group;
     const rowsCount = Array.isArray(rows) ? rows.length : 0;
     return (
@@ -38,19 +26,7 @@ class GroupItemLeft extends Component {
         </div>
         {(isExpanded && rowsCount > 0) &&
           <div className="group-item-left-rows" style={{height: rowsCount * ROW_HEIGHT}}>
-            {rows.map((row, index) => {
-              let { name } = row;
-              return (
-                <EventRow
-                  key={`timeline-name-row-${name}-${index}`}
-                  cells={
-                    <EventCells
-                      name={name}
-                    />
-                  }
-                />
-              );
-            })}
+            <Rows rows={rows} columns={shownColumns} collaborators={collaborators} />
           </div>
         }
       </div>
@@ -60,6 +36,7 @@ class GroupItemLeft extends Component {
 
 GroupItemLeft.propTypes = {
   group: PropTypes.object,
+  shownColumns: PropTypes.array,
   isExpanded: PropTypes.bool,
   onExpandGroupToggle: PropTypes.func,
 };

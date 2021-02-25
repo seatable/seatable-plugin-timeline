@@ -261,7 +261,7 @@ class Timeline extends React.Component {
     let { isShowUsers, selectedGridView, selectedDate, changedSelectedByScroll, gridStartDate, gridEndDate,
       canNavigateToday, isShowSelectExportDateRangeDialog, isExporting, isAfterDelay } = this.state;
     let { tables, views, singleSelectColumns, dateColumns, numberColumns, isShowTimelineSetting,
-      settings, rows, columns, isGroupView, groups } = this.props;
+      settings, rows, columns, isGroupView, groups, collaborators } = this.props;
     let GridView = this.gridViews[selectedGridView];
     let isToday = this.isToday();
     return (
@@ -289,6 +289,7 @@ class Timeline extends React.Component {
               gridEndDate={gridEndDate}
               rows={rows}
               columns={columns}
+              collaborators={collaborators}
               settings={settings || {}}
               onModifyTimelineSettings={this.props.onModifyTimelineSettings}
               isGroupView={isGroupView}

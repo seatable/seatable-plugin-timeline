@@ -15,7 +15,7 @@ class EventRow extends React.Component {
 }
 
 EventRow.propTypes = {
-  cells: PropTypes.object,
+  cells: PropTypes.object
 };
 
 export default EventRow;

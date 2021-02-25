@@ -25,17 +25,16 @@ class CanvasRight extends React.Component {
         renderedDates={renderedDates}
       />
     );
-    Array.isArray(renderedRows) && renderedRows.forEach((r) => {
-      const rowName = r.name;
+    Array.isArray(renderedRows) && renderedRows.forEach((r, index) => {
       bgRows.push(
         <EventRow
-          key={`events-bg-row-${rowName}`}
+          key={`events-bg-row-${index}`}
           cells={bgCells}
         />
       );
       eventRows.push(
         <EventRow
-          key={`timeline-events-row-${rowName}`}
+          key={`timeline-events-row-${index}`}
           cells={
             <EventCells
               selectedGridView={selectedGridView}
