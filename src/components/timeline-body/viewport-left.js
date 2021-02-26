@@ -36,12 +36,8 @@ class ViewportLeft extends React.Component {
   }
 
   updateColumn = (targetColumn, targetShown) => {
-    const { columns, settings } = this.props;
-    const configuredColumns = settings.columns || columns.map((item, index) => {
-      item.shown = index == 0; // show the first column by default
-      return item;
-    });
-    settings.columns = configuredColumns.map(item => {
+    const { settings } = this.props;
+    settings.columns = this.configuredColumns.map(item => {
       if (item.key == targetColumn.key) {
         item.shown = targetShown; 
       }
@@ -51,11 +47,8 @@ class ViewportLeft extends React.Component {
   }
 
   moveColumn = (targetColumnKey, targetIndexColumn) => {
-    const { columns, settings } = this.props;
-    const configuredColumns = settings.columns || columns.map((item, index) => {
-      item.shown = index == 0; // show the first column by default
-      return item;
-    }); 
+    const { settings } = this.props;
+    const configuredColumns = this.configuredColumns; 
     const targetColumn = configuredColumns.filter(column => column.key == targetColumnKey)[0];
     const originalIndex = configuredColumns.indexOf(targetColumn);
     const targetIndex = configuredColumns.indexOf(targetIndexColumn);
@@ -65,12 +58,31 @@ class ViewportLeft extends React.Component {
     this.props.onModifyTimelineSettings(settings);
   }
 
-  render() {
-    const { topOffset, bottomOffset, columns, settings } = this.props;
-    const configuredColumns = settings.columns || columns.map((item, index) => {
+  getCurrentConfiguredColumns = () => {
+    const { columns, settings } = this.props;
+    const initialConfiguredColumns = columns.map((item, index) => {
       item.shown = index == 0; // show the first column by default
       return item;
     });
+    const configuredColumns = settings.columns || initialConfiguredColumns;
+    /*
+    let configuredColumns = initialConfiguredColumns;
+    if (settings.columns) {
+      configuredColumns = configuredColumns.map((item, index) => {
+        const filtered = settings.columns.filter(c => c.key == item.key);
+        if (filtered.length) {
+          item.shown = filtered[0].shown; 
+        }
+        return item;
+      }); 
+    }
+    */
+    return configuredColumns;
+  }
+
+  render() {
+    const { topOffset, bottomOffset, columns, settings } = this.props;
+    const configuredColumns = this.configuredColumns = this.getCurrentConfiguredColumns();
     const shownColumns = configuredColumns.filter(item => item.shown);
     return (
       <div className="timeline-viewport-left" ref={ref => this.viewportLeft = ref} onScroll={this.onViewportLeftScroll}>
