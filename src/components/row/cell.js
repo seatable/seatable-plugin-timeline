@@ -1,4 +1,3 @@
-/* This file is copied from plugin 'gallery', and modified. */
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { CellType } from 'dtable-store';
@@ -31,17 +30,10 @@ const propTypes = {
   column: PropTypes.object.isRequired,
   row: PropTypes.object.isRequired,
   collaborators: PropTypes.array,
-  /*
-  type: PropTypes.string,
+  dtable: PropTypes.object.isRequired,
+  tableID: PropTypes.string.isRequired,
   tables: PropTypes.array,
-  selectedView: PropTypes.object,
-  table: PropTypes.object.isRequired,
-  getLinkCellValue: PropTypes.func,
-  getRowsByID: PropTypes.func,
-  getTableById: PropTypes.func,
-  getUserCommonInfo: PropTypes.func,
-  getMediaUrl: PropTypes.func,
-  */
+  formulaRows: PropTypes.object
 };
 
 class Cell extends React.Component {
@@ -60,6 +52,20 @@ class Cell extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.calculateCollaboratorData(nextProps);
+  }
+
+  getMediaUrl = () => {
+    if (window.dtable) {
+      return window.dtable.mediaUrl;
+    }   
+    return window.dtablePluginConfig.mediaUrl;
+  }
+
+  getUserCommonInfo = (email, avatar_size) => {
+    if (window.dtableWebAPI) {
+      return window.dtableWebAPI.getUserCommonInfo(email, avatar_size);
+    }
+    return Promise.reject();
   }
 
   calculateCollaboratorData = (props) => {
@@ -85,7 +91,7 @@ class Cell extends React.Component {
     }
 
     if (!isValidEmail(value)) {
-      let mediaUrl = this.props.getMediaUrl();
+      let mediaUrl = this.getMediaUrl();
       let defaultAvatarUrl = `${mediaUrl}/avatars/default.png`;
       collaborator = {
         name: value,
@@ -95,11 +101,11 @@ class Cell extends React.Component {
       return;
     }
     
-    this.props.getUserCommonInfo(value).then(res => {
+    this.getUserCommonInfo(value).then(res => {
       collaborator = res.data;
       this.setState({isDataLoaded: true, collaborator: collaborator});
     }).catch(() => {
-      let mediaUrl = this.props.getMediaUrl();
+      let mediaUrl = this.getMediaUrl();
       let defaultAvatarUrl = `${mediaUrl}/avatars/default.png`;
       collaborator = {
         name: value,
@@ -114,10 +120,9 @@ class Cell extends React.Component {
   }
 
   renderFormatter = () => {
-    const { column, row, collaborators, tables } = this.props;
+    const { column, row, collaborators, dtable, tableID, tables } = this.props;
     const { type: columnType, key: columnKey } = column;
     const { isDataLoaded, collaborator } = this.state;
-    const _this = this;
     
     switch(columnType) {
       case CellType.TEXT: {
@@ -193,20 +198,14 @@ class Cell extends React.Component {
       }
       case CellType.LINK: {
         let linkMetaData = {
-          getLinkedCellValue: function(linkId, table1Id, table2Id, row_id) {
-            return _this.props.getLinkCellValue(linkId, table1Id, table2Id, row_id);
-          },
-          getLinkedRows: function(tableId, rowIds) {
-            return _this.props.getRowsByID(tableId, rowIds);
-          },
-          getLinkedTable: function(tableId) {
-            return _this.props.getTableById(tableId);
-          },
+          getLinkedCellValue: dtable.getLinkCellValue.bind(dtable),
+          getLinkedRows: dtable.getRowsByID.bind(dtable),
+          getLinkedTable: dtable.getTableById.bind(dtable),
           expandLinkedTableRow: function(row, tableId) {
-            return false
+            return false;
           }
         }
-        return <LinkFormatter column={column} row={row} currentTableId={this.props.table._id} linkMetaData={linkMetaData} />;
+        return <LinkFormatter column={column} row={row} currentTableId={tableID} linkMetaData={linkMetaData} />;
       }
       case CellType.AUTO_NUMBER: {
         if (!row[columnKey]) return this.renderEmptyFormatter();

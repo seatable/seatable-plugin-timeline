@@ -8,14 +8,14 @@ import ColumnsShown from './columns-shown';
 class ViewportLeft extends React.Component {
 
   renderCanvasLeft = (shownColumns) => {
-    let { isGroupView, groupVisibleStartIdx, renderedRows, groups, onExpandGroupToggle, foldedGroups, collaborators } = this.props;
+    let { isGroupView, groupVisibleStartIdx, renderedRows, groups, onExpandGroupToggle, foldedGroups, collaborators, dtable, tableID, tables, formulaRows } = this.props;
     let CustomCanvasLeft, canvasLeftProps;
     if (isGroupView) {
       CustomCanvasLeft = GroupCanvasLeft;
-      canvasLeftProps = { groupVisibleStartIdx, groups, foldedGroups, onExpandGroupToggle, shownColumns, collaborators };
+      canvasLeftProps = { groupVisibleStartIdx, groups, foldedGroups, onExpandGroupToggle, shownColumns, collaborators, dtable, tableID, tables, formulaRows };
     } else {
       CustomCanvasLeft = CanvasLeft;
-      canvasLeftProps = { renderedRows, shownColumns, collaborators };
+      canvasLeftProps = { renderedRows, shownColumns, collaborators, dtable, tableID, tables, formulaRows };
     }
     return (
       <CustomCanvasLeft {...canvasLeftProps} />

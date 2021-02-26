@@ -99,11 +99,14 @@ class Viewport extends Component {
               topOffset={topOffset}
               bottomOffset={bottomOffset}
               onViewportLeftScroll={this.onViewportLeftScroll}
-              eventBus={eventBus}
               columns={columns}
               collaborators={collaborators}
               settings={this.props.settings}
               onModifyTimelineSettings={this.props.onModifyTimelineSettings}
+              dtable={this.props.dtable}
+              tableID={this.props.tableID}
+              tables={this.props.tables}
+              formulaRows={this.props.formulaRows}
             />
           </div>
         }

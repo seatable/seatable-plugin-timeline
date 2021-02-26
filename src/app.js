@@ -443,6 +443,11 @@ class App extends React.Component {
     }
   }
 
+  getTableFormulaRows = (table, view) => {
+    let rows = this.dtable.getViewRows(view, table);
+    return this.dtable.getTableFormulaResults(table, rows);
+  }
+
   render() {
     let { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx } = this.state;
     if (isLoading || !showDialog) {
@@ -464,6 +469,7 @@ class App extends React.Component {
     let singleSelectColumns = this.dtable.getColumnsByType(selectedTable, CellType.SINGLE_SELECT);
     let dateColumns = this.dtable.getColumnsByType(selectedTable, CellType.DATE);
     let numberColumns = this.dtable.getColumnsByType(selectedTable, CellType.NUMBER);
+    let formulaRows = this.getTableFormulaRows(selectedTable, selectedView);
     const isValidSettings = this.isValidSettings(settings);
     const convertedRows = this.getConvertedRows(tableName, viewName);
     let rows = [];
@@ -525,6 +531,9 @@ class App extends React.Component {
           onModifyTimelineSettings={this.onModifyTimelineSettings}
           onHideTimelineSetting={this.onHideTimelineSetting}
           onRowExpand={this.onRowExpand.bind(this, selectedTable)}
+          dtable={this.dtable}
+          tableID={selectedTable._id}
+          formulaRows={formulaRows}
         />
       </div>
     );

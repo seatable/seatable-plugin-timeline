@@ -10,7 +10,7 @@ class GroupItemLeft extends Component {
   }
 
   render() {
-    let { group, isExpanded, shownColumns, collaborators } = this.props;
+    let { group, isExpanded, shownColumns, collaborators, dtable, tableID, tables, formulaRows } = this.props;
     let { cell_value, rows } = group;
     const rowsCount = Array.isArray(rows) ? rows.length : 0;
     return (
@@ -26,7 +26,7 @@ class GroupItemLeft extends Component {
         </div>
         {(isExpanded && rowsCount > 0) &&
           <div className="group-item-left-rows" style={{height: rowsCount * ROW_HEIGHT}}>
-            <Rows rows={rows} columns={shownColumns} collaborators={collaborators} />
+            <Rows rows={rows} columns={shownColumns} collaborators={collaborators} dtable={dtable} tableID={tableID} tables={tables} formulaRows={formulaRows} />
           </div>
         }
       </div>

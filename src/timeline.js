@@ -298,6 +298,10 @@ class Timeline extends React.Component {
               updateSelectedDate={this.updateSelectedDate}
               onViewportRightScroll={this.onViewportRightScroll}
               onRowExpand={this.props.onRowExpand}
+              dtable={this.props.dtable}
+              tableID={this.props.tableID}
+              formulaRows={this.props.formulaRows}
+              tables={tables}
             />
           </Fragment>
         }

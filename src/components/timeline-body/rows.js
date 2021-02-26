@@ -6,14 +6,14 @@ import Cell from '../row/cell';
 class Rows extends React.Component {
 
   render() {
-    const { rows, columns, collaborators } = this.props;
+    const { rows, columns, collaborators, dtable, tableID, tables, formulaRows } = this.props;
     return (
       <Fragment>
         {Array.isArray(rows) && rows.map((row, index) => {
           return (
             <div className="timeline-row d-flex" style={{height: ROW_HEIGHT}} key={index}>
               {columns.map((column, index) => {
-                return <Cell key={index} row={row.row} column={column} collaborators={collaborators} />
+                return <Cell key={index} row={row.row} column={column} collaborators={collaborators} dtable={dtable} tableID={tableID} tables={tables} formulaRows={formulaRows} />
               })}
             </div>
           );

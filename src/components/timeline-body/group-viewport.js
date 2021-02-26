@@ -130,6 +130,10 @@ class GroupViewport extends Component {
               collaborators={collaborators}
               settings={this.props.settings}
               onModifyTimelineSettings={this.props.onModifyTimelineSettings}
+              dtable={this.props.dtable}
+              tableID={this.props.tableID}
+              tables={this.props.tables}
+              formulaRows={this.props.formulaRows}
             />
           </div>
         }
