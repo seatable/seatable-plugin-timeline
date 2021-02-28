@@ -113,7 +113,7 @@ class GroupViewport extends Component {
       bottomOffset = (groupsLen - groupVisibleEndIdx) > 0 ? getGroupsHeight(groups, foldedGroups, groupVisibleEndIdx + 1, groupsLen) : 0;
     }
     return (
-      <div className="timeline-group-viewport viewport" ref={ref => this.groupViewport = ref}>
+      <div className="timeline-group-viewport viewport d-flex" ref={ref => this.groupViewport = ref}>
         {isShowUsers &&
           <div className="left-pane-wrapper" style={{zIndex: zIndexes.LEFT_PANE_WRAPPER}}>
             <ViewportLeft

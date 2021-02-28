@@ -200,9 +200,9 @@ class ViewportRight extends React.Component {
       endOffset = (this.allDates.length - overScanEndIndex) * columnWidth;
     }
     let renderedDates = getRenderedDates(selectedGridView, overScanDates);
-    const viewportStyle = {marginLeft: isShowUsers && 180};
+    //const viewportStyle = {marginLeft: isShowUsers && 180};
     return (
-      <div className="timeline-viewport-right" ref={ref => this.viewportRight = ref} onScroll={this.onScroll} style={viewportStyle}>
+      <div className="timeline-viewport-right" ref={ref => this.viewportRight = ref} onScroll={this.onScroll}>
         <TimelineHeader
           selectedGridView={selectedGridView}
           selectedDate={selectedDate}

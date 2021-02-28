@@ -326,10 +326,6 @@
 
 /* left-pane-wrapper */
 .timeline-container .left-pane-wrapper {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 500px; /*TODO: it's temp*/
   height: 100%;
   box-shadow: rgba(136, 136, 136, 0.3) 5px 0px 5px -2px;
 }

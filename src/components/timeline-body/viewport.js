@@ -90,7 +90,7 @@ class Viewport extends Component {
       bottomOffset = (rowsCount - rowOverScanEndIdx) > 0 ? (rowsCount - rowOverScanEndIdx) * ROW_HEIGHT : 0;
     }
     return (
-      <div className="timeline-viewport viewport" ref={ref => this.viewport = ref}>
+      <div className="timeline-viewport viewport d-flex" ref={ref => this.viewport = ref}>
         {isShowUsers &&
           <div className="left-pane-wrapper" style={{zIndex: zIndexes.LEFT_PANE_WRAPPER}}>
             <ViewportLeft
