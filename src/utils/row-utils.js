@@ -20,5 +20,5 @@ export const getEventLeft = (selectedGridView, columnWidth, overScanStartDate, s
   } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
     duration = moment(startDate).diff(overScanStartDate, DATE_UNIT.DAY);
   }
-  return (duration || 0) * columnWidth
+  return (duration || 0) * columnWidth;
 };

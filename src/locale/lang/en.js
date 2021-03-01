@@ -16,6 +16,7 @@ const en = {
   "Settings": "Settings",
   "Table": "Table",
   "View": "View",
+  "Default_View": "Default View",
   "Name_column": "Name column",
   "Color_column": "Color column",
   "Start_date": "Start date",
