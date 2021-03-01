@@ -37,8 +37,8 @@ class ColumnManager extends React.Component {
 
     return (
       <ButtonDropdown isOpen={isDropdownOpen} toggle={this.toggle} className="ml-4 mt-2 mb-4">
-      <DropdownToggle caret>
-      <i className="dtable-font dtable-icon-eye mr-2"></i>
+      <DropdownToggle caret size="sm" style={{'height': 29, 'backgroundColor': '#e6e6e6'}}>
+      <i className="dtable-font dtable-icon-eye mr-1"></i>
       {intl.get('Show_columns')}
       </DropdownToggle>
       <DropdownMenu style={{'width':'255px'}} className="py-2">

@@ -545,6 +545,9 @@
   white-space: nowrap;
   border-bottom: 1px solid #e2e2e2;
 }
+.timeline-header-row {
+  border-top: 1px solid #e2e2e2;
+}
 
 .timeline-viewport-left .group-item-left-rows {
   padding-left: 1rem;
@@ -603,7 +606,7 @@
 .timeline-viewport-right {
   position: relative;
   height: 100%;
-  padding-top: 68px;
+  padding-top: 85px;
   overflow-y: hidden;
   overflow-x: auto;
 }
@@ -832,11 +835,9 @@
 }
 
 .timeline-grid-cell {
-  background: #f9f9f9;
   padding: 8px;
   font-weight: 400;
   border-right: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
   font-size: 14px;
   color: #202428;
 }

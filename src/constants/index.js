@@ -19,7 +19,7 @@ const NAVIGATE = {
   TODAY: 'today'
 };
 
-const HEADER_HEIGHT = 68;
+const HEADER_HEIGHT = 85;
 
 const GROUP_HEADER_HEIGHT = 32;
 
