@@ -44,6 +44,10 @@ class ViewportRight extends React.Component {
       selectedDate,
       ...initState
     });
+
+    // fix the wrong `viewportRightWidth` above
+    this.isScrolling = true;
+    this.viewportRight.scrollLeft = 1;
   }
 
   componentWillReceiveProps(nextProps) {
