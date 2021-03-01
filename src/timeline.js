@@ -273,6 +273,8 @@ class Timeline extends React.Component {
               selectedDate={selectedDate}
               canNavigateToday={!isToday && canNavigateToday}
               isShowUsers={isShowUsers}
+              settings={settings || {}}
+              columns={columns}
               eventBus={this.props.eventBus}
               onShowUsersToggle={this.onShowUsersToggle}
               onNavigate={this.onNavigate}

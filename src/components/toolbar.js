@@ -102,13 +102,30 @@ class Toolbar extends React.Component {
     }
   }
 
+  getLeftPos = () => {
+    let left = 0;
+    const { settings, columns } = this.props;
+    const { columns: configuredColumns } = settings;
+    if (!configuredColumns) {
+      // show the first column by default
+      left = columns[0].width; 
+    } else {
+      const shownColumns = configuredColumns.filter(column => column.shown);
+      shownColumns.forEach(column => {
+        left += column.width;
+      });
+    }
+    left = Math.max(left, 180);
+    return left;
+  }
+
   render() {
     let { onShowUsersToggle, isShowUsers, canNavigateToday } = this.props;
     let displaySelectedGridView = this.getDisplaySelectedGridView();
     return (
       <div className="timeline-toolbar">
         {isShowUsers && <div className="blank-zone" style={{zIndex: zIndexes.TOOLBAR_BLANK_ZONE}}></div>}
-        <div className="toolbar-left" style={{zIndex: zIndexes.TOOLBAR, left: isShowUsers ? 180 : 0}}>
+        <div className="toolbar-left" style={{zIndex: zIndexes.TOOLBAR, left: isShowUsers ? this.getLeftPos(): 0}}>
           <div className="toggle-drawer-btn" onClick={onShowUsersToggle}>
             <i className={`dtable-font ${isShowUsers ? 'dtable-icon-retract-com' : 'dtable-icon-open-com'}`}></i>
           </div>
