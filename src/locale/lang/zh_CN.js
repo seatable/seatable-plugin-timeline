@@ -16,6 +16,7 @@ const zh_CN = {
   "Settings": "设置",
   "Table": "表格",
   "View": "视图",
+  "Default_View": "默认视图",
   "Name_column": "名称字段",
   "Color_column": "颜色标签字段",
   "Start_date": "开始日期",
