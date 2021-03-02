@@ -830,11 +830,21 @@
 .timeline-grid-cell {
   padding: 0 8px;
   font-weight: 400;
-  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
   font-size: 14px;
   color: #202428;
+}
+.timeline-grid-cell.first-cell {
+  border: 0;
 }
 .timeline-column-icon {
   font-size: 14px;
   color: #aaa;
+}
+
+.timeline-column-manager-btn {
+  height: 29px;
+  background-color: #f0f0f0;
+  color: #444;
+  border: none;
 }

@@ -13,7 +13,7 @@ class Rows extends React.Component {
           return (
             <div className="timeline-row d-flex" style={{height: ROW_HEIGHT}} key={index}>
               {columns.map((column, index) => {
-                return <Cell key={index} row={row.row} column={column} collaborators={collaborators} dtable={dtable} tableID={tableID} tables={tables} formulaRows={formulaRows} />
+                return <Cell key={index} className={index == 0 ? 'first-cell' : ''} row={row.row} column={column} collaborators={collaborators} dtable={dtable} tableID={tableID} tables={tables} formulaRows={formulaRows} />
               })}
             </div>
           );

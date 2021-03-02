@@ -37,7 +37,7 @@ class ColumnManager extends React.Component {
 
     return (
       <ButtonDropdown isOpen={isDropdownOpen} toggle={this.toggle} className="ml-4 mt-2 mb-4">
-      <DropdownToggle caret size="sm" style={{'height': 29, 'backgroundColor': '#e6e6e6'}}>
+      <DropdownToggle caret size="sm" className="timeline-column-manager-btn">
       <i className="dtable-font dtable-icon-eye mr-1"></i>
       {intl.get('Show_columns')}
       </DropdownToggle>

@@ -229,9 +229,9 @@ class Cell extends React.Component {
   }
 
   render() {
-    const { column } = this.props;
+    const { column, className } = this.props;
     return(
-      <div className="timeline-grid-cell text-truncate d-flex align-items-center" style={{'width': column.width}}>
+      <div className={`timeline-grid-cell text-truncate d-flex align-items-center ${className}`} style={{'width': column.width}}>
         {this.renderFormatter()}
       </div>
     );
