@@ -411,20 +411,11 @@
   user-select: none;
 }
 
-.timeline-header .header-years,
-.timeline-header .header-days {
+.timeline-header .header-years {
   position: relative;
   display: inline-flex;
-}
-
-.timeline-header .header-years {
   align-items: center;
   height: 36px;
-}
-
-.timeline-header .header-days {
-  height: 32px;
-  padding-bottom: 10px;
 }
 
 .timeline-header .year-item,
@@ -447,6 +438,7 @@
   font-size: 14px;
 }
 
+.timeline-header .header-days,
 .timeline-header .header-days-range,
 .timeline-header .header-year-months {
   position: relative;
@@ -454,6 +446,7 @@
   align-items: flex-end;
   height: 32px;
   padding-bottom: 10px;
+  margin-top: 17px;
 }
 
 .timeline-header .header-days-range .days-range-item {
@@ -482,7 +475,7 @@
 
 .timeline-header .today-mark {
   position: absolute;
-  top: 19px;
+  top: 23px;
   width: 7px;
   height: 6px;
   background-color: #3b88fd;
