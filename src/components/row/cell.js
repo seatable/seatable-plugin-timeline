@@ -205,7 +205,7 @@ class Cell extends React.Component {
             return false;
           }
         }
-        return <LinkFormatter column={column} row={row} currentTableId={tableID} linkMetaData={linkMetaData} />;
+        return <LinkFormatter column={column} row={row} currentTableId={tableID} linkMetaData={linkMetaData} containerClassName="leading-normal" />;
       }
       case CellType.AUTO_NUMBER: {
         if (!row[columnKey]) return this.renderEmptyFormatter();
@@ -231,7 +231,7 @@ class Cell extends React.Component {
   render() {
     const { column } = this.props;
     return(
-      <div className="timeline-grid-cell text-truncate" style={{'width': column.width}}>
+      <div className="timeline-grid-cell text-truncate d-flex align-items-center" style={{'width': column.width}}>
         {this.renderFormatter()}
       </div>
     );

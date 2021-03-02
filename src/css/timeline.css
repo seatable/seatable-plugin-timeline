@@ -835,7 +835,7 @@
 }
 
 .timeline-grid-cell {
-  padding: 8px;
+  padding: 0 8px;
   font-weight: 400;
   border-right: 1px solid #ddd;
   font-size: 14px;

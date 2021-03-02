@@ -7,6 +7,7 @@ import { NAVIGATE, GRID_VIEWS, zIndexes, DATE_UNIT, DATE_FORMAT } from '../const
 import * as EventTypes from '../constants/event-types';
 
 const propTypes = {
+  isGroupView: PropTypes.bool,
   selectedGridView: PropTypes.string,
   selectedDate: PropTypes.string,
   isShowUsers: PropTypes.bool,
@@ -104,7 +105,7 @@ class Toolbar extends React.Component {
 
   getLeftPos = () => {
     let left = 0;
-    const { settings, columns } = this.props;
+    const { settings, columns, isGroupView } = this.props;
     const { columns: configuredColumns } = settings;
     if (!configuredColumns) {
       // show the first column by default
@@ -114,6 +115,9 @@ class Toolbar extends React.Component {
       shownColumns.forEach(column => {
         left += column.width;
       });
+    }
+    if (isGroupView) {
+      left += 16; // there is a `pl-4`.
     }
     left = Math.max(left, 180);
     return left;

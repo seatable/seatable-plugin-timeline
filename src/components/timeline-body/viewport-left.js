@@ -81,7 +81,7 @@ class ViewportLeft extends React.Component {
   }
 
   render() {
-    const { topOffset, bottomOffset, columns, settings } = this.props;
+    const { topOffset, bottomOffset, columns, settings, isGroupView } = this.props;
     const configuredColumns = this.configuredColumns = this.getCurrentConfiguredColumns();
     const shownColumns = configuredColumns.filter(item => item.shown);
     return (
@@ -91,7 +91,7 @@ class ViewportLeft extends React.Component {
           updateColumn={this.updateColumn}
           moveColumn={this.moveColumn}
         />
-        <ColumnsShown columns={shownColumns} />
+        <ColumnsShown columns={shownColumns} isGroupView={isGroupView} />
         <div className="canvas-left-wrapper" style={{paddingTop: topOffset, paddingBottom: bottomOffset}}>
           {this.renderCanvasLeft(shownColumns)}
         </div>
@@ -101,6 +101,7 @@ class ViewportLeft extends React.Component {
 }
 
 ViewportLeft.propTypes = {
+  isGroupView: PropTypes.bool,
   renderedRows: PropTypes.array,
   groupVisibleStartIdx: PropTypes.number,
   groups: PropTypes.array,

@@ -6,14 +6,14 @@ import { ROW_HEIGHT } from '../../constants';
 class ColumnsShow extends React.Component {
 
   render() {
-    let { columns } = this.props;
+    const { columns, isGroupView } = this.props;
     return (
-      <div className="timeline-row timeline-header-row d-flex" style={{height: ROW_HEIGHT}}>
+      <div className={`timeline-row timeline-header-row d-flex ${isGroupView ? 'pl-4' : ''}`} style={{height: ROW_HEIGHT}}>
       {columns.map((column, index) => {
         return (
-          <div className="timeline-grid-cell text-truncate" style={{'width': column.width}}>
-          <i className={`dtable-font ${COLUMNS_ICON_CONFIG[column.type]} mr-1 timeline-column-icon`}></i>
-          <span>{column.name}</span>
+          <div className="timeline-grid-cell text-truncate d-flex align-items-center" style={{'width': column.width}} key={index}>
+            <i className={`dtable-font ${COLUMNS_ICON_CONFIG[column.type]} mr-1 timeline-column-icon`}></i>
+            <span>{column.name}</span>
           </div>
         );
       })}
@@ -23,6 +23,7 @@ class ColumnsShow extends React.Component {
 }
 
 ColumnsShow.propTypes = {
+  isGroupView: PropTypes.bool,
   columns: PropTypes.array
 };
 

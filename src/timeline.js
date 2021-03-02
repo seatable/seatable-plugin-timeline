@@ -275,6 +275,7 @@ class Timeline extends React.Component {
               isShowUsers={isShowUsers}
               settings={settings || {}}
               columns={columns}
+              isGroupView={isGroupView}
               eventBus={this.props.eventBus}
               onShowUsersToggle={this.onShowUsersToggle}
               onNavigate={this.onNavigate}
