@@ -25,7 +25,7 @@ class ColumnSetting extends React.Component {
 
   onDragStart = (event) => {
     event.stopPropagation();
-    let ref = this.galleryItemRef;
+    let ref = this.itemRef;
     event.dataTransfer.setDragImage(ref, 10, 10);
     event.dataTransfer.effectAllowed = 'move';
     event.dataTransfer.setData('text/plain', this.props.column.key);
@@ -76,8 +76,8 @@ class ColumnSetting extends React.Component {
     const { column } = this.props;
     return (
       <div 
-        className={`gallery-setting-item ${this.state.isItemDropTipShow ? 'column-can-drop' : ''}`} 
-        ref={ref => this.galleryItemRef = ref}
+        className={`timeline-column-setting-item ${this.state.isItemDropTipShow ? 'column-can-drop' : ''}`}
+        ref={ref => this.itemRef = ref}
         onDrop={this.onDrop}
         onDragEnter={this.onTableDragEnter}
         onDragOver={this.onDragOver}
@@ -90,7 +90,7 @@ class ColumnSetting extends React.Component {
         >
       <i className="dtable-font dtable-icon-drag"></i>
       </div>
-    <div className="gallery-column-switch">
+    <div className="timeline-column-switch">
       <label className="custom-switch">
         <input 
           type="checkbox" 
