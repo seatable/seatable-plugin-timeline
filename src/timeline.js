@@ -227,13 +227,12 @@ class Timeline extends React.Component {
   }
 
   onConfirmExport = (gridStartDate, gridEndDate) => {
-    let { isShowUsers, selectedGridView, selectedDate } = this.state;
-    let { selectedTimelineView, rows, isGroupView, groups, eventBus } = this.props;
+    const { isShowUsers, selectedGridView, selectedDate } = this.state;
     const GridView = this.gridViews[selectedGridView];
-    const isToday = this.isToday();
     this.setState({isExporting: true});
-    ExportViewGenerator({isShowUsers, selectedGridView, selectedDate, gridStartDate, gridEndDate, rows,
-      isGroupView, groups, GridView, isToday, eventBus });
+    ExportViewGenerator({
+      isShowUsers, selectedGridView, selectedDate,
+      gridStartDate, gridEndDate, GridView, ...this.props});
     setTimeout(() => {
       const ele = document.querySelector('#timeline-export-container .timeline-container');
       if (!ele) return;
@@ -250,7 +249,7 @@ class Timeline extends React.Component {
         });
         let eleA = document.createElement('a');
         eleA.href = canvas.toDataURL('image/png');
-        eleA.download = `${selectedTimelineView.name}.png`;
+        eleA.download = `${this.props.selectedTimelineView.name}.png`;
         eleA.click();
         document.body.removeChild(document.querySelector('#timeline-export-container'));
       });

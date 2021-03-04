@@ -44,10 +44,6 @@ class ViewportRight extends React.Component {
       selectedDate,
       ...initState
     });
-
-    // fix the wrong `viewportRightWidth` above
-    this.isScrolling = true;
-    this.viewportRight.scrollLeft = 1;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -191,7 +187,7 @@ class ViewportRight extends React.Component {
 
   render() {
     let { overScanStartIndex, overScanEndIndex } = this.state;
-    let { selectedGridView, selectedDate, isShowUsers, renderHeaderYears, renderHeaderDates, isRenderAll } = this.props;
+    let { selectedGridView, selectedDate, renderHeaderYears, renderHeaderDates, isRenderAll } = this.props;
     let columnWidth = getColumnWidth(selectedGridView);
     let overScanDates, startOffset, endOffset;
     if (isRenderAll) {
@@ -204,9 +200,8 @@ class ViewportRight extends React.Component {
       endOffset = (this.allDates.length - overScanEndIndex) * columnWidth;
     }
     let renderedDates = getRenderedDates(selectedGridView, overScanDates);
-    //const viewportStyle = {marginLeft: isShowUsers && 180};
     return (
-      <div className="timeline-viewport-right" ref={ref => this.viewportRight = ref} onScroll={this.onScroll}>
+      <div className="timeline-viewport-right flex-fill" ref={ref => this.viewportRight = ref} onScroll={this.onScroll}>
         <TimelineHeader
           selectedGridView={selectedGridView}
           selectedDate={selectedDate}

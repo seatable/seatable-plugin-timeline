@@ -19,7 +19,6 @@ class ColumnSetting extends React.Component {
   }
 
   updateColumn = (e) => {
-    e.nativeEvent.stopImmediatePropagation(); // TODO: is it needed?
     this.props.updateColumn(this.props.column, e.target.checked); 
   }
 
