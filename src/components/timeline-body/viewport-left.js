@@ -35,22 +35,23 @@ class ViewportLeft extends React.Component {
     this.viewportLeft.scrollTop = scrollTop;
   }
 
-  updateColumn = (targetColumn, targetShown) => {
+  updateColumn = (targetColumnKey, targetShown) => {
     const { settings } = this.props;
     settings.columns = this.configuredColumns.map(item => {
-      if (item.key == targetColumn.key) {
-        item.shown = targetShown; 
+      if (item.key == targetColumnKey) {
+        item.shown = targetShown;
       }
       return item;
     });
     this.props.onModifyTimelineSettings(settings);
   }
 
-  moveColumn = (targetColumnKey, targetIndexColumn) => {
+  moveColumn = (targetColumnKey, targetIndexColumnKey) => {
     const { settings } = this.props;
     const configuredColumns = this.configuredColumns; 
     const targetColumn = configuredColumns.filter(column => column.key == targetColumnKey)[0];
     const originalIndex = configuredColumns.indexOf(targetColumn);
+    const targetIndexColumn = configuredColumns.filter(column => column.key == targetIndexColumnKey)[0];
     const targetIndex = configuredColumns.indexOf(targetIndexColumn);
     configuredColumns.splice(originalIndex, 1);
     configuredColumns.splice(targetIndex, 0, targetColumn);
@@ -61,28 +62,32 @@ class ViewportLeft extends React.Component {
   getCurrentConfiguredColumns = () => {
     const { columns, settings } = this.props;
     const initialConfiguredColumns = columns.map((item, index) => {
-      item.shown = index == 0; // show the first column by default
-      return item;
+      return {
+        key: item.key,
+        shown: index == 0 // show the first column by default
+      };
     });
-    const configuredColumns = settings.columns || initialConfiguredColumns;
-    /*
+
     let configuredColumns = initialConfiguredColumns;
     if (settings.columns) {
-      configuredColumns = configuredColumns.map((item, index) => {
-        const filtered = settings.columns.filter(c => c.key == item.key);
-        if (filtered.length) {
-          item.shown = filtered[0].shown; 
-        }
-        return item;
-      }); 
+      const baseConfiguredColumns = settings.columns.filter(item => {
+        return columns.some(c => item.key == c.key);
+      });
+      const addedColumns = columns
+        .filter(item => !baseConfiguredColumns.some(c => item.key == c.key))
+        .map(item => ({key: item.key, shown: false}));
+      configuredColumns = baseConfiguredColumns.concat(addedColumns);
     }
-    */
     return configuredColumns;
   }
 
   render() {
     const { topOffset, bottomOffset, columns, settings, isGroupView } = this.props;
-    const configuredColumns = this.configuredColumns = this.getCurrentConfiguredColumns();
+    this.configuredColumns = this.getCurrentConfiguredColumns();
+    const configuredColumns = this.configuredColumns.map((item, index) => {
+      const targetItem = columns.filter(c => c.key == item.key)[0];
+      return Object.assign({}, targetItem, item);
+    });
     const shownColumns = configuredColumns.filter(item => item.shown);
     return (
       <div className="timeline-viewport-left" ref={ref => this.viewportLeft = ref} onScroll={this.onViewportLeftScroll}>

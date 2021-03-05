@@ -113,7 +113,10 @@ class Toolbar extends React.Component {
     } else {
       const shownColumns = configuredColumns.filter(column => column.shown);
       shownColumns.forEach(column => {
-        left += column.width;
+        const targetColumn = columns.filter(c => c.key == column.key)[0];
+        if (targetColumn) { // the column can be deleted in the table
+          left += targetColumn.width;
+        }
       });
     }
     if (isGroupView) {

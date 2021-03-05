@@ -19,7 +19,7 @@ class ColumnSetting extends React.Component {
   }
 
   updateColumn = (e) => {
-    this.props.updateColumn(this.props.column, e.target.checked); 
+    this.props.updateColumn(this.props.column.key, e.target.checked);
   }
 
   onDragStart = (event) => {
@@ -68,7 +68,7 @@ class ColumnSetting extends React.Component {
     if (droppedColumnKey == column.key) {
       return;
     }
-    this.props.moveColumn(droppedColumnKey, column);
+    this.props.moveColumn(droppedColumnKey, column.key);
   }
 
   render() {
