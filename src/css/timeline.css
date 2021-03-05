@@ -508,9 +508,6 @@
 .timeline-viewport-left {
   height: 100%;
   padding-bottom: 200px;
-  overflow-y: auto;
-  -ms-overflow-style: none;
-  overflow: -moz-scrollbars-none;
 }
 
 .timeline-viewport-left::-webkit-scrollbar {

@@ -90,14 +90,16 @@ class ViewportLeft extends React.Component {
     });
     const shownColumns = configuredColumns.filter(item => item.shown);
     return (
-      <div className="timeline-viewport-left" ref={ref => this.viewportLeft = ref} onScroll={this.onViewportLeftScroll}>
+      <div className="timeline-viewport-left d-flex flex-column">
+        <div>
         <ColumnManager
           columns={configuredColumns}
           updateColumn={this.updateColumn}
           moveColumn={this.moveColumn}
         />
         <ColumnsShown columns={shownColumns} isGroupView={isGroupView} />
-        <div className="canvas-left-wrapper" style={{paddingTop: topOffset, paddingBottom: bottomOffset}}>
+        </div>
+        <div className="canvas-left-wrapper o-auto" style={{paddingTop: topOffset, paddingBottom: bottomOffset}} ref={ref => this.viewportLeft = ref} onScroll={this.onViewportLeftScroll}>
           {this.renderCanvasLeft(shownColumns)}
         </div>
       </div>
