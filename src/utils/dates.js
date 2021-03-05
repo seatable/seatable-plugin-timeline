@@ -51,36 +51,6 @@ export function getDatesInRange(startDate, endDate, unit = 'day') {
   return dates;
 }
 
-export function getDate2Week(date) {
-  let weekNumber = moment(date).format('e');
-  switch(weekNumber) {
-    case '0': {
-      return 'S';
-    }
-    case '1': {
-      return 'M';
-    }
-    case '2': {
-      return 'T';
-    }
-    case '3': {
-      return 'W';
-    }
-    case '4': {
-      return 'T';
-    }
-    case '5': {
-      return 'F';
-    }
-    case '6': {
-      return 'S';
-    }
-    default: {
-      return '';
-    }
-  }
-}
-
 export function getDate2Month(date) {
   return moment(date).format('MMM');
 }
