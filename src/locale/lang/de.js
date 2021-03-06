@@ -1,9 +1,8 @@
-/* eslint-disable */
 const de = {
   "Timeline": "Timeline",
-  "New_view": "Neue Ansicht",
-  "Rename_view": "Ansicht umbenennen",
-  "Delete_view": "Ansicht löschen",
+  "New_view": "New view",
+  "Rename_view": "Rename view",
+  "Delete_view": "Delete view",
   "Name": "Name",
   "Name_is_required": "Name ist erforderlich",
   "Cancel": "Abbrechen",
@@ -16,9 +15,10 @@ const de = {
   "Settings": "Einstellungen",
   "Table": "Tabelle",
   "View": "Ansicht",
-  "Color_column": "Farbe",
-  "Start_date": "Startdatum",
-  "End_date": "Enddatum",
+  "Default_View": "Default View",
+  "Color_column": "Color column",
+  "Start_date": "Start date",
+  "End_date": "End date",
   "Duration": "Dauer",
   "Jan": "Jan.",
   "Feb": "Feb.",
@@ -33,7 +33,16 @@ const de = {
   "Nov": "Nov.",
   "Dec": "Dez.",
   "days_range": "Tag {startOfMonthDay} - {endOfMonthDay}",
-  "No_options": "Keine Optionen"
-};
+  "No_options": "Keine Optionen",
+  "Date_range": "Date range",
+  "Empty": "Empty",
+  "Select_the_date_range_to_export": "Select the date range to export",
+  "Export": "Export",
+  "Exporting": "Exporting",
+  "Show_columns": "Show columns",
+  "Search_a_column": "Search a column",
+  "No_column": "No column"
+}
+;
 
 export default de;
