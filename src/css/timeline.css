@@ -528,6 +528,7 @@
   white-space: nowrap;
   border-bottom: 1px solid #e2e2e2;
 }
+
 .timeline-header-row {
   border-top: 1px solid #e2e2e2;
 }
@@ -806,6 +807,7 @@
   font-weight: 400;
   border-left: 1px solid #ddd;
   font-size: 14px;
+  line-height: 1;
   color: #202428;
 }
 
