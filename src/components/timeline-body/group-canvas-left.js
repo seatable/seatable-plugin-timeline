@@ -10,9 +10,9 @@ class GroupCanvasLeft extends Component {
   }
 
   render() {
-    let { groupVisibleStartIdx, groups, foldedGroups, shownColumns, collaborators, dtable, tableID, tables, formulaRows } = this.props;
+    let { groupVisibleStartIdx, groups, foldedGroups, shownColumns, collaborators, dtable, tableID, tables, formulaRows, topOffset, bottomOffset } = this.props;
     return (
-      <div className="group-canvas-left">
+      <div className="group-canvas-left" style={{paddingTop: topOffset, paddingBottom: bottomOffset}}>
         {groups.map((group, index) => {
           const isExpanded = isGroupExpanded(foldedGroups, index + groupVisibleStartIdx);
           return (

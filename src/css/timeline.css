@@ -507,10 +507,13 @@
 /* viewport-left */
 .timeline-viewport-left {
   height: 100%;
+}
+
+.canvas-left-wrapper {
   padding-bottom: 200px;
 }
 
-.timeline-viewport-left::-webkit-scrollbar {
+.canvas-left-wrapper::-webkit-scrollbar {
   display: none;
   width: 0;
   height: 0;

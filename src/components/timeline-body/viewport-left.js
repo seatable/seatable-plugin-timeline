@@ -8,14 +8,14 @@ import ColumnsShown from './columns-shown';
 class ViewportLeft extends React.Component {
 
   renderCanvasLeft = (shownColumns) => {
-    let { isGroupView, groupVisibleStartIdx, renderedRows, groups, onExpandGroupToggle, foldedGroups, collaborators, dtable, tableID, tables, formulaRows } = this.props;
+    let { isGroupView, groupVisibleStartIdx, renderedRows, groups, onExpandGroupToggle, foldedGroups, collaborators, dtable, tableID, tables, formulaRows, topOffset, bottomOffset } = this.props;
     let CustomCanvasLeft, canvasLeftProps;
     if (isGroupView) {
       CustomCanvasLeft = GroupCanvasLeft;
-      canvasLeftProps = { groupVisibleStartIdx, groups, foldedGroups, onExpandGroupToggle, shownColumns, collaborators, dtable, tableID, tables, formulaRows };
+      canvasLeftProps = { groupVisibleStartIdx, groups, foldedGroups, onExpandGroupToggle, shownColumns, collaborators, dtable, tableID, tables, formulaRows, topOffset, bottomOffset };
     } else {
       CustomCanvasLeft = CanvasLeft;
-      canvasLeftProps = { renderedRows, shownColumns, collaborators, dtable, tableID, tables, formulaRows };
+      canvasLeftProps = { renderedRows, shownColumns, collaborators, dtable, tableID, tables, formulaRows, topOffset, bottomOffset };
     }
     return (
       <CustomCanvasLeft {...canvasLeftProps} />
@@ -99,7 +99,7 @@ class ViewportLeft extends React.Component {
         />
         <ColumnsShown columns={shownColumns} isGroupView={isGroupView} />
         </div>
-        <div className="canvas-left-wrapper o-auto" style={{paddingTop: topOffset, paddingBottom: bottomOffset}} ref={ref => this.viewportLeft = ref} onScroll={this.onViewportLeftScroll}>
+        <div className="canvas-left-wrapper flex-fill o-auto" ref={ref => this.viewportLeft = ref} onScroll={this.onViewportLeftScroll}>
           {this.renderCanvasLeft(shownColumns)}
         </div>
       </div>
