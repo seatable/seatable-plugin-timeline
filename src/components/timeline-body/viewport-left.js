@@ -7,6 +7,13 @@ import ColumnsShown from './columns-shown';
 
 class ViewportLeft extends React.Component {
 
+  componentDidMount() {
+    const { prevScrollTop } = this.props;
+    if (prevScrollTop > 0) {
+      this.setCanvasLeftScroll(prevScrollTop);
+    }
+  }
+
   renderCanvasLeft = (shownColumns) => {
     let { isGroupView, groupVisibleStartIdx, renderedRows, groups, onExpandGroupToggle, foldedGroups, collaborators, dtable, tableID, tables, formulaRows, topOffset, bottomOffset } = this.props;
     let CustomCanvasLeft, canvasLeftProps;

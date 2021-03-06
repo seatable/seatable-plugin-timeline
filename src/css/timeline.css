@@ -496,6 +496,7 @@
 
 /* viewport-left */
 .timeline-viewport-left {
+  min-width: 180px;
   height: 100%;
 }
 
@@ -829,6 +830,11 @@
 
 .timeline-column-manager-menu {
   width: 255px;
+}
+
+.timeline-column-manager-menu .no-column-tips {
+  color: #555;
+  opacity: .5;
 }
 
 .timeline-column-manager-columns {

@@ -1,4 +1,3 @@
-/* eslint-disable */
 const zh_CN = {
   "Timeline": "时间线",
   "New_view": "新建视图",
@@ -40,6 +39,10 @@ const zh_CN = {
   "Select_the_date_range_to_export": "选择要导出的日期范围",
   "Export": "导出",
   "Exporting": "正在导出",
-};
+  "Show_columns": "显示字段",
+  "Search_a_column": "查找一个列",
+  "No_column": "没有列"
+}
+;
 
 export default zh_CN;

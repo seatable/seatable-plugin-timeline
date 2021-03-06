@@ -1,4 +1,3 @@
-/* eslint-disable */
 const en = {
   "Timeline": "Timeline",
   "New_view": "New view",
@@ -43,6 +42,7 @@ const en = {
   "Show_columns": "Show columns",
   "Search_a_column": "Search a column",
   "No_column": "No column"
-};
+}
+;
 
 export default en;
