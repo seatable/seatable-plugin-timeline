@@ -238,10 +238,7 @@ class Timeline extends React.Component {
       if (!ele) return;
       html2canvas(ele, {
         windowWidth: ele.scrollWidth,
-        windowHeight: ele.scrollHeight,
-        ignoreElements: (element) => {
-          return ['toolbar-left', 'toolbar-right'].includes(element.className);
-        }
+        windowHeight: ele.scrollHeight
       }).then(canvas => {
         this.setState({
           isExporting: false,

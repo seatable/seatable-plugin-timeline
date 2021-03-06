@@ -720,15 +720,9 @@
   display: flex;
 }
 
-.timeline-export-container .timeline-viewport-left,
 .timeline-export-container .timeline-viewport-right,
 .timeline-export-container .canvas-right {
-  overflow-y: unset !important;
-}
-
-.timeline-export-container .timeline-viewport-right,
-.timeline-export-container .canvas-right {
-  overflow-x: unset !important;
+  overflow: unset !important;
 }
 
 .timeline-export-container .timeline-grid-view,
@@ -737,17 +731,7 @@
 }
 
 .timeline-export-container .left-pane-wrapper {
-  position: unset;
-  width: 180px;
   border-right: 2px solid rgba(77,77,77,0.3);
-}
-
-.timeline-export-container .timeline-toolbar .blank-zone {
-  border-right: 2px solid rgba(77,77,77,0.3);
-}
-
-.timeline-export-container .timeline-viewport-left {
-  width: 100%;
 }
 
 .timeline-export-container .timeline-header {
@@ -844,4 +828,7 @@
   background-color: #f0f0f0;
   color: #444;
   border: none;
+}
+#timeline-export-container .timeline-column-manager-btn {
+  visibility: hidden;
 }
