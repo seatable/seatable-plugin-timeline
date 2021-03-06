@@ -47,7 +47,7 @@ class ColumnManager extends React.Component {
               <Input type="text" bsSize="sm" placeholder={intl.get('Search_a_column')} value={keyword} onChange={this.searchColumn} />
             </div>
             {columns.length == 0 ?
-              <p className="ml-2">{intl.get('No_column')}</p> :
+              <p className="ml-2 no-columns-tips">{intl.get('No_column')}</p> :
               <div className="timeline-column-manager-columns">
                 {columns.map((column, index) => {
                   return (

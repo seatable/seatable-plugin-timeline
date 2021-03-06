@@ -98,6 +98,7 @@ class Viewport extends Component {
               renderedRows={renderedRows}
               topOffset={topOffset}
               bottomOffset={bottomOffset}
+              prevScrollTop={this.scrollTop}
               onViewportLeftScroll={this.onViewportLeftScroll}
               columns={columns}
               collaborators={collaborators}

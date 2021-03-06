@@ -831,6 +831,11 @@
   width: 255px;
 }
 
+.no-columns-tips {
+  color: #555;
+  opacity: .5;
+}
+
 .timeline-column-manager-columns {
   max-height: 240px;
   overflow-y: auto;
