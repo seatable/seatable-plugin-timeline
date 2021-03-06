@@ -174,16 +174,6 @@
   width: 100%;
 }
 
-.timeline-toolbar .blank-zone {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 68px;
-  border-bottom: 1px solid #e2e2e2;
-  background: #fff;
-  box-shadow: rgba(136, 136, 136, 0.3) 5px 0px 5px -2px;
-}
-
 .timeline-toolbar .toolbar-left,
 .timeline-toolbar .toolbar-right {
   position: absolute;
@@ -818,9 +808,11 @@
   font-size: 14px;
   color: #202428;
 }
+
 .timeline-grid-cell.first-cell {
   border: 0;
 }
+
 .timeline-column-icon {
   font-size: 14px;
   color: #aaa;
@@ -832,6 +824,16 @@
   color: #444;
   border: none;
 }
+
+.timeline-column-manager-menu {
+  width: 255px;
+}
+
+.timeline-column-manager-columns {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
 #timeline-export-container .timeline-column-manager-btn {
   visibility: hidden;
 }

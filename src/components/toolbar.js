@@ -131,7 +131,6 @@ class Toolbar extends React.Component {
     let displaySelectedGridView = this.getDisplaySelectedGridView();
     return (
       <div className="timeline-toolbar">
-        {isShowUsers && <div className="blank-zone" style={{zIndex: zIndexes.TOOLBAR_BLANK_ZONE}}></div>}
         <div className="toolbar-left" style={{zIndex: zIndexes.TOOLBAR, left: isShowUsers ? this.getLeftPos(): 0}}>
           <div className="toggle-drawer-btn" onClick={onShowUsersToggle}>
             <i className={`dtable-font ${isShowUsers ? 'dtable-icon-retract-com' : 'dtable-icon-open-com'}`}></i>

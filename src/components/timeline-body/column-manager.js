@@ -41,13 +41,15 @@ class ColumnManager extends React.Component {
       <i className="dtable-font dtable-icon-eye mr-1"></i>
       {intl.get('Show_columns')}
       </DropdownToggle>
-      <DropdownMenu style={{'width':'255px'}} className="py-2">
+      <DropdownMenu className="py-2 timeline-column-manager-menu">
+      <div className="d-flex flex-column">
       <div className="px-2 pb-2">
       <Input type="text" bsSize="sm" placeholder={intl.get('Search_a_column')} value={keyword} onChange={this.searchColumn} />
       </div>
       {columns.length == 0 ?
         <p className="ml-2">{intl.get('No_column')}</p> :
-        columns.map((column, index) => {
+        <div className="timeline-column-manager-columns">
+        {columns.map((column, index) => {
           return (
             <ColumnSetting
             key={index}
@@ -56,8 +58,10 @@ class ColumnManager extends React.Component {
             moveColumn={this.props.moveColumn}
             />
           );
-        })
+        })}
+        </div>
       }
+      </div>
       </DropdownMenu>
       </ButtonDropdown>
     );
