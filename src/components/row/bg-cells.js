@@ -2,13 +2,13 @@ import React from 'react';
 import moment from 'moment';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import { dates } from '../../utils';
 import { DATE_FORMAT, DATE_UNIT, GRID_VIEWS } from '../../constants';
 
 function BgCells({selectedGridView, columnWidth, renderedDates}) {
-  const isWeekend = (week) => {
+  const isWeekend = (date) => {
     if (selectedGridView === GRID_VIEWS.DAY) {
-      return week === 'S';
+      return moment(date).isoWeekday() === 6 ||
+        moment(date).isoWeekday() === 7;
     }
     return false;
   };
@@ -34,7 +34,7 @@ function BgCells({selectedGridView, columnWidth, renderedDates}) {
       dateItemWidth = (moment(endOfMonth).diff(d, DATE_UNIT.DAY) + 1) * columnWidth;
     } else {
       isEndRange = isEndOfRange(d);
-      _isWeekend = isWeekend(dates.getDate2Week(d));
+      _isWeekend = isWeekend(d);
       dateItemWidth = columnWidth;
     }
     const dateBgClassName = classnames({
