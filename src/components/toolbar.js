@@ -109,7 +109,7 @@ class Toolbar extends React.Component {
     const { columns: configuredColumns } = settings;
     if (!configuredColumns) {
       // show the first column by default
-      left = columns[0].width; 
+      left = columns[0].width;
     } else {
       const shownColumns = configuredColumns.filter(column => column.shown);
       shownColumns.forEach(column => {

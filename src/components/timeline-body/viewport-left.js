@@ -48,7 +48,7 @@ class ViewportLeft extends React.Component {
 
   moveColumn = (targetColumnKey, targetIndexColumnKey) => {
     const { settings } = this.props;
-    const configuredColumns = this.configuredColumns; 
+    const configuredColumns = this.configuredColumns;
     const targetColumn = configuredColumns.filter(column => column.key == targetColumnKey)[0];
     const originalIndex = configuredColumns.indexOf(targetColumn);
     const targetIndexColumn = configuredColumns.filter(column => column.key == targetIndexColumnKey)[0];
@@ -82,7 +82,7 @@ class ViewportLeft extends React.Component {
   }
 
   render() {
-    const { topOffset, bottomOffset, columns, settings, isGroupView } = this.props;
+    const { columns, isGroupView } = this.props;
     this.configuredColumns = this.getCurrentConfiguredColumns();
     const configuredColumns = this.configuredColumns.map((item, index) => {
       const targetItem = columns.filter(c => c.key == item.key)[0];
@@ -92,12 +92,12 @@ class ViewportLeft extends React.Component {
     return (
       <div className="timeline-viewport-left d-flex flex-column">
         <div>
-        <ColumnManager
-          columns={configuredColumns}
-          updateColumn={this.updateColumn}
-          moveColumn={this.moveColumn}
-        />
-        <ColumnsShown columns={shownColumns} isGroupView={isGroupView} />
+          <ColumnManager
+            columns={configuredColumns}
+            updateColumn={this.updateColumn}
+            moveColumn={this.moveColumn}
+          />
+          <ColumnsShown columns={shownColumns} isGroupView={isGroupView} />
         </div>
         <div className="canvas-left-wrapper flex-fill o-auto" ref={ref => this.viewportLeft = ref} onScroll={this.onViewportLeftScroll}>
           {this.renderCanvasLeft(shownColumns)}

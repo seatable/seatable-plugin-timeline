@@ -10,7 +10,7 @@ import Group from './model/group';
 import TimelineRow from './model/timeline-row';
 import Event from './model/event';
 import { PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR, DEFAULT_TEXT_COLOR, RECORD_END_TYPE, DATE_UNIT } from './constants';
-import { generatorViewId, getDtableUuid, getValidCollaborators } from './utils';
+import { generatorViewId, getDtableUuid } from './utils';
 import EventBus from './utils/event-bus';
 
 import './locale';

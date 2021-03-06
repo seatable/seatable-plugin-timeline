@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { COLUMNS_ICON_CONFIG } from 'dtable-store';
 
@@ -63,7 +63,7 @@ class ColumnSetting extends React.Component {
     event.preventDefault();
     this.enteredCounter = 0;
     this.setState({isItemDropTipShow: false});
-    const droppedColumnKey = event.dataTransfer.getData("text/plain");
+    const droppedColumnKey = event.dataTransfer.getData('text/plain');
     const { column } = this.props;
     if (droppedColumnKey == column.key) {
       return;
@@ -74,7 +74,7 @@ class ColumnSetting extends React.Component {
   render() {
     const { column } = this.props;
     return (
-      <div 
+      <div
         className={`timeline-column-setting-item ${this.state.isItemDropTipShow ? 'column-can-drop' : ''}`}
         ref={ref => this.itemRef = ref}
         onDrop={this.onDrop}
@@ -82,29 +82,29 @@ class ColumnSetting extends React.Component {
         onDragOver={this.onDragOver}
         onDragLeave={this.onDragLeave}
       >
-        <div 
-          className="drag-column-handle" 
+        <div
+          className="drag-column-handle"
           draggable="true"
           onDragStart={this.onDragStart}
         >
-      <i className="dtable-font dtable-icon-drag"></i>
-      </div>
-    <div className="timeline-column-switch">
-      <label className="custom-switch">
-        <input 
-          type="checkbox" 
-          className="custom-switch-input" 
-          checked={column.shown}
-          onChange={this.updateColumn}
-          name="custom-switch-checkbox" 
-        />  
-        <span className="custom-switch-description text-truncate">
-      <i className={`dtable-font ${COLUMNS_ICON_CONFIG[column.type]}`}></i>
-      <span>{column.name}</span>
-      </span>
-        <span className="custom-switch-indicator"></span>
-      </label>
-    </div>
+          <i className="dtable-font dtable-icon-drag"></i>
+        </div>
+        <div className="timeline-column-switch">
+          <label className="custom-switch">
+            <input
+              type="checkbox"
+              className="custom-switch-input"
+              checked={column.shown}
+              onChange={this.updateColumn}
+              name="custom-switch-checkbox"
+            />
+            <span className="custom-switch-description text-truncate">
+              <i className={`dtable-font ${COLUMNS_ICON_CONFIG[column.type]}`}></i>
+              <span>{column.name}</span>
+            </span>
+            <span className="custom-switch-indicator"></span>
+          </label>
+        </div>
       </div>
     );
   }

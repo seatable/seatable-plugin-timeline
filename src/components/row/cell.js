@@ -1,7 +1,7 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { CellType } from 'dtable-store';
-import { 
+import {
   TextFormatter,
   NumberFormatter,
   CheckboxFormatter,
@@ -43,7 +43,7 @@ class Cell extends React.Component {
     this.state = {
       isDataLoaded: false,
       collaborator: null
-    }
+    };
   }
 
   componentDidMount() {
@@ -57,7 +57,7 @@ class Cell extends React.Component {
   getMediaUrl = () => {
     if (window.dtable) {
       return window.dtable.mediaUrl;
-    }   
+    }
     return window.dtablePluginConfig.mediaUrl;
   }
 
@@ -100,7 +100,7 @@ class Cell extends React.Component {
       this.setState({isDataLoaded: true, collaborator: collaborator});
       return;
     }
-    
+
     this.getUserCommonInfo(value).then(res => {
       collaborator = res.data;
       this.setState({isDataLoaded: true, collaborator: collaborator});
@@ -123,7 +123,7 @@ class Cell extends React.Component {
     const { column, row, collaborators, dtable, tableID, tables } = this.props;
     const { type: columnType, key: columnKey } = column;
     const { isDataLoaded, collaborator } = this.state;
-    
+
     switch(columnType) {
       case CellType.TEXT: {
         if (!row[columnKey]) return this.renderEmptyFormatter();
@@ -181,14 +181,14 @@ class Cell extends React.Component {
         if (isDataLoaded) {
           return <CreatorFormatter collaborators={[collaborator]} value={row._creator} />;
         }
-        return null
+        return null;
       }
       case CellType.LAST_MODIFIER: {
         if (!row._last_modifier || !collaborator) return this.renderEmptyFormatter();
         if (isDataLoaded) {
           return <LastModifierFormatter collaborators={[collaborator]} value={row._last_modifier} />;
         }
-        return null
+        return null;
       }
       case CellType.FORMULA: {
         let formulaRows = this.props.formulaRows ? {...this.props.formulaRows} : {};
@@ -204,7 +204,7 @@ class Cell extends React.Component {
           expandLinkedTableRow: function(row, tableId) {
             return false;
           }
-        }
+        };
         return <LinkFormatter column={column} row={row} currentTableId={tableID} linkMetaData={linkMetaData} containerClassName="leading-normal" />;
       }
       case CellType.AUTO_NUMBER: {
@@ -224,7 +224,7 @@ class Cell extends React.Component {
         return <DurationFormatter value={row[columnKey]} format={column.data.duration_format} />;
       }
       default:
-        return null
+        return null;
     }
   }
 
