@@ -227,22 +227,18 @@ class Timeline extends React.Component {
   }
 
   onConfirmExport = (gridStartDate, gridEndDate) => {
-    let { isShowUsers, selectedGridView, selectedDate } = this.state;
-    let { selectedTimelineView, rows, isGroupView, groups, eventBus } = this.props;
+    const { isShowUsers, selectedGridView, selectedDate } = this.state;
     const GridView = this.gridViews[selectedGridView];
-    const isToday = this.isToday();
     this.setState({isExporting: true});
-    ExportViewGenerator({isShowUsers, selectedGridView, selectedDate, gridStartDate, gridEndDate, rows,
-      isGroupView, groups, GridView, isToday, eventBus });
+    ExportViewGenerator({
+      isShowUsers, selectedGridView, selectedDate,
+      gridStartDate, gridEndDate, GridView, ...this.props});
     setTimeout(() => {
       const ele = document.querySelector('#timeline-export-container .timeline-container');
       if (!ele) return;
       html2canvas(ele, {
         windowWidth: ele.scrollWidth,
-        windowHeight: ele.scrollHeight,
-        ignoreElements: (element) => {
-          return ['toolbar-left', 'toolbar-right'].includes(element.className);
-        }
+        windowHeight: ele.scrollHeight
       }).then(canvas => {
         this.setState({
           isExporting: false,
@@ -250,7 +246,7 @@ class Timeline extends React.Component {
         });
         let eleA = document.createElement('a');
         eleA.href = canvas.toDataURL('image/png');
-        eleA.download = `${selectedTimelineView.name}.png`;
+        eleA.download = `${this.props.selectedTimelineView.name}.png`;
         eleA.click();
         document.body.removeChild(document.querySelector('#timeline-export-container'));
       });
@@ -260,8 +256,8 @@ class Timeline extends React.Component {
   render() {
     let { isShowUsers, selectedGridView, selectedDate, changedSelectedByScroll, gridStartDate, gridEndDate,
       canNavigateToday, isShowSelectExportDateRangeDialog, isExporting, isAfterDelay } = this.state;
-    let { tables, views, nameColumns, singleSelectColumns, dateColumns, numberColumns, isShowTimelineSetting,
-      settings, rows, isGroupView, groups } = this.props;
+    let { tables, views, singleSelectColumns, dateColumns, numberColumns, isShowTimelineSetting,
+      settings, rows, columns, isGroupView, groups, collaborators } = this.props;
     let GridView = this.gridViews[selectedGridView];
     let isToday = this.isToday();
     return (
@@ -273,6 +269,9 @@ class Timeline extends React.Component {
               selectedDate={selectedDate}
               canNavigateToday={!isToday && canNavigateToday}
               isShowUsers={isShowUsers}
+              settings={settings || {}}
+              columns={columns}
+              isGroupView={isGroupView}
               eventBus={this.props.eventBus}
               onShowUsersToggle={this.onShowUsersToggle}
               onNavigate={this.onNavigate}
@@ -288,12 +287,20 @@ class Timeline extends React.Component {
               gridStartDate={gridStartDate}
               gridEndDate={gridEndDate}
               rows={rows}
+              columns={columns}
+              collaborators={collaborators}
+              settings={settings || {}}
+              onModifyTimelineSettings={this.props.onModifyTimelineSettings}
               isGroupView={isGroupView}
               groups={groups}
               eventBus={this.props.eventBus}
               updateSelectedDate={this.updateSelectedDate}
               onViewportRightScroll={this.onViewportRightScroll}
               onRowExpand={this.props.onRowExpand}
+              dtable={this.props.dtable}
+              tableID={this.props.tableID}
+              formulaRows={this.props.formulaRows}
+              tables={tables}
             />
           </Fragment>
         }
@@ -301,7 +308,6 @@ class Timeline extends React.Component {
           <TimelineSetting
             tables={tables}
             views={views}
-            nameColumns={nameColumns}
             singleSelectColumns={singleSelectColumns}
             dateColumns={dateColumns}
             numberColumns={numberColumns}
@@ -334,7 +340,6 @@ Timeline.propTypes = {
   isGroupView: PropTypes.bool,
   groups: PropTypes.array,
   columns: PropTypes.array,
-  nameColumns: PropTypes.array,
   singleSelectColumns: PropTypes.array,
   dateColumns: PropTypes.array,
   numberColumns: PropTypes.array,

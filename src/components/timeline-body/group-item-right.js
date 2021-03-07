@@ -40,13 +40,13 @@ class GroupItemRight extends Component {
       Array.isArray(renderedRows) && renderedRows.forEach((r, index) => {
         bgRows.push(
           <EventRow
-            key={`events-bg-row-${group.cell_value}-${r.name}-${index}`}
+            key={`events-bg-row-${group.cell_value}-${r.row._id}`}
             cells={bgCells}
           />
         );
         eventRows.push(
           <EventRow
-            key={`timeline-events-row-${group.cell_value}-${r.name}-${index}`}
+            key={`timeline-events-row-${group.cell_value}-${r.row._id}`}
             cells={
               <EventCells
                 selectedGridView={selectedGridView}

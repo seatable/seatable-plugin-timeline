@@ -99,7 +99,7 @@ class GroupViewport extends Component {
   render() {
     let { gridStartDate, gridEndDate, isShowUsers, selectedGridView, selectedDate, renderHeaderYears,
       renderHeaderDates, updateSelectedDate, eventBus, onRowExpand, changedSelectedByScroll,
-      onViewportRightScroll, groups, isRenderAll } = this.props;
+      onViewportRightScroll, groups, isRenderAll, columns, collaborators } = this.props;
     let { foldedGroups, groupVisibleStartIdx, groupVisibleEndIdx } = this.state;
     const groupsLen = groups.length;
     let renderedGroups, topOffset, bottomOffset;
@@ -113,7 +113,7 @@ class GroupViewport extends Component {
       bottomOffset = (groupsLen - groupVisibleEndIdx) > 0 ? getGroupsHeight(groups, foldedGroups, groupVisibleEndIdx + 1, groupsLen) : 0;
     }
     return (
-      <div className="timeline-group-viewport viewport" ref={ref => this.groupViewport = ref}>
+      <div className="timeline-group-viewport viewport d-flex" ref={ref => this.groupViewport = ref}>
         {isShowUsers &&
           <div className="left-pane-wrapper" style={{zIndex: zIndexes.LEFT_PANE_WRAPPER}}>
             <ViewportLeft
@@ -126,6 +126,14 @@ class GroupViewport extends Component {
               bottomOffset={bottomOffset}
               onExpandGroupToggle={this.onExpandGroupToggle}
               onViewportLeftScroll={this.onViewportLeftScroll}
+              columns={columns}
+              collaborators={collaborators}
+              settings={this.props.settings}
+              onModifyTimelineSettings={this.props.onModifyTimelineSettings}
+              dtable={this.props.dtable}
+              tableID={this.props.tableID}
+              tables={this.props.tables}
+              formulaRows={this.props.formulaRows}
             />
           </div>
         }

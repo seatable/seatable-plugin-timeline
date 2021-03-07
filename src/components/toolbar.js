@@ -7,6 +7,7 @@ import { NAVIGATE, GRID_VIEWS, zIndexes, DATE_UNIT, DATE_FORMAT } from '../const
 import * as EventTypes from '../constants/event-types';
 
 const propTypes = {
+  isGroupView: PropTypes.bool,
   selectedGridView: PropTypes.string,
   selectedDate: PropTypes.string,
   isShowUsers: PropTypes.bool,
@@ -102,13 +103,35 @@ class Toolbar extends React.Component {
     }
   }
 
+  getLeftPos = () => {
+    let left = 0;
+    const { settings, columns, isGroupView } = this.props;
+    const { columns: configuredColumns } = settings;
+    if (!configuredColumns) {
+      // show the first column by default
+      left = columns[0].width;
+    } else {
+      const shownColumns = configuredColumns.filter(column => column.shown);
+      shownColumns.forEach(column => {
+        const targetColumn = columns.filter(c => c.key == column.key)[0];
+        if (targetColumn) { // the column can be deleted in the table
+          left += targetColumn.width;
+        }
+      });
+    }
+    if (isGroupView) {
+      left += 16; // there is a `pl-4`.
+    }
+    left = Math.max(left, 180);
+    return left;
+  }
+
   render() {
     let { onShowUsersToggle, isShowUsers, canNavigateToday } = this.props;
     let displaySelectedGridView = this.getDisplaySelectedGridView();
     return (
       <div className="timeline-toolbar">
-        {isShowUsers && <div className="blank-zone" style={{zIndex: zIndexes.TOOLBAR_BLANK_ZONE}}></div>}
-        <div className="toolbar-left" style={{zIndex: zIndexes.TOOLBAR, left: isShowUsers ? 180 : 0}}>
+        <div className="toolbar-left" style={{zIndex: zIndexes.TOOLBAR, left: isShowUsers ? this.getLeftPos(): 0}}>
           <div className="toggle-drawer-btn" onClick={onShowUsersToggle}>
             <i className={`dtable-font ${isShowUsers ? 'dtable-icon-retract-com' : 'dtable-icon-open-com'}`}></i>
           </div>

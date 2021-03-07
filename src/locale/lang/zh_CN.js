@@ -1,4 +1,3 @@
-/* eslint-disable */
 const zh_CN = {
   "Timeline": "时间线",
   "New_view": "新建视图",
@@ -17,7 +16,6 @@ const zh_CN = {
   "Table": "表格",
   "View": "视图",
   "Default_View": "默认视图",
-  "Name_column": "名称字段",
   "Color_column": "颜色标签字段",
   "Start_date": "开始日期",
   "End_date": "结束日期",
@@ -41,6 +39,10 @@ const zh_CN = {
   "Select_the_date_range_to_export": "选择要导出的日期范围",
   "Export": "导出",
   "Exporting": "正在导出",
-};
+  "Show_columns": "显示字段",
+  "Search_a_column": "查找一个列",
+  "No_column": "没有列"
+}
+;
 
 export default zh_CN;

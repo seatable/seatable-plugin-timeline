@@ -77,7 +77,7 @@ class Viewport extends Component {
     let { rowOverScanStartIdx, rowOverScanEndIdx } = this.state;
     let { isShowUsers, selectedGridView, selectedDate, gridStartDate, gridEndDate, rows, renderHeaderYears,
       renderHeaderDates, eventBus, onViewportRightScroll, updateSelectedDate, onRowExpand, changedSelectedByScroll,
-      isRenderAll } = this.props;
+      isRenderAll, columns, collaborators } = this.props;
     const rowsCount = rows.length;
     let renderedRows, topOffset, bottomOffset;
     if (isRenderAll) {
@@ -90,7 +90,7 @@ class Viewport extends Component {
       bottomOffset = (rowsCount - rowOverScanEndIdx) > 0 ? (rowsCount - rowOverScanEndIdx) * ROW_HEIGHT : 0;
     }
     return (
-      <div className="timeline-viewport viewport" ref={ref => this.viewport = ref}>
+      <div className="timeline-viewport viewport d-flex" ref={ref => this.viewport = ref}>
         {isShowUsers &&
           <div className="left-pane-wrapper" style={{zIndex: zIndexes.LEFT_PANE_WRAPPER}}>
             <ViewportLeft
@@ -98,8 +98,16 @@ class Viewport extends Component {
               renderedRows={renderedRows}
               topOffset={topOffset}
               bottomOffset={bottomOffset}
+              prevScrollTop={this.scrollTop}
               onViewportLeftScroll={this.onViewportLeftScroll}
-              eventBus={eventBus}
+              columns={columns}
+              collaborators={collaborators}
+              settings={this.props.settings}
+              onModifyTimelineSettings={this.props.onModifyTimelineSettings}
+              dtable={this.props.dtable}
+              tableID={this.props.tableID}
+              tables={this.props.tables}
+              formulaRows={this.props.formulaRows}
             />
           </div>
         }

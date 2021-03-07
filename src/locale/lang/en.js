@@ -1,4 +1,3 @@
-/* eslint-disable */
 const en = {
   "Timeline": "Timeline",
   "New_view": "New view",
@@ -17,7 +16,6 @@ const en = {
   "Table": "Table",
   "View": "View",
   "Default_View": "Default View",
-  "Name_column": "Name column",
   "Color_column": "Color column",
   "Start_date": "Start date",
   "End_date": "End date",
@@ -40,7 +38,11 @@ const en = {
   "Empty": "Empty",
   "Select_the_date_range_to_export": "Select the date range to export",
   "Export": "Export",
-  "Exporting": "Exporting"
-};
+  "Exporting": "Exporting",
+  "Show_columns": "Show columns",
+  "Search_a_column": "Search a column",
+  "No_column": "No column"
+}
+;
 
 export default en;

@@ -1,9 +1,8 @@
-/* eslint-disable */
 const fr = {
   "Timeline": "Timeline",
-  "New_view": "Nouvelle vue",
-  "Rename_view": "Renommer la vue",
-  "Delete_view": "Supprimmer la vue",
+  "New_view": "New view",
+  "Rename_view": "Rename view",
+  "Delete_view": "Delete view",
   "Name": "Nom",
   "Name_is_required": "Le nom est nécessaire.",
   "Cancel": "Annuler",
@@ -16,10 +15,10 @@ const fr = {
   "Settings": "Paramètres",
   "Table": "Tableau",
   "View": "Vue",
-  "Name_column": "Name",
-  "Color_column": "Farbe",
-  "Start_date": "Date de départ",
-  "End_date": "Date de fin",
+  "Default_View": "Default View",
+  "Color_column": "Color column",
+  "Start_date": "Start date",
+  "End_date": "End date",
   "Duration": "Durée",
   "Jan": "Janv.",
   "Feb": "Févr.",
@@ -34,7 +33,16 @@ const fr = {
   "Nov": "Nov.",
   "Dec": "Déc.",
   "days_range": "Jour {startOfMonthDay} - {endOfMonthDay}",
-  "No_options": "Il n'y a pas d'options."
-};
+  "No_options": "Il n'y a pas d'options.",
+  "Date_range": "Date range",
+  "Empty": "Empty",
+  "Select_the_date_range_to_export": "Select the date range to export",
+  "Export": "Export",
+  "Exporting": "Exporting",
+  "Show_columns": "Show columns",
+  "Search_a_column": "Search a column",
+  "No_column": "No column"
+}
+;
 
 export default fr;
