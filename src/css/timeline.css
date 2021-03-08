@@ -327,7 +327,7 @@
   height: 30px;
   line-height: 30px;
   display: flex;
-  padding: 0 8px;
+  padding: 0 20px;
   border-radius: 4px;
 }
 
@@ -359,7 +359,7 @@
 }
 
 .timeline-column-setting-item .custom-switch .custom-switch-description {
-  width: 188px;
+  width: 165px;
   margin: 0;
   padding-right: 5px;
 }
@@ -838,7 +838,7 @@
 }
 
 .timeline-column-manager-columns {
-  max-height: 240px;
+  max-height: 340px;
   overflow-y: auto;
 }
 
