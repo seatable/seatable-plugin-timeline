@@ -539,10 +539,6 @@
   border-bottom: 1px solid #e2e2e2;
 }
 
-.timeline-viewport-left .group-header .group-title {
-  flex: 1;
-}
-
 .timeline-viewport-left .group-header .rows-count {
   margin-left: .5rem;
   font-size: 12px;
