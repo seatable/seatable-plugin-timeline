@@ -12,7 +12,7 @@ class GroupItemLeft extends Component {
 
   render() {
     let { group, isExpanded, shownColumns, collaborators, dtable, tableID, tables, formulaRows } = this.props;
-    let { cell_value, column_name, rows } = group;
+    const { column_name, rows } = group;
     const rowsCount = Array.isArray(rows) ? rows.length : 0;
     const table = dtable.getTableById(tableID);
     const groupColumn = dtable.getColumnByName(table, column_name);
