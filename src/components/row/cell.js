@@ -33,7 +33,8 @@ const propTypes = {
   dtable: PropTypes.object.isRequired,
   tableID: PropTypes.string.isRequired,
   tables: PropTypes.array,
-  formulaRows: PropTypes.object
+  formulaRows: PropTypes.object,
+  autoWidth: PropTypes.bool
 };
 
 class Cell extends React.Component {
@@ -229,9 +230,9 @@ class Cell extends React.Component {
   }
 
   render() {
-    const { column, className } = this.props;
-    return(
-      <div className={`timeline-grid-cell text-truncate d-flex align-items-center ${className}`} style={{'width': column.width}}>
+    const { column, className, autoWidth } = this.props;
+    return (
+      <div className={`timeline-grid-cell text-truncate d-flex align-items-center ${className}`} style={autoWidth ? {} : {'width': column.width}}>
         {this.renderFormatter()}
       </div>
     );
