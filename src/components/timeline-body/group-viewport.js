@@ -62,8 +62,10 @@ class GroupViewport extends Component {
   }
 
   getRenderedGroups = (groups, groupVisibleStartIdx, groupVisibleEndIdx) => {
-    let groupsLength = groups.length;
-    if (groupVisibleStartIdx >= groupsLength || groupVisibleEndIdx > groupsLength) {
+    const groupsLength = groups.length;
+
+    // can not get valid groups data if groupVisibleStartIdx or groupVisibleEndIdx is greater current groupsLength, then return empty list.
+    if (groupVisibleStartIdx >= groupsLength || groupVisibleEndIdx >= groupsLength) {
       return [];
     }
     let i = groupVisibleStartIdx, renderGroups = [];
