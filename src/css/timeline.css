@@ -825,7 +825,7 @@
 }
 
 .timeline-column-manager-menu {
-  width: 255px;
+  min-width: 255px;
 }
 
 .timeline-column-manager-menu .no-column-tips {
