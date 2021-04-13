@@ -256,7 +256,7 @@ class Timeline extends React.Component {
   render() {
     let { isShowUsers, selectedGridView, selectedDate, changedSelectedByScroll, gridStartDate, gridEndDate,
       canNavigateToday, isShowSelectExportDateRangeDialog, isExporting, isAfterDelay } = this.state;
-    let { tables, views, singleSelectColumns, dateColumns, numberColumns, isShowTimelineSetting,
+    let { tables, views, isShowTimelineSetting,
       settings, rows, columns, isGroupView, groups, collaborators } = this.props;
     let GridView = this.gridViews[selectedGridView];
     let isToday = this.isToday();
@@ -308,9 +308,10 @@ class Timeline extends React.Component {
           <TimelineSetting
             tables={tables}
             views={views}
-            singleSelectColumns={singleSelectColumns}
-            dateColumns={dateColumns}
-            numberColumns={numberColumns}
+            dtable={this.props.dtable}
+            CellType={this.props.CellType}
+            columnIconConfig={this.props.columnIconConfig}
+            selectedTable={this.props.selectedTable}
             selectedGridView={selectedGridView}
             settings={settings || {}}
             gridStartDate={gridStartDate}
@@ -335,14 +336,15 @@ class Timeline extends React.Component {
 Timeline.propTypes = {
   tables: PropTypes.array,
   views: PropTypes.array,
+  dtable: PropTypes.object,
+  CellType: PropTypes.object,
   selectedTimelineView: PropTypes.object,
+  selectedTable: PropTypes.object,
   rows: PropTypes.array,
   isGroupView: PropTypes.bool,
   groups: PropTypes.array,
   columns: PropTypes.array,
-  singleSelectColumns: PropTypes.array,
-  dateColumns: PropTypes.array,
-  numberColumns: PropTypes.array,
+  columnIconConfig: PropTypes.object,
   settings: PropTypes.object,
   isShowTimelineSetting: PropTypes.bool,
   eventBus: PropTypes.object,

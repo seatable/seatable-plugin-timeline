@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import moment from 'moment';
@@ -7,19 +7,21 @@ import Picker from '@seafile/seafile-calendar/lib/Picker';
 import RangeCalendar from '@seafile/seafile-calendar/lib/RangeCalendar';
 import PluginSelect from './plugin-select';
 import { translateCalendar } from '../utils/seafile-calendar-translate';
-import { SETTING_KEY, zIndexes, RECORD_END_TYPE, GRID_VIEWS, DATE_UNIT, DATE_FORMAT } from '../constants';
+import { SETTING_KEY, zIndexes, COLOR_FROM_TYPE_MAP, RECORD_END_TYPE, GRID_VIEWS, DATE_UNIT, DATE_FORMAT } from '../constants';
 
 import '@seafile/seafile-calendar/assets/index.css';
 import '../css/timeline-setting.css';
 
+const RECORD_COLOR_FROM_TYPES = [COLOR_FROM_TYPE_MAP.ROW_COLOR, COLOR_FROM_TYPE_MAP.COLOR_FIELD];
 const RECORD_END_TYPES = [RECORD_END_TYPE.END_TIME, RECORD_END_TYPE.RECORD_DURATION];
 
 const propTypes = {
   tables: PropTypes.array,
   views: PropTypes.array,
-  singleSelectColumns: PropTypes.array,
-  dateColumns: PropTypes.array,
-  numberColumns: PropTypes.array,
+  dtable: PropTypes.object,
+  CellType: PropTypes.object,
+  columnIconConfig: PropTypes.object,
+  selectedTable: PropTypes.object,
   settings: PropTypes.object,
   gridStartDate: PropTypes.string,
   gridEndDate: PropTypes.string,
@@ -29,13 +31,22 @@ const propTypes = {
   updateDateRange: PropTypes.func,
 };
 
-class TimelineSetting extends React.Component {
+class TimelineSetting extends Component {
 
   constructor(props) {
     super(props);
+    const { tables, views } = props;
     this.state = {
       dateRange: [moment(props.gridStartDate), moment(props.gridEndDate)],
     };
+    const { dateFields, numberFields, colorFields, labelFields } = this.getSelectorFields();
+    this.tableOptions = this.createOptions(tables, SETTING_KEY.TABLE_NAME, 'name');
+    this.viewOptions = this.createOptions(views, SETTING_KEY.VIEW_NAME, 'name');
+    this.startDateFieldOptions = this.createOptions(dateFields, SETTING_KEY.START_TIME_COLUMN_NAME, 'value');
+    this.endDateFieldOptions = this.createOptions(dateFields, SETTING_KEY.END_TIME_COLUMN_NAME, 'value');
+    this.numberFieldOptions = this.createOptions(numberFields, SETTING_KEY.SINGLE_SELECT_COLUMN_NAME, 'value');
+    this.colorFieldOptions = this.createOptions(colorFields, SETTING_KEY.SINGLE_SELECT_COLUMN_NAME, 'value');
+    this.labelFieldOptions = this.createOptions(labelFields, SETTING_KEY.LABEL_COLUMN_NAME, 'value');
   }
 
   componentWillReceiveProps(nextProps) {
@@ -47,19 +58,69 @@ class TimelineSetting extends React.Component {
     }
   }
 
-  renderSelector = (source, settingKey, valueKey, labelKey) => {
-    let { settings } = this.props;
-    let options = source.map((item) => {
-      let value = item[valueKey];
-      let label = item[labelKey];
-      return {value, label, setting_key: settingKey};
+  getSelectorFields = () => {
+    const { dtable, selectedTable, CellType, columnIconConfig } = this.props;
+    const columns = dtable.getColumns(selectedTable);
+    let dateFields = [], numberFields = [], colorFields = [], labelFields = [];
+    Array.isArray(columns) && columns.forEach((column) => {
+      const { type, name } = column;
+      const columnOption = {
+        name,
+        value: name,
+        iconClass: columnIconConfig[type],
+      };
+      switch (type) {
+        case CellType.TEXT:
+        case CellType.COLLABORATOR: {
+          labelFields.push(columnOption);
+          break;
+        }
+        case CellType.DATE: {
+          dateFields.push(columnOption);
+          break;
+        }
+        case CellType.NUMBER: {
+          numberFields.push(columnOption);
+          break;
+        }
+        case CellType.SINGLE_SELECT: {
+          labelFields.push(columnOption);
+          colorFields.push(columnOption);
+          break;
+        }
+        default: {
+          break;
+        }
+      }
     });
+    return {dateFields, numberFields, colorFields, labelFields};
+  }
+
+  createOptions(source, settingKey, valueKey) {
+    if (!Array.isArray(source)) {
+      return [];
+    }
+    return source.map((item) => ({
+      value: item[valueKey],
+      setting_key: settingKey,
+      label: (
+        <Fragment>
+          {item.iconClass && <span className="header-icon"><i className={item.iconClass}></i></span>}
+          <span className='select-module select-module-name'>{item.name}</span>
+        </Fragment>
+      ),
+    }));
+  }
+
+  renderSelector = (options, settingKey) => {
+    const { settings } = this.props;
     let selectedOption = options.find(item => item.value === settings[settingKey]);
     if (!selectedOption && (settingKey === SETTING_KEY.TABLE_NAME || settingKey === SETTING_KEY.VIEW_NAME)) {
       selectedOption = options[0];
     }
     return (
       <PluginSelect
+        classNamePrefix={'timeline-view-setting-selector'}
         value={selectedOption}
         options={options}
         onChange={this.onModifySettings}
@@ -67,41 +128,80 @@ class TimelineSetting extends React.Component {
     );
   }
 
-  renderRecordEndType = () => {
-    let { settings } = this.props;
-    let { record_end_type } = settings;
-    record_end_type = record_end_type || RECORD_END_TYPE.END_TIME;
-    return RECORD_END_TYPES.map((r) => {
-      let displayType = r === RECORD_END_TYPE.END_TIME ? 'End_date' : 'Duration';
+  renderColorFromType = () => {
+    const { settings } = this.props;
+    let { record_color_from } = settings;
+    record_color_from = record_color_from || COLOR_FROM_TYPE_MAP.COLOR_FIELD;
+    return RECORD_COLOR_FROM_TYPES.map((r) => {
+      const title = r === COLOR_FROM_TYPE_MAP.ROW_COLOR ? 'Row_color' : 'Color_field';
       return (
         <div
-          key={`record_end_type_${r}`}
-          onClick={() => this.onSelectRecordEndType(r)}
+          key={`record_color_from_type_${r}`}
+          onClick={() => this.onChangeColorFromType(r)}
           className={classnames({
-            'record-end-type-item': true,
-            'selected': r === record_end_type,
+            'color-from-type-item': true,
+            'selected': r === record_color_from,
           })}
         >
-          <span>{intl.get(displayType)}</span>
+          <span>{intl.get(title)}</span>
         </div>
       );
     });
   }
 
-  renderRecordEndItem = () => {
-    let { settings, dateColumns, numberColumns } = this.props;
+  renderRecordEndType = () => {
+    const { settings } = this.props;
     let { record_end_type } = settings;
     record_end_type = record_end_type || RECORD_END_TYPE.END_TIME;
-    if (record_end_type === RECORD_END_TYPE.RECORD_DURATION) {
+    return RECORD_END_TYPES.map((r) => {
+      const title = r === RECORD_END_TYPE.END_TIME ? 'End_date' : 'Duration';
+      return (
+        <div
+          key={`record_end_type_${r}`}
+          onClick={() => this.onChangeRecordEndType(r)}
+          className={classnames({
+            'record-end-type-item': true,
+            'selected': r === record_end_type,
+          })}
+        >
+          <span>{intl.get(title)}</span>
+        </div>
+      );
+    });
+  }
+
+  renderRecordColorFromItem = () => {
+    const { settings } = this.props;
+    const { record_color_from } = settings;
+    if (record_color_from && record_color_from === COLOR_FROM_TYPE_MAP.ROW_COLOR) {
+      return (
+        <div className="setting-item color">
+          <div className="title">{intl.get('Label_field')}</div>
+          {this.renderSelector(this.labelFieldOptions, SETTING_KEY.LABEL_COLUMN_NAME)}
+        </div>
+      );
+    } else {
+      return (
+        <div className="setting-item color">
+          {this.renderSelector(this.colorFieldOptions, SETTING_KEY.SINGLE_SELECT_COLUMN_NAME)}
+        </div>
+      );
+    }
+  }
+
+  renderRecordEndItem = () => {
+    const { settings } = this.props;
+    const { record_end_type } = settings;
+    if (record_end_type && record_end_type === RECORD_END_TYPE.RECORD_DURATION) {
       return (
         <div className="setting-item record-duration">
-          {this.renderSelector(numberColumns, SETTING_KEY.RECORD_DURATION_COLUMN_NAME, 'name', 'name')}
+          {this.renderSelector(this.numberFieldOptions, SETTING_KEY.RECORD_DURATION_COLUMN_NAME)}
         </div>
       );
     }
     return (
       <div className="setting-item end-time">
-        {this.renderSelector(dateColumns, SETTING_KEY.END_TIME_COLUMN_NAME, 'name', 'name')}
+        {this.renderSelector(this.endDateFieldOptions, SETTING_KEY.END_TIME_COLUMN_NAME)}
       </div>
     );
   }
@@ -118,9 +218,25 @@ class TimelineSetting extends React.Component {
     this.props.onModifyTimelineSettings(updated);
   };
 
-  onSelectRecordEndType = (recordEndType) => {
+  onChangeColorFromType = (colorFromType) => {
     let { settings } = this.props;
-    let updated =  Object.assign({}, settings, {[SETTING_KEY.RECORD_END_TYPE]: recordEndType});
+    let updated = {
+      [SETTING_KEY.RECORD_COLOR_FROM]: colorFromType,
+    };
+    if (colorFromType === COLOR_FROM_TYPE_MAP.ROW_COLOR) {
+      updated[SETTING_KEY.SINGLE_SELECT_COLUMN_NAME] = null;
+      updated[SETTING_KEY.LABEL_COLUMN_NAME] = this.labelFieldOptions[0] && this.labelFieldOptions[0].value;
+    } else {
+      updated[SETTING_KEY.LABEL_COLUMN_NAME] = null;
+      updated[SETTING_KEY.SINGLE_SELECT_COLUMN_NAME] = this.colorFieldOptions[0] && this.colorFieldOptions[0].value;
+    }
+    const newSettings = Object.assign({}, settings, updated);
+    this.props.onModifyTimelineSettings(newSettings);
+  }
+
+  onChangeRecordEndType = (recordEndType) => {
+    const { settings } = this.props;
+    const updated = Object.assign({}, settings, {[SETTING_KEY.RECORD_END_TYPE]: recordEndType});
     this.props.onModifyTimelineSettings(updated);
   }
 
@@ -219,35 +335,32 @@ class TimelineSetting extends React.Component {
   }
 
   render() {
-    let { tables, views, singleSelectColumns, dateColumns, onHideTimelineSetting } = this.props;
     return (
       <div className="plugin-timeline-setting" style={{zIndex: zIndexes.TIMELINE_SETTING}} ref={ref => this.timelineSetting = ref} onClick={this.onTimelineSettingClick}>
         <div className="setting-container">
           <div className="setting-header">
             <div className="setting-header-container">
               <div className="setting-header-title">{intl.get('Settings')}</div>
-              <div className="dtable-font dtable-icon-x btn-close" onClick={onHideTimelineSetting}></div>
+              <div className="dtable-font dtable-icon-x btn-close" onClick={this.props.onHideTimelineSetting}></div>
             </div>
           </div>
           <div className="setting-body">
             <div className="setting-list">
               <div className="setting-item table">
                 <div className="title">{intl.get('Table')}</div>
-                {this.renderSelector(tables, SETTING_KEY.TABLE_NAME, 'name', 'name')}
+                {this.renderSelector(this.tableOptions, SETTING_KEY.TABLE_NAME)}
               </div>
               <div className="setting-item table-view">
                 <div className="title">{intl.get('View')}</div>
-                {this.renderSelector(views, SETTING_KEY.VIEW_NAME, 'name', 'name')}
+                {this.renderSelector(this.viewOptions, SETTING_KEY.VIEW_NAME)}
               </div>
               <div className="split-line"></div>
-              <div className="setting-item color">
-                <div className="title">{intl.get('Color_column')}</div>
-                {this.renderSelector(singleSelectColumns, SETTING_KEY.SINGLE_SELECT_COLUMN_NAME, 'name', 'name')}
-              </div>
+              <div className="setting-item color-from">{this.renderColorFromType()}</div>
+              {this.renderRecordColorFromItem()}
               <div className="split-line"></div>
               <div className="setting-item start-time">
                 <div className="title">{intl.get('Start_date')}</div>
-                {this.renderSelector(dateColumns, SETTING_KEY.START_TIME_COLUMN_NAME, 'name', 'name')}
+                {this.renderSelector(this.startDateFieldOptions, SETTING_KEY.START_TIME_COLUMN_NAME)}
               </div>
               <div className="split-line"></div>
               <div className="setting-item record-end-type">{this.renderRecordEndType()}</div>

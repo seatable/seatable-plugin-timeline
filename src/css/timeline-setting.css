@@ -59,6 +59,7 @@
   background-color: #e2e2e2;
 }
 
+.plugin-timeline-setting .color-from,
 .plugin-timeline-setting .record-end-type {
   display: flex;
   height: 36px;
@@ -68,6 +69,7 @@
   border-radius: 4px;
 }
 
+.plugin-timeline-setting .color-from-type-item,
 .plugin-timeline-setting .record-end-type-item {
   flex: 1 1;
   text-align: center;
@@ -76,14 +78,17 @@
   position: relative;
 }
 
+.plugin-timeline-setting .color-from-type-item:first-child,
 .plugin-timeline-setting .record-end-type-item:first-child {
   border-radius: 4px 0 0 4px;
 }
 
+.plugin-timeline-setting .color-from-type-item:last-child,
 .plugin-timeline-setting .record-end-type-item:last-child {
   border-radius: 0 4px 4px 0;
 }
 
+.plugin-timeline-setting .color-from-type-item.selected,
 .plugin-timeline-setting .record-end-type-item.selected {
   box-shadow: 0 0 0 1px rgb(229, 161, 82);
   color: rgb(229, 161, 82);
@@ -110,4 +115,31 @@
   height: 100%;
   padding: 0 8px;
   border: none;
+}
+
+.timeline-view-setting-selector__menu .header-icon,
+.plugin-timeline-setting .header-icon {
+  display: inline-block;
+  padding: 0 0.3125rem;
+  margin-left: -0.3125rem;
+}
+
+.timeline-view-setting-selector__menu .header-icon .dtable-font,
+.plugin-timeline-setting .header-icon .dtable-font {
+  font-size: 14px;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.timeline-view-setting-selector__menu .timeline-view-setting-selector__option--is-selected .dtable-font {
+  color: #fff !important;
+}
+
+.plugin-timeline-setting .null-option-name,
+.timeline-view-setting-selector__menu .null-option-name {
+  color: rgba(0, 0, 0, .25) !important;
+}
+
+.timeline-view-setting-selector__menu .timeline-view-setting-selector__option--is-selected .null-option-name {
+  color: #fff !important;
 }

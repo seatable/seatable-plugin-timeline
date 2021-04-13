@@ -29,6 +29,11 @@ const DEFAULT_BG_COLOR = '#3b88fd';
 
 const DEFAULT_TEXT_COLOR = '#202428';
 
+const COLOR_FROM_TYPE_MAP = {
+  ROW_COLOR: 'row_color',
+  COLOR_FIELD: 'color_field'
+};
+
 const RECORD_END_TYPE = {
   END_TIME: 'end_time',
   RECORD_DURATION: 'record_duration'
@@ -47,5 +52,6 @@ export {
   ROW_HEIGHT,
   DEFAULT_BG_COLOR,
   DEFAULT_TEXT_COLOR,
+  COLOR_FROM_TYPE_MAP,
   RECORD_END_TYPE,
 };
