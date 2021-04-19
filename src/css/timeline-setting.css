@@ -59,7 +59,6 @@
   background-color: #e2e2e2;
 }
 
-.plugin-timeline-setting .color-from,
 .plugin-timeline-setting .record-end-type {
   display: flex;
   height: 36px;
@@ -69,7 +68,6 @@
   border-radius: 4px;
 }
 
-.plugin-timeline-setting .color-from-type-item,
 .plugin-timeline-setting .record-end-type-item {
   flex: 1 1;
   text-align: center;
@@ -78,17 +76,14 @@
   position: relative;
 }
 
-.plugin-timeline-setting .color-from-type-item:first-child,
 .plugin-timeline-setting .record-end-type-item:first-child {
   border-radius: 4px 0 0 4px;
 }
 
-.plugin-timeline-setting .color-from-type-item:last-child,
 .plugin-timeline-setting .record-end-type-item:last-child {
   border-radius: 0 4px 4px 0;
 }
 
-.plugin-timeline-setting .color-from-type-item.selected,
 .plugin-timeline-setting .record-end-type-item.selected {
   box-shadow: 0 0 0 1px rgb(229, 161, 82);
   color: rgb(229, 161, 82);

@@ -16,9 +16,10 @@
   "Table": "Tableau",
   "View": "Vue",
   "Default_View": "Vue standard",
-  "Row_color": "Row color",
-  "Color_field": "Color filed",
-  "Label_field": "Label field",
+  "Block_colored_by": "Block colored by",
+  "Block_labeled_by": "Block labeled by",
+  "Row_color": "Couleur de la ligne",
+  "Color_field": "Color field",
   "Start_date": "Date de départ",
   "End_date": "Date de fin",
   "Duration": "Durée",
@@ -43,5 +44,6 @@
   "Exporting": "En train d'exporter ..",
   "Show_columns": "Afficher les colonnes",
   "Search_a_column": "Rechercher la colonne",
-  "No_column": "Aucune colonne"
+  "No_column": "Aucune colonne",
+  "Not_used": "Not used"
 }
