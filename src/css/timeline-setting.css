@@ -111,3 +111,30 @@
   padding: 0 8px;
   border: none;
 }
+
+.timeline-view-setting-selector__menu .header-icon,
+.plugin-timeline-setting .header-icon {
+  display: inline-block;
+  padding: 0 0.3125rem;
+  margin-left: -0.3125rem;
+}
+
+.timeline-view-setting-selector__menu .header-icon .dtable-font,
+.plugin-timeline-setting .header-icon .dtable-font {
+  font-size: 14px;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.timeline-view-setting-selector__menu .timeline-view-setting-selector__option--is-selected .dtable-font {
+  color: #fff !important;
+}
+
+.plugin-timeline-setting .null-option-name,
+.timeline-view-setting-selector__menu .null-option-name {
+  color: rgba(0, 0, 0, .25) !important;
+}
+
+.timeline-view-setting-selector__menu .timeline-view-setting-selector__option--is-selected .null-option-name {
+  color: #fff !important;
+}

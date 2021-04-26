@@ -27,8 +27,9 @@ const DEFAULT_PLUGIN_SETTINGS = {
     }
   ]
 };
-
 const KEY_SELECTED_VIEW_IDS = `${PLUGIN_NAME}-selectedViewIds`;
+
+const EMPTY_LABEL = `(${intl.get('Empty')})`;
 
 const propTypes = {
   showDialog: PropTypes.bool
@@ -108,6 +109,10 @@ class App extends React.Component {
       isShowTimelineSetting = !this.isValidViewSettings(views[selectedViewIdx].settings);
       showDialog = true;
     }
+    this.cellType = this.dtable.getCellType();
+    this.columnIconConfig = this.dtable.getColumnIconConfig();
+    this.optionColorsMap = this.getOptionColorsMap();
+    this.collaborators = this.getRelatedUsersFromLocal();
     this.setState({
       isLoading: false,
       showDialog,
@@ -142,6 +147,18 @@ class App extends React.Component {
     this.setState({plugin_settings}, () => {
       this.dtable.updatePluginSettings(PLUGIN_NAME, plugin_settings);
     });
+  }
+
+  getOptionColorsMap = () => {
+    let optionColors = this.dtable.getOptionColors();
+    if (!Array.isArray(optionColors)) {
+      return {};
+    }
+    let optionColorsMap = {};
+    optionColors.forEach((optionColor) => {
+      optionColorsMap[optionColor.COLOR] = optionColor.TEXT_COLOR;
+    });
+    return optionColorsMap;
   }
 
   getSelectedTable = (tables, settings = {}) => {
@@ -180,52 +197,61 @@ class App extends React.Component {
     return rows;
   }
 
-  getRows = (originRows, table, cellType, collaborators, settings = {}) => {
-    let { single_select_column_name, start_time_column_name,
-      end_time_column_name, record_duration_column_name, record_end_type, } = settings;
-    let singleSelectColumn = this.dtable.getColumnByName(table, single_select_column_name);
-    let { data: singleSelectColumnData } = singleSelectColumn || {};
-    let options = singleSelectColumnData ? singleSelectColumn.data.options : [];
+  getRows = (originRows, table, view, settings = {}) => {
+    if (!Array.isArray(originRows) || originRows.length === 0) return [];
+    let { single_select_column_name, label_column_name, start_time_column_name,
+      end_time_column_name, record_duration_column_name, colored_by_row_color, record_end_type } = settings;
+    const labelColumn = this.dtable.getColumnByName(table, label_column_name) || {};
+    let options = [], rowsColor = {}, singleSelectColumn = {};
+    if (colored_by_row_color) {
+      const viewRows = this.dtable.getViewRows(view, table);
+      rowsColor = this.dtable.getViewRowsColor(viewRows, view, table);
+    } else {
+      singleSelectColumn = this.dtable.getColumnByName(table, single_select_column_name);
+      const { data: singleSelectColumnData } = singleSelectColumn || {};
+      options = singleSelectColumnData ? singleSelectColumn.data.options : [];
+    }
     let minDate, maxDate, groupedRows = [];
     originRows.forEach((row) => {
-      let { label, bgColor, textColor, start, end } = this.getEventData(
-        row, single_select_column_name,
-        start_time_column_name, end_time_column_name, record_duration_column_name,
-        record_end_type, cellType, options, collaborators);
+      const dtableRow = this.dtable.getRowById(table, row._id);
+      let { label, bgColor, textColor, start, end } = this.getEventData(row, dtableRow, labelColumn, singleSelectColumn, start_time_column_name,
+        end_time_column_name, record_duration_column_name, colored_by_row_color, record_end_type, options, rowsColor);
       minDate = !minDate || moment(start).isBefore(minDate) ? start : minDate;
       maxDate = !maxDate || moment(end).isAfter(maxDate) ? end : maxDate;
       const event = new Event({row, label, bgColor, textColor, start, end});
-      const formattedRow = this.dtable.getRowById(table, row._id);
-      this.updateRows(groupedRows, formattedRow, event, minDate, maxDate);
+      this.updateRows(groupedRows, dtableRow, event, minDate, maxDate);
     });
     return groupedRows;
   }
 
-  getGroups = (convertedGroups, originRows, table, cellType, collaborators, settings = {}) => {
+  getGroups = (convertedGroups, originRows, table, view, settings = {}) => {
     if (!Array.isArray(convertedGroups) || convertedGroups.length === 0 ||
     !Array.isArray(originRows) || originRows.length === 0) return [];
-    let { single_select_column_name, start_time_column_name,
-      end_time_column_name, record_duration_column_name, record_end_type, } = settings;
-    let singleSelectColumn = this.dtable.getColumnByName(table, single_select_column_name);
-    let { data: singleSelectColumnData } = singleSelectColumn || {};
-    let options = singleSelectColumnData ? singleSelectColumn.data.options : [];
-    const EMPTY = `(${intl.get('Empty')})`;
+    let { single_select_column_name, label_column_name, start_time_column_name,
+      end_time_column_name, record_duration_column_name, colored_by_row_color, record_end_type, } = settings;
+    const labelColumn = this.dtable.getColumnByName(table, label_column_name) || {};
+    let options = [], rowsColor = {}, singleSelectColumn = {};
+    if (colored_by_row_color) {
+      const viewRows = this.dtable.getViewRows(view, table);
+      rowsColor = this.dtable.getViewRowsColor(viewRows, view, table);
+    } else {
+      singleSelectColumn = this.dtable.getColumnByName(table, single_select_column_name);
+      const { data: singleSelectColumnData } = singleSelectColumn || {};
+      options = singleSelectColumnData ? singleSelectColumn.data.options : [];
+    }
     return convertedGroups.map((group) => {
       let { cell_value, column_name, column_key, rows } = group;
       const key = cell_value + '';
       let convertedRows = rows.map((r) => this.Id2ConvertedRowMap[r._id]);
-
-      cell_value = cell_value || cell_value === 0 ? cell_value : EMPTY;
+      cell_value = cell_value || cell_value === 0 ? cell_value : EMPTY_LABEL;
 
       let timelineRows = [];
       convertedRows.forEach((row) => {
-        let { label, bgColor, textColor, start, end } = this.getEventData(
-          row, single_select_column_name, start_time_column_name,
-          end_time_column_name, record_duration_column_name,
-          record_end_type, cellType, options, collaborators);
-        const formattedRow = this.dtable.getRowById(table, row._id);
+        const dtableRow = this.dtable.getRowById(table, row._id);
+        const { label, bgColor, textColor, start, end } = this.getEventData(row, dtableRow, labelColumn, singleSelectColumn, start_time_column_name,
+          end_time_column_name, record_duration_column_name, colored_by_row_color, record_end_type, options, rowsColor);
         let timelineRow = new TimelineRow({
-          row: formattedRow,
+          row: dtableRow,
           min_date: start,
           max_date: end,
           events: [
@@ -258,33 +284,62 @@ class App extends React.Component {
     return {minDate, maxDate};
   }
 
-  updateRows = (rows, formattedRow, ev, minDate, maxDate) => {
+  updateRows = (rows, dtableRow, ev, minDate, maxDate) => {
     rows.push(new TimelineRow({
-      row: formattedRow,
+      row: dtableRow,
       min_date: minDate,
       max_date: maxDate,
       events: [ev]
     }));
   }
 
-  getEventData = (originalRow, single_select_column_name,
-    start_time_column_name, end_time_column_name, record_duration_column_name, record_end_type,
-    cellType, options, collaborators) => {
-    let label = originalRow[single_select_column_name];
-    let option = options.find(item => item.name === label) || {};
-    let bgColor = option.color || DEFAULT_BG_COLOR;
-    let textColor = option.textColor || DEFAULT_TEXT_COLOR;
-    let start = originalRow[start_time_column_name];
+  getEventData = (originalRow, dtableRow, labelColumn, singleSelectColumn, startTimeColumnName, endTimeColumnName, recordDurationColumnName,
+    coloredByRowColor, recordEndType, options, rowsColor) => {
+    const label = this.getEventLabel(originalRow, labelColumn.name, labelColumn.type, {collaborators: this.collaborators});
+    let bgColor, textColor;
+    if (coloredByRowColor) {
+      bgColor = rowsColor[originalRow._id];
+      textColor = this.optionColorsMap[bgColor];
+    } else {
+      const option = options.find(item => item.id === dtableRow[singleSelectColumn.key]) || {};
+      bgColor = option.color;
+      textColor = option.textColor;
+    }
+    bgColor = bgColor || DEFAULT_BG_COLOR;
+    textColor = textColor || DEFAULT_TEXT_COLOR;
+    let start = originalRow[startTimeColumnName];
     let end;
-    if (record_end_type === RECORD_END_TYPE.RECORD_DURATION) {
-      let duration = originalRow[record_duration_column_name];
+    if (recordEndType === RECORD_END_TYPE.RECORD_DURATION) {
+      let duration = originalRow[recordDurationColumnName];
       if (duration && duration !== 0) {
         end = moment(start).add(Math.ceil(duration) - 1, DATE_UNIT.DAY).format('YYYY-MM-DD');
       }
     } else {
-      end = originalRow[end_time_column_name];
+      end = originalRow[endTimeColumnName];
     }
     return {label, bgColor, textColor, start, end};
+  }
+
+  getEventLabel(originalRow, columnName, columnType, {collaborators} = {}) {
+    const cellValue = originalRow[columnName];
+    switch(columnType) {
+      case this.cellType.TEXT:
+      case this.cellType.SINGLE_SELECT: {
+        return cellValue;
+      }
+      case this.cellType.COLLABORATOR: {
+        if (!Array.isArray(cellValue) || !Array.isArray(collaborators)) {
+          return null;
+        }
+        return cellValue.map((email) => {
+          const collaborator = collaborators.find((collaborator) => collaborator.email === email);
+          return collaborator && collaborator.name;
+        }).join(',');
+      }
+      default: {
+        return cellValue;
+      }
+    }
   }
 
   onAddView = (viewName) => {
@@ -445,12 +500,8 @@ class App extends React.Component {
     let selectedView = this.getSelectedView(selectedTable, settings) || views[0];
     let { name: viewName } = selectedView;
     let isGroupView = this.dtable.isGroupView(selectedView, columns);
-    let CellType = this.dtable.getCellType();
-    let collaborators = this.getRelatedUsersFromLocal();
-    let singleSelectColumns = this.dtable.getColumnsByType(selectedTable, CellType.SINGLE_SELECT);
-    let dateColumns = this.dtable.getColumnsByType(selectedTable, CellType.DATE);
-    let numberColumns = this.dtable.getColumnsByType(selectedTable, CellType.NUMBER);
     let formulaRows = this.getTableFormulaRows(selectedTable, selectedView);
+    selectedView = Object.assign({}, selectedView, {formula_rows: formulaRows});
     const isValidSettings = this.isValidSettings(settings);
     const convertedRows = this.getConvertedRows(tableName, viewName);
     let rows = [];
@@ -458,9 +509,9 @@ class App extends React.Component {
     if (isValidSettings) {
       if (isGroupView) {
         const convertedGroups = this.dtable.getGroupRows(selectedView, selectedTable);
-        groups = this.getGroups(convertedGroups, convertedRows, selectedTable, CellType, collaborators, settings);
+        groups = this.getGroups(convertedGroups, convertedRows, selectedTable, selectedView, settings);
       } else {
-        rows = this.getRows(convertedRows, selectedTable, CellType, collaborators, settings);
+        rows = this.getRows(convertedRows, selectedTable, selectedView, settings);
       }
     }
     /* eslint-disable */
@@ -497,14 +548,12 @@ class App extends React.Component {
           ref={ref => this.timeline = ref}
           tables={tables}
           views={views}
+          selectedTable={selectedTable}
           rows={rows}
           isGroupView={isGroupView}
           groups={groups}
           columns={columns}
-          collaborators={collaborators}
-          singleSelectColumns={singleSelectColumns}
-          dateColumns={dateColumns}
-          numberColumns={numberColumns}
+          collaborators={this.collaborators}
           settings={settings}
           selectedTimelineView={selectedTimelineView}
           eventBus={this.eventBus}
@@ -513,8 +562,10 @@ class App extends React.Component {
           onHideTimelineSetting={this.onHideTimelineSetting}
           onRowExpand={this.onRowExpand.bind(this, selectedTable)}
           dtable={this.dtable}
+          CellType={this.cellType}
           tableID={selectedTable._id}
           formulaRows={formulaRows}
+          columnIconConfig={this.columnIconConfig}
         />
       </div>
     );

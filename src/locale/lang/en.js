@@ -16,7 +16,10 @@ const en = {
   "Table": "Table",
   "View": "View",
   "Default_View": "Default View",
-  "Color_column": "Color column",
+  "Block_colored_by": "Block colored by",
+  "Block_labeled_by": "Block labeled by",
+  "Row_color": "Row color",
+  "Color_field": "Color field",
   "Start_date": "Start date",
   "End_date": "End date",
   "Duration": "Duration",
@@ -41,7 +44,8 @@ const en = {
   "Exporting": "Exporting",
   "Show_columns": "Show columns",
   "Search_a_column": "Search a column",
-  "No_column": "No column"
+  "No_column": "No column",
+  "Not_used": "Not used"
 }
 ;
 

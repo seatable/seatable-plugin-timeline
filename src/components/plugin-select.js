@@ -25,6 +25,7 @@ class PluginSelect extends React.Component {
     value: PropTypes.object,
     isSearchable: PropTypes.bool,
     placeholder: PropTypes.string,
+    classNamePrefix: PropTypes.string,
     onChange: PropTypes.func.isRequired,
   };
 
@@ -40,14 +41,15 @@ class PluginSelect extends React.Component {
   }
 
   render() {
-    const { options, onChange, value, isSearchable, placeholder } = this.props;
+    const { options, onChange, value, isSearchable, placeholder, classNamePrefix } = this.props;
 
     return(
       <Select
         value={value}
         onChange={onChange}
         options={options}
-        styles = {PluginSelectStyle}
+        classNamePrefix={classNamePrefix}
+        styles={PluginSelectStyle}
         components={{
           DropdownIndicator,
           NoOptionsMessage: (props) => {
