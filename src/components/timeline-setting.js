@@ -98,21 +98,18 @@ class TimelineSetting extends Component {
           {item.iconClass && <span className="header-icon"><i className={item.iconClass}></i></span>}
           <span className='select-module select-module-name'>{item.name}</span>
         </Fragment>
-      ),
-      iconClass: item.iconClass
+      )
     }));
   }
 
   renderSelector = (options, settingKey) => {
-    const { settings, CellType, columnIconConfig } = this.props;
+    const { settings } = this.props;
     let selectedOption = options.find(item => item.value === settings[settingKey]);
     if (!selectedOption) {
       if (settingKey === SETTING_KEY.TABLE_NAME ||
-        settingKey === SETTING_KEY.VIEW_NAME) {
+        settingKey === SETTING_KEY.VIEW_NAME ||
+        settingKey === SETTING_KEY.LABEL_COLUMN_NAME) {
         selectedOption = options[0];
-      }
-      if (settingKey === SETTING_KEY.LABEL_COLUMN_NAME) {
-        selectedOption = options.filter(item => item.iconClass == columnIconConfig[CellType.SINGLE_SELECT])[0] || options[0];
       }
     }
     return (
@@ -126,7 +123,7 @@ class TimelineSetting extends Component {
   }
 
   renderColorSelector = (options) => {
-    const { settings, CellType, columnIconConfig } = this.props;
+    const { settings } = this.props;
     const { colored_by_row_color, single_select_column_name } = settings;
     let selectedOption;
     if (colored_by_row_color) {
@@ -135,7 +132,7 @@ class TimelineSetting extends Component {
       selectedOption = options.find((option) => option.value === single_select_column_name);
     }
     if (!selectedOption) {
-      selectedOption = options.filter(item => item.iconClass == columnIconConfig[CellType.SINGLE_SELECT])[0] || options[0];
+      selectedOption = options[0];
     }
     return (
       <PluginSelect
