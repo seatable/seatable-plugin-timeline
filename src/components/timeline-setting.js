@@ -98,15 +98,19 @@ class TimelineSetting extends Component {
           {item.iconClass && <span className="header-icon"><i className={item.iconClass}></i></span>}
           <span className='select-module select-module-name'>{item.name}</span>
         </Fragment>
-      ),
+      )
     }));
   }
 
   renderSelector = (options, settingKey) => {
     const { settings } = this.props;
     let selectedOption = options.find(item => item.value === settings[settingKey]);
-    if (!selectedOption && (settingKey === SETTING_KEY.TABLE_NAME || settingKey === SETTING_KEY.VIEW_NAME)) {
-      selectedOption = options[0];
+    if (!selectedOption) {
+      if (settingKey === SETTING_KEY.TABLE_NAME ||
+        settingKey === SETTING_KEY.VIEW_NAME ||
+        settingKey === SETTING_KEY.LABEL_COLUMN_NAME) {
+        selectedOption = options[0];
+      }
     }
     return (
       <PluginSelect
@@ -118,19 +122,23 @@ class TimelineSetting extends Component {
     );
   }
 
-  renderColorSelector = (colorFieldOptions) => {
-    const { colored_by_row_color, single_select_column_name } = this.props.settings;
+  renderColorSelector = (options) => {
+    const { settings } = this.props;
+    const { colored_by_row_color, single_select_column_name } = settings;
     let selectedOption;
     if (colored_by_row_color) {
-      selectedOption = colorFieldOptions.find((option) => option.setting_key === SETTING_KEY.COLORED_BY_ROW_COLOR);
+      selectedOption = options.find((option) => option.setting_key === SETTING_KEY.COLORED_BY_ROW_COLOR);
     } else {
-      selectedOption = colorFieldOptions.find((option) => option.value === single_select_column_name);
+      selectedOption = options.find((option) => option.value === single_select_column_name);
+    }
+    if (!selectedOption) {
+      selectedOption = options[0];
     }
     return (
       <PluginSelect
         classNamePrefix={'timeline-view-setting-selector'}
         value={selectedOption}
-        options={colorFieldOptions}
+        options={options}
         onChange={this.onSelectColoredBy}
       />
     );
@@ -320,6 +328,11 @@ class TimelineSetting extends Component {
       );
     }
     const labelFieldOptions = this.createOptions(labelFields, SETTING_KEY.LABEL_COLUMN_NAME, 'value');
+    labelFieldOptions.unshift({
+      value: '',
+      setting_key: SETTING_KEY.LABEL_COLUMN_NAME,
+      label: <span className={'select-module select-module-name null-option-name'}>{intl.get('Not_used')}</span>
+    });
     return {tableOptions, viewOptions, startDateFieldOptions, endDateFieldOptions, numberFieldOptions, colorFieldOptions, labelFieldOptions};
   }
 

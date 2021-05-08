@@ -502,6 +502,18 @@ class App extends React.Component {
     let isGroupView = this.dtable.isGroupView(selectedView, columns);
     let formulaRows = this.getTableFormulaRows(selectedTable, selectedView);
     selectedView = Object.assign({}, selectedView, {formula_rows: formulaRows});
+
+    let { single_select_column_name, label_column_name, colored_by_row_color } = settings;
+    const singleSelectColumn = columns.filter(item => item.type == this.cellType.SINGLE_SELECT)[0];
+    if (singleSelectColumn) {
+      if (!colored_by_row_color && single_select_column_name == undefined) {
+        settings.single_select_column_name = singleSelectColumn.name;
+      }
+      if (label_column_name == undefined) {
+        settings.label_column_name = singleSelectColumn.name;
+      }
+    }
+
     const isValidSettings = this.isValidSettings(settings);
     const convertedRows = this.getConvertedRows(tableName, viewName);
     let rows = [];
