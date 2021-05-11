@@ -36,4 +36,14 @@ The plugin to show timeline.
     * display_name: 显示的名称
     * description: 插件描述
 
-2. 运行 npm run build-plugin 打包插件
+2. 打包插件
+
+    **⚠️注意：打包插件需遵循如下步骤**
+
+    2.1 修改 plugin-config/info.json 中的 version 为指定版本号
+    
+    2.2 修改 package.json 中的 version 为指定版本号
+
+    2.3 运行 npm install 命令保证项目中安装的是最新依赖
+
+    2.4 运行 npm run build-plugin 打包插件
