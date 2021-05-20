@@ -16,13 +16,13 @@
   "Table": "Tabelle",
   "View": "Ansicht",
   "Default_View": "Standardansicht",
-  "Block_colored_by": "Block colored by",
-  "Block_labeled_by": "Block labeled by",
+  "Block_colored_by": "Blockfarbe",
+  "Block_labeled_by": "Blockbeschriftung",
   "Row_color": "Zeilenfarbe",
-  "Color_field": "Color field",
+  "Color_field": "Farbe",
   "Start_date": "Startdatum",
   "End_date": "Enddatum",
-  "Duration": "Dauer",
+  "Duration": "Duration (days)",
   "Jan": "Jan.",
   "Feb": "Feb.",
   "Mar": "Mrz.",
@@ -45,5 +45,5 @@
   "Show_columns": "Spalten anzeigen",
   "Search_a_column": "Spalte durchsuchen",
   "No_column": "Keine Spalte",
-  "Not_used": "Not used"
+  "Not_used": "Nicht genutzt"
 }

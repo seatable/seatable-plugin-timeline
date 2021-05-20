@@ -69,8 +69,7 @@ class TimelineSetting extends Component {
           dateFields.push(columnOption);
           break;
         }
-        case CellType.NUMBER:
-        case CellType.DURATION: {
+        case CellType.NUMBER: {
           numberFields.push(columnOption);
           break;
         }

@@ -16,13 +16,13 @@
   "Table": "Таблица",
   "View": "Вид",
   "Default_View": "Вид по умолчанию",
-  "Block_colored_by": "Block colored by",
-  "Block_labeled_by": "Block labeled by",
+  "Block_colored_by": "Блок окрашен",
+  "Block_labeled_by": "Блок, маркирован",
   "Row_color": "Цвет строки",
-  "Color_field": "Color field",
+  "Color_field": "Цвет поля",
   "Start_date": "Дата начала ",
   "End_date": "Дата окончания",
-  "Duration": "Продолжительность",
+  "Duration": "Duration (days)",
   "Jan": "Январь",
   "Feb": "Февраль",
   "Mar": "Март",
@@ -45,5 +45,5 @@
   "Show_columns": "Показать столбцы",
   "Search_a_column": "Поиск в столбце",
   "No_column": "Нет столбца",
-  "Not_used": "Not used"
+  "Not_used": "Не используется"
 }

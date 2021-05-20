@@ -205,7 +205,7 @@ class App extends React.Component {
     let { single_select_column_name, label_column_name, start_time_column_name,
       end_time_column_name, record_duration_column_name, colored_by_row_color, record_end_type } = settings;
     const labelColumn = this.dtable.getColumnByName(table, label_column_name) || {};
-    let options = [], rowsColor = {}, singleSelectColumn = {}, recordDurationColumn = {};
+    let options = [], rowsColor = {}, singleSelectColumn = {};
     if (colored_by_row_color) {
       const viewRows = this.dtable.getViewRows(view, table);
       rowsColor = this.dtable.getViewRowsColor(viewRows, view, table);
@@ -214,14 +214,11 @@ class App extends React.Component {
       const { data: singleSelectColumnData } = singleSelectColumn || {};
       options = singleSelectColumnData ? singleSelectColumn.data.options : [];
     }
-    if (record_end_type === RECORD_END_TYPE.RECORD_DURATION) {
-      recordDurationColumn = this.dtable.getColumnByName(table, record_duration_column_name);
-    }
     let minDate, maxDate, groupedRows = [];
     originRows.forEach((row) => {
       const dtableRow = this.dtable.getRowById(table, row._id);
       let { label, bgColor, textColor, start, end } = this.getEventData(row, dtableRow, labelColumn, singleSelectColumn, start_time_column_name,
-        end_time_column_name, recordDurationColumn, colored_by_row_color, record_end_type, options, rowsColor);
+        end_time_column_name, record_duration_column_name, colored_by_row_color, record_end_type, options, rowsColor);
       minDate = !minDate || moment(start).isBefore(minDate) ? start : minDate;
       maxDate = !maxDate || moment(end).isAfter(maxDate) ? end : maxDate;
       const event = new Event({row, label, bgColor, textColor, start, end});
@@ -236,7 +233,7 @@ class App extends React.Component {
     let { single_select_column_name, label_column_name, start_time_column_name,
       end_time_column_name, record_duration_column_name, colored_by_row_color, record_end_type, } = settings;
     const labelColumn = this.dtable.getColumnByName(table, label_column_name) || {};
-    let options = [], rowsColor = {}, singleSelectColumn = {}, recordDurationColumn = {};
+    let options = [], rowsColor = {}, singleSelectColumn = {};
     if (colored_by_row_color) {
       const viewRows = this.dtable.getViewRows(view, table);
       rowsColor = this.dtable.getViewRowsColor(viewRows, view, table);
@@ -244,9 +241,6 @@ class App extends React.Component {
       singleSelectColumn = this.dtable.getColumnByName(table, single_select_column_name);
       const { data: singleSelectColumnData } = singleSelectColumn || {};
       options = singleSelectColumnData ? singleSelectColumn.data.options : [];
-    }
-    if (record_end_type === RECORD_END_TYPE.RECORD_DURATION) {
-      recordDurationColumn = this.dtable.getColumnByName(table, record_duration_column_name);
     }
     return convertedGroups.map((group) => {
       let { cell_value, column_name, column_key, rows } = group;
@@ -258,7 +252,7 @@ class App extends React.Component {
       convertedRows.forEach((row) => {
         const dtableRow = this.dtable.getRowById(table, row._id);
         const { label, bgColor, textColor, start, end } = this.getEventData(row, dtableRow, labelColumn, singleSelectColumn, start_time_column_name,
-          end_time_column_name, recordDurationColumn, colored_by_row_color, record_end_type, options, rowsColor);
+          end_time_column_name, record_duration_column_name, colored_by_row_color, record_end_type, options, rowsColor);
         let timelineRow = new TimelineRow({
           row: dtableRow,
           min_date: start,
@@ -302,7 +296,7 @@ class App extends React.Component {
     }));
   }
 
-  getEventData = (originalRow, dtableRow, labelColumn, singleSelectColumn, startTimeColumnName, endTimeColumnName, recordDurationColumn,
+  getEventData = (originalRow, dtableRow, labelColumn, singleSelectColumn, startTimeColumnName, endTimeColumnName, recordDurationColumnName,
     coloredByRowColor, recordEndType, options, rowsColor) => {
     const label = this.getEventLabel(originalRow, labelColumn.name, labelColumn.type, {collaborators: this.collaborators});
     let bgColor, textColor;
@@ -319,14 +313,9 @@ class App extends React.Component {
     let start = originalRow[startTimeColumnName];
     let end;
     if (recordEndType === RECORD_END_TYPE.RECORD_DURATION) {
-      const { name: recordDurationColumnName, type: recordDurationColumnType } = recordDurationColumn;
-      const duration = originalRow[recordDurationColumnName];
+      let duration = originalRow[recordDurationColumnName];
       if (duration && duration !== 0) {
-        if (recordDurationColumnType === this.cellType.DURATION) {
-          end = moment(start).add(duration, DATE_UNIT.SECOND).format('YYYY-MM-DD');
-        } else {
-          end = moment(start).add(Math.ceil(duration) - 1, DATE_UNIT.DAY).format('YYYY-MM-DD');
-        }
+        end = moment(start).add(Math.ceil(duration) - 1, DATE_UNIT.DAY).format('YYYY-MM-DD');
       }
     } else {
       end = originalRow[endTimeColumnName];

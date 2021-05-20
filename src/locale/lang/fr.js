@@ -16,13 +16,13 @@ const fr = {
   "Table": "Tableau",
   "View": "Vue",
   "Default_View": "Vue standard",
-  "Block_colored_by": "Block colored by",
-  "Block_labeled_by": "Block labeled by",
+  "Block_colored_by": "Couleur du bloc",
+  "Block_labeled_by": "Etiquette du bloc",
   "Row_color": "Couleur de la ligne",
-  "Color_field": "Color field",
+  "Color_field": "Couleur",
   "Start_date": "Date de départ",
   "End_date": "Date de fin",
-  "Duration": "Durée",
+  "Duration": "Duration (days)",
   "Jan": "Janv.",
   "Feb": "Févr.",
   "Mar": "Mars",
@@ -45,7 +45,7 @@ const fr = {
   "Show_columns": "Afficher les colonnes",
   "Search_a_column": "Rechercher la colonne",
   "No_column": "Aucune colonne",
-  "Not_used": "Not used"
+  "Not_used": "Ne pas utilisé"
 }
 ;
 
