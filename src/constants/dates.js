@@ -2,6 +2,7 @@ export const DATE_UNIT = {
   YEAR: 'year',
   MONTH: 'month',
   DAY: 'day',
+  SECOND: 'second',
 };
 
 export const DATE_FORMAT = {

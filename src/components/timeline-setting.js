@@ -194,6 +194,12 @@ class TimelineSetting extends Component {
     this.props.onModifyTimelineSettings(updated);
   };
 
+  onChangeRecordEndType = (recordEndType) => {
+    let { settings } = this.props;
+    let updated =  Object.assign({}, settings, {[SETTING_KEY.RECORD_END_TYPE]: recordEndType});
+    this.props.onModifyTimelineSettings(updated);
+  }
+
   onSelectColoredBy = (selectedOption) => {
     const { setting_key, value } = selectedOption;
     let update = {};
@@ -309,7 +315,7 @@ class TimelineSetting extends Component {
     const viewOptions = this.createOptions(views, SETTING_KEY.VIEW_NAME, 'name');
     const startDateFieldOptions = this.createOptions(dateFields, SETTING_KEY.START_TIME_COLUMN_NAME, 'value');
     const endDateFieldOptions = this.createOptions(dateFields, SETTING_KEY.END_TIME_COLUMN_NAME, 'value');
-    const numberFieldOptions = this.createOptions(numberFields, SETTING_KEY.SINGLE_SELECT_COLUMN_NAME, 'value');
+    const numberFieldOptions = this.createOptions(numberFields, SETTING_KEY.RECORD_DURATION_COLUMN_NAME, 'value');
     const colorFieldOptions = this.createOptions(colorFields, SETTING_KEY.SINGLE_SELECT_COLUMN_NAME, 'value');
     colorFieldOptions.unshift(
       {

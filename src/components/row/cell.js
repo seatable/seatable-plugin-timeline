@@ -22,7 +22,8 @@ import {
   AutoNumberFormatter,
   UrlFormatter,
   EmailFormatter,
-  DurationFormatter
+  DurationFormatter,
+  RateFormatter,
 } from 'dtable-ui-component';
 import { isValidEmail } from '../../utils/common-utils';
 
@@ -36,6 +37,8 @@ const propTypes = {
   formulaRows: PropTypes.object,
   autoWidth: PropTypes.bool
 };
+
+const EMPTY_CELL_FORMATTER = <span className="row-cell-empty d-inline-block"></span>;
 
 class Cell extends React.Component {
 
@@ -116,85 +119,83 @@ class Cell extends React.Component {
     });
   }
 
-  renderEmptyFormatter = () => {
-    return <span className="row-cell-empty d-inline-block"></span>;
-  }
-
   renderFormatter = () => {
     const { column, row, collaborators, dtable, tableID, tables } = this.props;
-    const { type: columnType, key: columnKey } = column;
     const { isDataLoaded, collaborator } = this.state;
-
+    let { type: columnType, key: columnKey, data: columnData } = column;
+    const cellValue = row[columnKey];
+    columnData = columnData || {};
     switch(columnType) {
       case CellType.TEXT: {
-        if (!row[columnKey]) return this.renderEmptyFormatter();
-        return <TextFormatter value={row[columnKey]} />;
+        if (!cellValue) return EMPTY_CELL_FORMATTER;
+        return <TextFormatter value={cellValue} />;
       }
       case CellType.COLLABORATOR: {
-        if (!row[columnKey] || row[columnKey].length === 0) return this.renderEmptyFormatter();
-        return <CollaboratorFormatter value={row[columnKey]} collaborators={collaborators} />;
+        if (!cellValue || cellValue.length === 0) return EMPTY_CELL_FORMATTER;
+        return <CollaboratorFormatter value={cellValue} collaborators={collaborators} />;
       }
       case CellType.LONG_TEXT: {
-        if (!row[columnKey]) return this.renderEmptyFormatter();
-        return <LongTextFormatter value={row[columnKey]} />;
+        if (!cellValue) return EMPTY_CELL_FORMATTER;
+        return <LongTextFormatter value={cellValue} />;
       }
       case CellType.IMAGE: {
-        if (!row[columnKey] || row[columnKey].length === 0) return this.renderEmptyFormatter();
-        return <ImageFormatter value={row[columnKey]} isSample />;
+        if (!cellValue || cellValue.length === 0) return EMPTY_CELL_FORMATTER;
+        return <ImageFormatter value={cellValue} isSample />;
       }
       case CellType.GEOLOCATION : {
-        if (!row[columnKey]) return this.renderEmptyFormatter();
-        return <GeolocationFormatter value={row[columnKey]} />;
+        if (!cellValue) return EMPTY_CELL_FORMATTER;
+        return <GeolocationFormatter value={cellValue} />;
       }
       case CellType.NUMBER: {
-        if (!row[columnKey]) return this.renderEmptyFormatter();
-        return <NumberFormatter value={row[columnKey]} data={column.data} />;
+        if (!cellValue) return EMPTY_CELL_FORMATTER;
+        return <NumberFormatter value={cellValue} data={columnData} />;
       }
       case CellType.DATE: {
-        if (!row[columnKey]) return this.renderEmptyFormatter();
-        return <DateFormatter value={row[columnKey]} format={column.data.format} />;
+        if (!cellValue) return EMPTY_CELL_FORMATTER;
+        return <DateFormatter value={cellValue} format={columnData.format} />;
       }
       case CellType.MULTIPLE_SELECT: {
-        if (!row[columnKey] || row[columnKey].length === 0) return this.renderEmptyFormatter();
-        return <MultipleSelectFormatter value={row[columnKey]} options={column.data.options} />;
+        if (!cellValue || cellValue.length === 0) return EMPTY_CELL_FORMATTER;
+        return <MultipleSelectFormatter value={cellValue} options={columnData.options} />;
       }
       case CellType.SINGLE_SELECT: {
-        if (!row[columnKey]) return this.renderEmptyFormatter();
-        return <SingleSelectFormatter value={row[columnKey]} options={column.data.options} />;
+        if (!cellValue) return EMPTY_CELL_FORMATTER;
+        return <SingleSelectFormatter value={cellValue} options={columnData.options} />;
       }
       case CellType.FILE: {
-        if (!row[columnKey] || row[columnKey].length === 0) return this.renderEmptyFormatter();
-        return <FileFormatter value={row[columnKey]} isSample />;
+        if (!cellValue || cellValue.length === 0) return EMPTY_CELL_FORMATTER;
+        return <FileFormatter value={cellValue} isSample />;
       }
       case CellType.CHECKBOX: {
-        return <CheckboxFormatter value={row[columnKey]} />;
+        return <CheckboxFormatter value={cellValue} />;
       }
       case CellType.CTIME: {
-        if (!row._ctime) return this.renderEmptyFormatter();
+        if (!row._ctime) return EMPTY_CELL_FORMATTER;
         return <CTimeFormatter value={row._ctime} />;
       }
       case CellType.MTIME: {
-        if (!row._mtime) return this.renderEmptyFormatter();
+        if (!row._mtime) return EMPTY_CELL_FORMATTER;
         return <MTimeFormatter value={row._mtime} />;
       }
       case CellType.CREATOR: {
-        if (!row._creator || !collaborator) return this.renderEmptyFormatter();
+        if (!row._creator || !collaborator) return EMPTY_CELL_FORMATTER;
         if (isDataLoaded) {
           return <CreatorFormatter collaborators={[collaborator]} value={row._creator} />;
         }
         return null;
       }
       case CellType.LAST_MODIFIER: {
-        if (!row._last_modifier || !collaborator) return this.renderEmptyFormatter();
+        if (!row._last_modifier || !collaborator) return EMPTY_CELL_FORMATTER;
         if (isDataLoaded) {
           return <LastModifierFormatter collaborators={[collaborator]} value={row._last_modifier} />;
         }
         return null;
       }
-      case CellType.FORMULA: {
+      case CellType.FORMULA:
+      case CellType.LINK_FORMULA: {
         let formulaRows = this.props.formulaRows ? {...this.props.formulaRows} : {};
         let formulaValue = formulaRows[row._id] ? formulaRows[row._id][columnKey] : '';
-        if (!formulaValue) return this.renderEmptyFormatter();
+        if (!formulaValue) return EMPTY_CELL_FORMATTER;
         return <FormulaFormatter value={formulaValue} column={column} collaborators={collaborators} tables={tables} />;
       }
       case CellType.LINK: {
@@ -209,20 +210,24 @@ class Cell extends React.Component {
         return <LinkFormatter column={column} row={row} currentTableId={tableID} linkMetaData={linkMetaData} containerClassName="leading-normal" />;
       }
       case CellType.AUTO_NUMBER: {
-        if (!row[columnKey]) return this.renderEmptyFormatter();
-        return <AutoNumberFormatter value={row[columnKey]} />;
+        if (!cellValue) return EMPTY_CELL_FORMATTER;
+        return <AutoNumberFormatter value={cellValue} />;
       }
       case CellType.URL: {
-        if (!row[columnKey]) return this.renderEmptyFormatter();
-        return <UrlFormatter value={row[columnKey]} />;
+        if (!cellValue) return EMPTY_CELL_FORMATTER;
+        return <UrlFormatter value={cellValue} />;
       }
       case CellType.EMAIL: {
-        if (!row[columnKey]) return this.renderEmptyFormatter();
-        return <EmailFormatter value={row[columnKey]} />;
+        if (!cellValue) return EMPTY_CELL_FORMATTER;
+        return <EmailFormatter value={cellValue} />;
       }
       case CellType.DURATION: {
-        if (!row[columnKey]) return this.renderEmptyFormatter();
-        return <DurationFormatter value={row[columnKey]} format={column.data.duration_format} />;
+        if (!cellValue) return EMPTY_CELL_FORMATTER;
+        return <DurationFormatter value={cellValue} format={columnData.duration_format} />;
+      }
+      case CellType.RATE: {
+        if (!cellValue) return EMPTY_CELL_FORMATTER;
+        return <RateFormatter value={cellValue} data={columnData} />;
       }
       default:
         return null;

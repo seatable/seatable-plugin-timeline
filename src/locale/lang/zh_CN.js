@@ -22,7 +22,7 @@ const zh_CN = {
   "Color_field": "颜色字段",
   "Start_date": "开始日期",
   "End_date": "结束日期",
-  "Duration": "时长",
+  "Duration": "持续天数",
   "Jan": "一月",
   "Feb": "二月",
   "Mar": "三月",

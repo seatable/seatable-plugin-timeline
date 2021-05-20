@@ -67,10 +67,13 @@ class App extends React.Component {
     if (window.app === undefined) {
       // local develop
       window.app = {};
+      window.app.state = {};
       await this.dtable.init(window.dtablePluginConfig);
       await this.dtable.syncWithServer();
       let relatedUsersRes = await this.getRelatedUsersFromServer(this.dtable.dtableStore);
-      window.app.collaborators = relatedUsersRes.data.user_list;
+      const userList = relatedUsersRes.data.user_list;
+      window.app.collaborators = userList;
+      window.app.state.collaborators = userList;
       this.dtable.subscribe('dtable-connect', () => { this.onDTableConnect(); });
     } else {
       // integrated to dtable app
