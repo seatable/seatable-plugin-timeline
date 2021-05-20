@@ -1,3 +1,6 @@
+# local development settings
+/src/setting.local.js
+
 # dependencies
 /node_modules
 /.pnp
