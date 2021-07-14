@@ -69,6 +69,12 @@ class TimelineSetting extends Component {
           dateFields.push(columnOption);
           break;
         }
+        case CellType.FORMULA: {
+          if (column.data.result_type === 'date') {
+            dateFields.push(columnOption);
+          }
+          break;
+        }
         case CellType.NUMBER: {
           numberFields.push(columnOption);
           break;
