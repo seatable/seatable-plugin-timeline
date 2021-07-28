@@ -48,6 +48,10 @@
   cursor: pointer;
 }
 
+.plugin-timeline .plugin-header .timeline-operator:hover {
+  opacity: 0.8;
+}
+
 .plugin-timeline .plugin-header .btn-export-image,
 .plugin-timeline .plugin-header .btn-settings {
   margin-right: .25rem;
