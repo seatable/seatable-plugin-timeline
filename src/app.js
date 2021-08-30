@@ -499,7 +499,7 @@ class App extends React.Component {
     let selectedTable = this.getSelectedTable(tables, settings);
     let { name: tableName } = selectedTable || {};
     let columns = this.dtable.getColumns(selectedTable);
-    let views = this.dtable.getViews(selectedTable);
+    let views = this.dtable.getNonArchiveViews(selectedTable);
     let selectedView = this.getSelectedView(selectedTable, settings) || views[0];
     let { name: viewName } = selectedView;
     let isGroupView = this.dtable.isGroupView(selectedView, columns);
