@@ -742,6 +742,12 @@
   position: unset;
 }
 
+.timeline-export-container .dtable-ui.link-formatter .link-item .link-name,
+.timeline-export-container .dtable-ui.cell-formatter-container {
+  position: relative;
+  z-index: 1;
+}
+
 /* rc-calendar */
 .timeline-date-range-calendar .rc-calendar-selected-day .rc-calendar-date,
 .timeline-date-range-calendar .rc-calendar-month-panel-selected-cell,
