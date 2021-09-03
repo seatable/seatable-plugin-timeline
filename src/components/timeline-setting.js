@@ -49,7 +49,7 @@ class TimelineSetting extends Component {
   }
 
   getSelectorFields = () => {
-    const { dtable, selectedTable, CellType, columnIconConfig } = this.props;
+    const { dtable, selectedTable, CellType, columnIconConfig, tables } = this.props;
     const columns = dtable.getColumns(selectedTable);
     let dateFields = [], numberFields = [], colorFields = [], labelFields = [];
     Array.isArray(columns) && columns.forEach((column) => {
@@ -71,6 +71,21 @@ class TimelineSetting extends Component {
         }
         case CellType.FORMULA: {
           if (column.data.result_type === 'date') {
+            dateFields.push(columnOption);
+          }
+          break;
+        }
+        case CellType.LINK_FORMULA: {
+          const { display_column_key, linked_table_id } = column.data;
+          const linkedTable = tables.find(table => table._id === linked_table_id);
+          if (!linkedTable) {
+            break;
+          }
+          const linkedColumn = linkedTable.columns.find(column => column.key === display_column_key);
+          if (!linkedColumn) {
+            break;
+          }
+          if (linkedColumn.type === CellType.DATE) {
             dateFields.push(columnOption);
           }
           break;
