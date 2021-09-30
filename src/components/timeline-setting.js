@@ -376,11 +376,11 @@ class TimelineSetting extends Component {
           </div>
           <div className="setting-body">
             <div className="setting-list">
-              <div className="setting-item table">
+              <div className="setting-item table-setting">
                 <div className="title">{intl.get('Table')}</div>
                 {this.renderSelector(tableOptions, SETTING_KEY.TABLE_NAME)}
               </div>
-              <div className="setting-item table-view">
+              <div className="setting-item view-setting">
                 <div className="title">{intl.get('View')}</div>
                 {this.renderSelector(viewOptions, SETTING_KEY.VIEW_NAME)}
               </div>
