@@ -12,7 +12,7 @@ class GroupItemLeft extends Component {
   }
 
   render() {
-    let { group, isExpanded, shownColumns, collaborators, dtable, tableID, tables, formulaRows } = this.props;
+    let { group, isExpanded, shownColumns, collaborators, dtable, tableID, formulaRows } = this.props;
     const { cell_value, column_name, rows } = group;
     const rowsCount = Array.isArray(rows) ? rows.length : 0;
     const table = dtable.getTableById(tableID);
@@ -23,7 +23,17 @@ class GroupItemLeft extends Component {
         <div className="group-header" style={{height: GROUP_HEADER_HEIGHT}}>
           {groupColumn.type == CellType.GEOLOCATION ?
             <div className={`timeline-grid-cell ${groupTitleClassName}`}>{cell_value}</div> :
-            <Cell className={groupTitleClassName} row={rows[0].row} column={groupColumn} collaborators={collaborators} dtable={dtable} tableID={tableID} tables={tables} formulaRows={formulaRows} autoWidth={true} />}
+            <Cell
+              className={groupTitleClassName}
+              row={rows[0].row}
+              column={groupColumn}
+              collaborators={collaborators}
+              dtable={dtable}
+              tableID={tableID}
+              formulaRows={formulaRows}
+              autoWidth={true}
+            />
+          }
           <div>
             <span className="rows-count">{rowsCount}</span>
             <span className="btn-group-expand" onClick={this.onExpandGroupToggle}>
@@ -33,7 +43,13 @@ class GroupItemLeft extends Component {
         </div>
         {(isExpanded && rowsCount > 0) &&
           <div className="group-item-left-rows" style={{height: rowsCount * ROW_HEIGHT}}>
-            <Rows rows={rows} columns={shownColumns} collaborators={collaborators} dtable={dtable} tableID={tableID} tables={tables} formulaRows={formulaRows} />
+            <Rows
+              rows={rows}
+              columns={shownColumns}
+              collaborators={collaborators}
+              dtable={dtable}
+              tableID={tableID}
+            />
           </div>
         }
       </div>

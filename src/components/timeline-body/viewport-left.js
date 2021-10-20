@@ -15,14 +15,14 @@ class ViewportLeft extends React.Component {
   }
 
   renderCanvasLeft = (shownColumns) => {
-    let { isGroupView, groupVisibleStartIdx, renderedRows, groups, onExpandGroupToggle, foldedGroups, collaborators, dtable, tableID, tables, formulaRows, topOffset, bottomOffset } = this.props;
+    let { isGroupView, groupVisibleStartIdx, renderedRows, groups, onExpandGroupToggle, foldedGroups, collaborators, dtable, tableID, formulaRows, topOffset, bottomOffset } = this.props;
     let CustomCanvasLeft, canvasLeftProps;
     if (isGroupView) {
       CustomCanvasLeft = GroupCanvasLeft;
-      canvasLeftProps = { groupVisibleStartIdx, groups, foldedGroups, onExpandGroupToggle, shownColumns, collaborators, dtable, tableID, tables, formulaRows, topOffset, bottomOffset };
+      canvasLeftProps = { groupVisibleStartIdx, groups, foldedGroups, onExpandGroupToggle, shownColumns, collaborators, dtable, tableID, formulaRows, topOffset, bottomOffset };
     } else {
       CustomCanvasLeft = CanvasLeft;
-      canvasLeftProps = { renderedRows, shownColumns, collaborators, dtable, tableID, tables, formulaRows, topOffset, bottomOffset };
+      canvasLeftProps = { renderedRows, shownColumns, collaborators, dtable, tableID, formulaRows, topOffset, bottomOffset };
     }
     return (
       <CustomCanvasLeft {...canvasLeftProps} />

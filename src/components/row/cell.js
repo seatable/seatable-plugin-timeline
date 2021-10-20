@@ -33,7 +33,6 @@ const propTypes = {
   collaborators: PropTypes.array,
   dtable: PropTypes.object.isRequired,
   tableID: PropTypes.string.isRequired,
-  tables: PropTypes.array,
   formulaRows: PropTypes.object,
   autoWidth: PropTypes.bool
 };
@@ -120,7 +119,7 @@ class Cell extends React.Component {
   }
 
   renderFormatter = () => {
-    const { column, row, collaborators, dtable, tableID, tables } = this.props;
+    const { column, row, collaborators, dtable, tableID } = this.props;
     const { isDataLoaded, collaborator } = this.state;
     let { type: columnType, key: columnKey, data: columnData } = column;
     const cellValue = row[columnKey];
@@ -196,7 +195,7 @@ class Cell extends React.Component {
         let formulaRows = this.props.formulaRows ? {...this.props.formulaRows} : {};
         let formulaValue = formulaRows[row._id] ? formulaRows[row._id][columnKey] : '';
         if (!formulaValue) return EMPTY_CELL_FORMATTER;
-        return <FormulaFormatter value={formulaValue} column={column} collaborators={collaborators} tables={tables} />;
+        return <FormulaFormatter value={formulaValue} column={column} collaborators={collaborators} />;
       }
       case CellType.LINK: {
         let linkMetaData = {
