@@ -300,7 +300,6 @@ class Timeline extends React.Component {
               dtable={this.props.dtable}
               tableID={this.props.tableID}
               formulaRows={this.props.formulaRows}
-              tables={tables}
             />
           </Fragment>
         }

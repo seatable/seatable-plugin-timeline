@@ -10,7 +10,7 @@ class GroupCanvasLeft extends Component {
   }
 
   render() {
-    let { groupVisibleStartIdx, groups, foldedGroups, shownColumns, collaborators, dtable, tableID, tables, formulaRows, topOffset, bottomOffset } = this.props;
+    let { groupVisibleStartIdx, groups, foldedGroups, shownColumns, collaborators, dtable, tableID, formulaRows, topOffset, bottomOffset } = this.props;
     return (
       <div className="group-canvas-left" style={{paddingTop: topOffset, paddingBottom: bottomOffset}}>
         {groups.map((group, index) => {
@@ -25,7 +25,6 @@ class GroupCanvasLeft extends Component {
               onExpandGroupToggle={this.onExpandGroupToggle.bind(this, index)}
               dtable={dtable}
               tableID={tableID}
-              tables={tables}
               formulaRows={formulaRows}
             />
           );
