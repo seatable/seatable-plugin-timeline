@@ -322,6 +322,7 @@
 .timeline-container .left-pane-wrapper {
   height: 100%;
   box-shadow: rgba(136, 136, 136, 0.3) 5px 0px 5px -2px;
+  background-color: #fff;
 }
 
 /* column manager */
