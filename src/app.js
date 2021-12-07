@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import intl from 'react-intl-universal';
 import DTable from 'dtable-sdk';
-import TimelineViewsTabs from './components/timeline-views-tabs';
+import ViewsTabs from './components/views-tabs';
 import Timeline from './timeline';
 import View from './model/view';
 import Group from './model/group';
@@ -362,7 +362,7 @@ class App extends React.Component {
     }, () => {
       this.storeSelectedViewId(updatedViews[selectedViewIdx]._id);
       this.dtable.updatePluginSettings(PLUGIN_NAME, plugin_settings);
-      this.viewsTabs && this.viewsTabs.setTimelineViewsTabsScroll();
+      this.viewsTabs && this.viewsTabs.setViewsTabsScroll();
     });
   }
 
@@ -544,7 +544,7 @@ class App extends React.Component {
             <img className="plugin-logo-icon" src={timelineLogo} alt="timeline" />
             <span>{intl.get('Timeline')}</span>
           </div>
-          <TimelineViewsTabs
+          <ViewsTabs
             ref={ref => this.viewsTabs = ref}
             views={timelineViews}
             selectedViewIdx={selectedViewIdx}
