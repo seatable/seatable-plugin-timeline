@@ -57,9 +57,6 @@ class ViewsTabs extends React.Component {
   }
 
   checkAvailableScrollType = () => {
-    if (this.props.isMobile) {
-      return;
-    }
     const { canScrollPrev, canScrollNext } = this.state;
     let { offsetWidth, scrollWidth, scrollLeft } = this.viewsTabsScroll;
     let _canScrollPrev = false;
