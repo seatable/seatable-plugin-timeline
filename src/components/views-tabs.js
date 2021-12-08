@@ -7,6 +7,11 @@ import NewViewDialog from './dialog/new-view-dialog';
 import RenameViewDialog from './dialog/rename-view-dialog';
 import DropdownMenu from './dropdownmenu';
 
+const SCROLL_TYPE = {
+  PREV: 'prev',
+  NEXT: 'next',
+};
+
 const propTypes = {
   views: PropTypes.array,
   selectedViewIdx: PropTypes.number,
@@ -16,7 +21,7 @@ const propTypes = {
   onRenameView: PropTypes.func,
 };
 
-class TimelineViewsTabs extends React.Component {
+class ViewsTabs extends React.Component {
 
   constructor(props) {
     super(props);
@@ -28,6 +33,9 @@ class TimelineViewsTabs extends React.Component {
       },
       isShowNewViewDialog: false,
       isShowRenameViewDialog: false,
+      canScrollPrev: false,
+      canScrollNext: false,
+      canViewsScroll: true,
     };
     this.views = [];
   }
@@ -38,12 +46,72 @@ class TimelineViewsTabs extends React.Component {
     let { offsetWidth } = this.viewsTabsScroll;
     if (left > offsetWidth) {
       this.viewsTabsScroll.scrollLeft = left - offsetWidth;
+    } else {
+      this.checkAvailableScrollType();
     }
     document.addEventListener('click', this.onHideViewDropdown);
   }
 
   componentWillUnmount() {
     document.removeEventListener('click', this.onHideViewDropdown);
+  }
+
+  checkAvailableScrollType = () => {
+    const { canScrollPrev, canScrollNext } = this.state;
+    let { offsetWidth, scrollWidth, scrollLeft } = this.viewsTabsScroll;
+    let _canScrollPrev = false;
+    let _canScrollNext = false;
+    if (scrollLeft > 0) {
+      _canScrollPrev = true;
+    }
+    if (scrollLeft + offsetWidth < scrollWidth) {
+      _canScrollNext = true;
+    }
+
+    if (_canScrollPrev !== canScrollPrev || _canScrollNext !== canScrollNext) {
+      this.setState({
+        canScrollPrev: _canScrollPrev,
+        canScrollNext: _canScrollNext,
+      });
+    }
+  }
+
+  onScrollWithControl = (type) => {
+    const { offsetWidth, scrollWidth, scrollLeft } = this.viewsTabsScroll;
+    let targetScrollLeft;
+    if (type === SCROLL_TYPE.PREV) {
+      if (scrollLeft === 0) {
+        return;
+      }
+      targetScrollLeft = scrollLeft - offsetWidth;
+      targetScrollLeft = targetScrollLeft > 0 ? targetScrollLeft : 0;
+    }
+
+    if (type === SCROLL_TYPE.NEXT) {
+      if (scrollLeft + offsetWidth === scrollWidth) {
+        return;
+      }
+      targetScrollLeft = scrollLeft + offsetWidth;
+      targetScrollLeft = targetScrollLeft > scrollWidth - offsetWidth ? scrollWidth - offsetWidth : targetScrollLeft;
+    }
+    if (this.state.canViewsScroll) {
+      this.setState({ canViewsScroll: false });
+      let timer = null;
+      timer = setInterval(() => {
+        let step = (targetScrollLeft - scrollLeft) / 10;
+        step = step > 0 ? Math.ceil(step) : Math.floor(step);
+        this.viewsTabsScroll.scrollLeft = this.viewsTabsScroll.scrollLeft + step;
+        if (Math.abs(targetScrollLeft - this.viewsTabsScroll.scrollLeft) <= Math.abs(step)) {
+          this.viewsTabsScroll.scrollLeft = targetScrollLeft;
+          clearInterval(timer);
+          this.setState({ canViewsScroll: true });
+        }
+      }, 15);
+    }
+  }
+
+  onViewsScroll = () => {
+    this.checkAvailableScrollType();
   }
 
   onDropdownToggle = (evt) => {
@@ -68,7 +136,7 @@ class TimelineViewsTabs extends React.Component {
     this.views[idx] = viewItem;
   }
 
-  setTimelineViewsTabsScroll = () => {
+  setViewsTabsScroll = () => {
     if (!this.viewsTabsScroll) return;
     let { offsetWidth, scrollWidth } = this.viewsTabsScroll;
     if (scrollWidth > offsetWidth) {
@@ -105,11 +173,17 @@ class TimelineViewsTabs extends React.Component {
 
   render() {
     let { views, selectedViewIdx } = this.props;
-    let { isShowViewDropdown, dropdownMenuPosition, isShowNewViewDialog, isShowRenameViewDialog } = this.state;
+    let {
+      isShowViewDropdown, dropdownMenuPosition, isShowNewViewDialog, isShowRenameViewDialog,
+      canScrollPrev, canScrollNext,
+    } = this.state;
     let selectedGridView = views[selectedViewIdx] || {};
     return (
       <div className="timeline-views-tabs">
-        <div className="views-tabs-scroll" ref={ref => this.viewsTabsScroll = ref}>
+        <div
+          className="views-tabs-scroll" ref={ref => this.viewsTabsScroll = ref}
+          onScroll={this.onViewsScroll}
+        >
           <div className="views d-inline-flex">
             {views.map((v, i) => {
               let { _id, name } = v;
@@ -164,6 +238,22 @@ class TimelineViewsTabs extends React.Component {
             })}
           </div>
         </div>
+        {(canScrollPrev || canScrollNext) &&
+          <div className="views-scroll-control">
+            <span
+              className={classnames('scroll-control-btn', 'scroll-prev', { 'scroll-active': canScrollPrev })}
+              onClick={this.onScrollWithControl.bind(this, SCROLL_TYPE.PREV)}
+            >
+              <i className="dtable-font dtable-icon-left-slide btn-scroll-icon" />
+            </span>
+            <span
+              className={classnames('scroll-control-btn', 'scroll-next', { 'scroll-active': canScrollNext })}
+              onClick={this.onScrollWithControl.bind(this, SCROLL_TYPE.NEXT)}
+            >
+              <i className="dtable-font dtable-icon-right-slide btn-scroll-icon" />
+            </span>
+          </div>
+        }
         <div className="btn-add-view" onClick={this.onNewViewToggle}>
           <i className="dtable-font dtable-icon-add-table"></i>
         </div>
@@ -185,6 +275,6 @@ class TimelineViewsTabs extends React.Component {
   }
 }
 
-TimelineViewsTabs.propTypes = propTypes;
+ViewsTabs.propTypes = propTypes;
 
-export default TimelineViewsTabs;
+export default ViewsTabs;

@@ -43,13 +43,13 @@
   width: 24px;
   height: 24px;
   color: #000;
-  opacity: 0.5;
+  opacity: .5;
   text-align: center;
   cursor: pointer;
 }
 
 .plugin-timeline .plugin-header .timeline-operator:hover {
-  opacity: 0.8;
+  opacity: .75;
 }
 
 .plugin-timeline .plugin-header .btn-export-image,
@@ -142,6 +142,39 @@
   color: #aaa;
 }
 
+.plugin-timeline .views-scroll-control {
+  display: flex;
+  align-items: center;
+  padding: 0 .25rem;
+}
+
+.plugin-timeline .scroll-control-btn {
+  cursor: default;
+}
+
+.plugin-timeline .scroll-control-btn:first-child {
+  margin-right: .1rem;
+}
+
+.plugin-timeline .scroll-active {
+  cursor: pointer;
+}
+
+.plugin-timeline .btn-scroll-icon {
+  color: #c2c2c2;
+  font-size: 12px;
+  line-height: 24px;
+}
+
+.plugin-timeline .scroll-active .btn-scroll-icon {
+  color: #8c8c8c;
+}
+
+.plugin-timeline .scroll-active:hover .btn-scroll-icon {
+  color: #000;
+  opacity: .75;
+}
+
 .plugin-timeline .btn-add-view {
   display: flex;
   align-items: center;
@@ -152,14 +185,17 @@
 .plugin-timeline .btn-add-view .dtable-icon-add-table {
   height: 24px;
   width: 24px;
-  margin-left: 4px;
   text-align: center;
   cursor: pointer;
   color: #000;
-  opacity: 0.5;
+  opacity: .5;
   font-size: 14px;
   font-weight: 500;
   line-height: 24px;
+}
+
+.plugin-timeline .btn-add-view .dtable-icon-add-table:hover {
+  opacity: .75;
 }
 
 /* timeline-container */
@@ -204,7 +240,7 @@
   text-align: center;
   cursor: pointer;
   color: #000;
-  opacity: 0.5;
+  opacity: .5;
   font-weight: 700;
  }
 
