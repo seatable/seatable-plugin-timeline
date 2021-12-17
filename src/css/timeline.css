@@ -696,37 +696,49 @@
 }
 
 .timeline-viewport-right .timeline-event-cell.can-changed {
-  cursor: move;
+  cursor: grab;
 }
 
 .timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-left-line,
 .timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-right-line {
   width: 6px;
-  height: 21px;
+  height: 17px;
   position: absolute;
-  top: 5px;
+  top: 7px;
   background-color: transparent;
-  border-radius: 3px;
+  border-radius: 1px;
+  cursor: col-resize;
+  display: none;
+}
+
+.timeline-viewport-right .timeline-event-cell-drag-left-line .timeline-event-cell-drag-bg,
+.timeline-viewport-right .timeline-event-cell-drag-right-line .timeline-event-cell-drag-bg {
+  width: 2px;
+  height: 100%;
+  background-color: #2d7ff9;
+}
+
+.timeline-viewport-right .timeline-event-cell:hover .timeline-event-cell-drag-left-line,
+.timeline-viewport-right .timeline-event-cell:hover .timeline-event-cell-drag-right-line {
+  display: block;
 }
 
 .timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-left-line {
-  left: -3px;
+  left: 0px;
+  padding-left: 2px;
 }
 
 .timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-right-line {
-  right: -3px;
+  right: 0px;
+  padding-right: 2px;
 }
 
-.timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-left-line:hover,
-.timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-right-line:hover {
-  background-color: #2d7ff9;
-  cursor: col-resize;
+.timeline-viewport-right .timeline-event-cell.old-position {
+  opacity: .7;
 }
 
-.timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-left-line.dragging,
-.timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-right-line.dragging {
-  background-color: #2d7ff9;
-  cursor: col-resize;
+.timeline-viewport-right .timeline-event-cell.next-position .grid-cell-type-single-select {
+  border: 1px dashed #aaa;
 }
 
 .timeline-viewport-right .group-item-right {

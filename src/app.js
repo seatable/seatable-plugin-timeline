@@ -319,7 +319,12 @@ class App extends React.Component {
     if (recordEndType === RECORD_END_TYPE.RECORD_DURATION) {
       let duration = originalRow[recordDurationColumnName];
       if (duration && duration !== 0) {
-        end = moment(start).add(Math.ceil(duration) - 1, DATE_UNIT.DAY).format('YYYY-MM-DD');
+        const { data: startColumnData } = startColumn;
+        const isStartIncludeHour = startColumnData && startColumnData.format && startColumnData.format.indexOf('HH:mm') > -1;
+        const startFormat = isStartIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
+        end = moment(start).add(Math.ceil(duration), DATE_UNIT.DAY).format(startFormat);
+      } else {
+        end = start;
       }
       endColumn = this.dtable.getColumnByName(table, recordDurationColumnName);
       canChangeEnd = endColumn && endColumn.type === CELL_TYPE.NUMBER;
@@ -510,8 +515,7 @@ class App extends React.Component {
   }
 
   onModifyRow = (table, row, update) => {
-    console.log('update: ', update)
-    // this.dtable.onModifyRow(table, table.id_row_map[row._id], update);
+    this.dtable.modifyRow(table, table.id_row_map[row._id], update);
   }
 
   render() {

@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import shallowEqual from 'shallowequal';
-import EventFormatter from '../cell-formatter/event-formatter';
-import { getEventWidth, getEventLeft } from '../../utils/row-utils';
-import { zIndexes } from '../../constants';
-import * as EventTypes from '../../constants/event-types';
 import moment from 'moment';
 import { CELL_TYPE } from 'dtable-sdk';
+import EventFormatter from '../cell-formatter/event-formatter';
+import { getEventWidth, getEventLeft } from '../../utils/row-utils';
+import { zIndexes, DATE_UNIT, GRID_VIEWS } from '../../constants';
+import * as EventTypes from '../../constants/event-types';
 
 const eventStopPropagation = (event) => {
   if (!event) return;
@@ -94,8 +94,8 @@ class EventCell extends React.Component {
     const displacementX = currX - this.distance.disX + this.scrollLeft - this.distance.scrollLeft;
     if (displacementX === 0) return;
     const { selectedGridView, event, columnWidth } = this.props;
-    const displacementTime = displacementX / columnWidth;
-    const unit = selectedGridView === 'year' ? 'month' : 'day';
+    const displacementTime = displacementX > 0 ? Math.ceil(displacementX / columnWidth) : Math.floor(displacementX / columnWidth);
+    const unit = selectedGridView === GRID_VIEWS.YEAR ? DATE_UNIT.MONTH : DATE_UNIT.DAY;
     const left = this.distance.left + displacementX;
     const { start: startObject, end: endObject } = event;
     const { column: startColumn } = startObject;
@@ -103,7 +103,7 @@ class EventCell extends React.Component {
     const { data: startColumnData } = startColumn;
     const isStartIncludeHour = startColumnData && startColumnData.format && startColumnData.format.indexOf('HH:mm') > -1;
     const startFormat = isStartIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
-    const start = moment(this.distance.start).add(displacementTime.toFixed(0), unit).format(startFormat);
+    const start = moment(this.distance.start).add(displacementTime, unit).format(startFormat);
     let columnData = endColumn.data;
     if (endColumn.type === CELL_TYPE.NUMBER) {
       const { column: startColumn } = startObject;
@@ -112,16 +112,16 @@ class EventCell extends React.Component {
     }
     const isEndIncludeHour = columnData && columnData.format && columnData.format.indexOf('HH:mm') > -1;
     const endFormat = isEndIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
-    const end = moment(this.distance.end).add(displacementTime.toFixed(0), unit).format(endFormat);
+    const end = moment(this.distance.end).add(displacementTime, unit).format(endFormat);
     this.setState({ left, start, end });
   }
 
   onEventMouseUp = (evt) => {
-    window.removeEventListener('mousemove', this.onEventMouseMove);
-    window.removeEventListener('mouseup', this.onEventMouseUp);
     eventStopPropagation(evt);
     evt.preventDefault && evt.preventDefault();
-    const { start, isDraggingEvent } = this.state;
+    const { start, end, isDraggingEvent } = this.state;
+    window.removeEventListener('mousemove', this.onEventMouseMove);
+    window.removeEventListener('mouseup', this.onEventMouseUp);
     if (!isDraggingEvent) return;
     const { event, overScanStartDate, selectedGridView, columnWidth } = this.props;
     const left = getEventLeft(selectedGridView, columnWidth, overScanStartDate, start);
@@ -129,9 +129,14 @@ class EventCell extends React.Component {
     this.draggingSideDirection = '';
     this.distance = {};
     if (start === event.start.date) return;
-    const { start: startObject, row } = event;
-    const { column } = startObject;
-    this.props.onModifyRow(row, { [column.name]: start });
+    const { start: startObject, row, end: endObject } = event;
+    const { column: startColumn } = startObject;
+    const { column: endColumn } = endObject;
+    let update = { [startColumn.name]: start };
+    if (endColumn.type === CELL_TYPE.DATE) {
+      update[endColumn.name] = end;
+    }
+    this.props.onModifyRow(row, update);
   }
 
   onStartMouseDown = (evt) => {
@@ -160,16 +165,17 @@ class EventCell extends React.Component {
     const currX = evt.clientX;
     const displacementX = currX - this.distance.disX + this.scrollLeft - this.distance.scrollLeft;
     const { selectedGridView, event, columnWidth } = this.props;
-    const displacementTime = displacementX / columnWidth;
-    const unit = selectedGridView === 'year' ? 'month' : 'day';
+    const displacementTime = Math.floor(displacementX / columnWidth);
+    const unit = selectedGridView === GRID_VIEWS.YEAR ? DATE_UNIT.MONTH : DATE_UNIT.DAY;
     const { start: startObject } = event;
     const { column } = startObject;
     const { data } = column;
     const isIncludeHour = data && data.format && data.format.indexOf('HH:mm') > -1;
     const format = isIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
-    const start = moment(this.distance.start).add(displacementTime.toFixed(0), unit).format(format);
+    const start = moment(this.distance.start).add(displacementTime, unit).format(format);
     const left = this.distance.left + displacementX;
     const width = this.distance.width - displacementX;
+    if (width < 20) return;
     this.setState({ start, left, width });
   };
 
@@ -187,9 +193,18 @@ class EventCell extends React.Component {
     this.draggingSideDirection = '';
     this.distance = {};
     if (start === event.start.date) return;
-    const { start: startObject, row } = event;
-    const { column } = startObject;
-    this.props.onModifyRow(row, { [column.name]: start });
+    const { start: startObject, row, end: endObject } = event;
+    const { column: startColumn } = startObject;
+    const { column: endColumn } = endObject;
+    let update = { [startColumn.name]: start };
+    if (endColumn.type === CELL_TYPE.NUMBER) {
+      const number = width / columnWidth + 1;
+      if (row[endColumn.name] !== number) {
+        update[endColumn.name] = number;
+      }
+    }
+
+    this.props.onModifyRow(row, update);
   };
 
   onEndMouseDown = (evt) => {
@@ -218,8 +233,8 @@ class EventCell extends React.Component {
     const currX = evt.clientX;
     const displacementX = currX - this.distance.disX + this.scrollLeft - this.distance.scrollLeft;
     const { selectedGridView, event, columnWidth } = this.props;
-    const displacementTime = displacementX / columnWidth;
-    const unit = selectedGridView === 'year' ? 'month' : 'day';
+    const displacementTime = Math.ceil(displacementX / columnWidth);
+    const unit = selectedGridView === GRID_VIEWS.YEAR ? DATE_UNIT.MONTH : DATE_UNIT.DAY;
     const { start: startObject, end: endObject } = event;
     const { column: endColumn } = endObject;
     let columnData = endColumn.data;
@@ -230,8 +245,9 @@ class EventCell extends React.Component {
     }
     const isIncludeHour = columnData && columnData.format && columnData.format.indexOf('HH:mm') > -1;
     const format = isIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
-    const end = moment(this.distance.end).add(displacementTime.toFixed(0), unit).format(format);
+    const end = moment(this.distance.end).add(displacementTime, unit).format(format);
     const width = this.distance.width + displacementX;
+    if (width < 20) return;
     this.setState({ end, width });
   }
 
@@ -254,7 +270,7 @@ class EventCell extends React.Component {
     const { type, name } = column;
     let update = { [name]: end };
     if (type === CELL_TYPE.NUMBER) {
-      const number = width / columnWidth + 1;
+      const number = width / columnWidth;
       if (row[name] === number) return;
       update = { [name]: number };
     }
@@ -262,12 +278,12 @@ class EventCell extends React.Component {
   }
 
   render() {
-    const { event } = this.props;
+    const { event, overScanStartDate, selectedGridView, columnWidth } = this.props;
     const { label, bgColor, textColor, row } = event;
     const canEventStartDateBeChanged = event.start.canChange;
     const canEventEndDateBeChanged = event.end.canChange;
     const canEventDateBeChanged = canEventStartDateBeChanged && canEventEndDateBeChanged;
-    const { start, end, isDraggingSide, left, width } = this.state; 
+    const { start, end, isDraggingSide, left, width, isDraggingEvent } = this.state; 
     const { _id: rowId } = row;
     let formatterLabel = null, formatterStyle = {};
     if (width < 30) {
@@ -283,35 +299,73 @@ class EventCell extends React.Component {
     }
 
     return (
-      <div
-        className={`timeline-event-cell ${canEventDateBeChanged ? 'can-changed' : ''}`}
-        id={`timeline_event_cell_${rowId}` || ''}
-        style={{ left, zIndex: zIndexes.EVENT_CELL, width }}
-        ref={ref => this.timeLineEventCellRef = ref}
-        title={`${label}(${start} - ${end})`}
-        onDoubleClick={this.onRowExpand}
-        onMouseDown={canEventDateBeChanged ? this.onEventMouseDown : () => {}}
-      >
-        {canEventStartDateBeChanged && (
+      <Fragment>
+        <div
+          className={`timeline-event-cell ${canEventDateBeChanged ? 'can-changed' : ''}`}
+          id={`timeline_event_cell_${rowId}` || ''}
+          style={{
+            left,
+            zIndex: isDraggingEvent ? zIndexes.EVENT_CELL + 1 : zIndexes.EVENT_CELL,
+            width
+          }}
+          ref={ref => this.timeLineEventCellRef = ref}
+          title={`${label}(${start} - ${end})`}
+          onDoubleClick={this.onRowExpand}
+          onMouseDown={canEventDateBeChanged ? this.onEventMouseDown : () => {}}
+        >
+          {canEventStartDateBeChanged && (
+            <div
+              className={`timeline-event-cell-drag-left-line ${isDraggingSide && this.draggingSideDirection === 'left' ? 'isDraggingSide' : ''}`}
+              onMouseDown={this.onStartMouseDown}
+            >
+              <div className="timeline-event-cell-drag-bg"></div>
+            </div>
+          )}
+          <EventFormatter
+            label={formatterLabel}
+            bgColor={bgColor}
+            textColor={textColor}
+            formatterStyle={formatterStyle}
+          />
+          {canEventEndDateBeChanged && (
+            <div
+              className={`timeline-event-cell-drag-right-line ${isDraggingSide && this.draggingSideDirection === 'right' ? 'isDraggingSide' : ''}`}
+              onMouseDown={this.onEndMouseDown}
+            >
+              <div className="timeline-event-cell-drag-bg"></div>
+            </div>
+          )}
+        </div>
+        {(isDraggingSide || isDraggingEvent) && (
           <div
-            className={`timeline-event-cell-drag-left-line ${isDraggingSide && this.draggingSideDirection === 'left' ? 'isDraggingSide' : ''}`}
-            onMouseDown={this.onStartMouseDown}
+            className="timeline-event-cell next-position"
+            style={{
+              left: getEventLeft(selectedGridView, columnWidth, overScanStartDate, start),
+              zIndex: zIndexes.EVENT_CELL - 1,
+              width: getEventWidth(selectedGridView, columnWidth, start, end)
+            }}
           >
+            <div className="cell-formatter grid-cell-type-single-select"></div>
           </div>
         )}
-        <EventFormatter
-          label={formatterLabel}
-          bgColor={bgColor}
-          textColor={textColor}
-          formatterStyle={formatterStyle}
-        />
-        {canEventEndDateBeChanged && (
+        {isDraggingEvent && (
           <div
-            className={`timeline-event-cell-drag-right-line ${isDraggingSide && this.draggingSideDirection === 'right' ? 'isDraggingSide' : ''}`}
-            onMouseDown={this.onEndMouseDown}
-          ></div>
+            className="timeline-event-cell old-position"
+            style={{
+              left: this.distance.left,
+              zIndex: zIndexes.EVENT_CELL - 2,
+              width: this.distance.width
+            }}
+          >
+            <EventFormatter
+              label={formatterLabel}
+              bgColor={bgColor}
+              textColor={textColor}
+              formatterStyle={formatterStyle}
+            />
+          </div>
         )}
-      </div>
+      </Fragment>
     );
   }
 }

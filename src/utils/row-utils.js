@@ -4,9 +4,9 @@ import { DATE_FORMAT, DATE_UNIT, GRID_VIEWS } from '../constants';
 export const getEventWidth = (selectedGridView, columnWidth, eventStartDate, eventEndDate) => {
   let duration;
   if (selectedGridView === GRID_VIEWS.YEAR) {
-    duration = moment(eventEndDate).diff(eventStartDate, DATE_UNIT.MONTH) + 1;
+    duration = moment(eventEndDate).diff(eventStartDate, DATE_UNIT.MONTH);
   } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
-    duration = moment(eventEndDate).diff(eventStartDate, DATE_UNIT.DAY) + 1;
+    duration = moment(eventEndDate).diff(eventStartDate, DATE_UNIT.DAY);
   }
   return (duration || 0) * columnWidth;
 };
