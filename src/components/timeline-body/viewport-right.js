@@ -229,6 +229,8 @@ class ViewportRight extends React.Component {
 
 ViewportRight.propTypes = {
   isShowUsers: PropTypes.bool,
+  isRenderAll: PropTypes.bool,
+  isGroupView: PropTypes.bool,
   selectedGridView: PropTypes.string,
   selectedDate: PropTypes.string,
   gridStartDate: PropTypes.string,
@@ -245,6 +247,9 @@ ViewportRight.propTypes = {
   updateSelectedDate: PropTypes.func,
   onCanvasRightScroll: PropTypes.func,
   onViewportRightScroll: PropTypes.func,
+  onModifyRow: PropTypes.func,
+  onSelectGridView: PropTypes.func,
+  renderHeaderYears: PropTypes.func,
 };
 
 export default ViewportRight;

@@ -129,6 +129,7 @@ class Viewport extends Component {
           onCanvasRightScroll={this.onCanvasRightScroll}
           updateSelectedDate={updateSelectedDate}
           onRowExpand={onRowExpand}
+          onModifyRow={this.props.onModifyRow}
         />
       </div>
     );
@@ -137,6 +138,14 @@ class Viewport extends Component {
 
 Viewport.propTypes = {
   isShowUsers: PropTypes.bool,
+  isRenderAll: PropTypes.bool,
+  columns: PropTypes.array,
+  collaborators: PropTypes.array,
+  settings: PropTypes.object,
+  table: PropTypes.object,
+  tableID: PropTypes.string,
+  dtable: PropTypes.object,
+  formulaRows: PropTypes.object,
   selectedGridView: PropTypes.string,
   selectedDate: PropTypes.string,
   gridStartDate: PropTypes.string,
@@ -149,6 +158,8 @@ Viewport.propTypes = {
   onViewportRightScroll: PropTypes.func,
   updateSelectedDate: PropTypes.func,
   onRowExpand: PropTypes.func,
+  onModifyRow: PropTypes.func,
+  onModifyTimelineSettings: PropTypes.func,
 };
 
 export default Viewport;

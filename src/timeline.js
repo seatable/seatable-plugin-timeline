@@ -300,6 +300,7 @@ class Timeline extends React.Component {
               dtable={this.props.dtable}
               tableID={this.props.tableID}
               formulaRows={this.props.formulaRows}
+              onModifyRow={this.props.onModifyRow}
             />
           </Fragment>
         }
@@ -333,6 +334,9 @@ class Timeline extends React.Component {
 }
 
 Timeline.propTypes = {
+  tableID: PropTypes.string,
+  collaborators: PropTypes.array,
+  formulaRows: PropTypes.object,
   tables: PropTypes.array,
   views: PropTypes.array,
   dtable: PropTypes.object,
@@ -350,6 +354,8 @@ Timeline.propTypes = {
   onModifyTimelineSettings: PropTypes.func,
   onHideTimelineSetting: PropTypes.func,
   onRowExpand: PropTypes.func,
+  onTimelineSettingToggle: PropTypes.func,
+  onModifyRow: PropTypes.func,
 };
 
 export default Timeline;

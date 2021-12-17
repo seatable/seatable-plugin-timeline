@@ -1,43 +1,329 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import shallowEqual from 'shallowequal';
+import EventFormatter from '../cell-formatter/event-formatter';
+import { getEventWidth, getEventLeft } from '../../utils/row-utils';
+import { zIndexes } from '../../constants';
+import * as EventTypes from '../../constants/event-types';
+import moment from 'moment';
+import { CELL_TYPE } from 'dtable-sdk';
 
-class EventCell extends React.PureComponent {
+const eventStopPropagation = (event) => {
+  if (!event) return;
+  event.stopPropagation();
+  event.nativeEvent && event.nativeEvent.stopImmediatePropagation && event.nativeEvent.stopImmediatePropagation();
+};
+
+class EventCell extends React.Component {
+
+  constructor(props) {
+    super(props);
+    const { overScanStartDate, selectedGridView, columnWidth, event } = props;
+    const { start, end } = event;
+    const { date: startDate } = start;
+    const { date: endDate } = end;
+    const width = getEventWidth(selectedGridView, columnWidth, startDate, endDate);
+    const left = getEventLeft(selectedGridView, columnWidth, overScanStartDate, startDate);
+    this.state = {
+      isDraggingSide: false,
+      start: startDate,
+      end: endDate,
+      width,
+      left,
+    };
+    this.draggingSideDirection = '';
+    this.scrollLeft = 0;
+  }
+
+  componentDidMount() {
+    this.unsubscribeTimeLineRightScroll = this.props.eventBus.subscribe(EventTypes.VIEWPORT_RIGHT_SCROLL, this.timeLineRightScroll);
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { overScanStartDate, selectedGridView, columnWidth, event } = nextProps;
+    const { start, end } = event;
+    const { date: startDate } = start;
+    const { date: endDate } = end;
+    const width = getEventWidth(selectedGridView, columnWidth, startDate, endDate);
+    const left = getEventLeft(selectedGridView, columnWidth, overScanStartDate, startDate);
+    this.setState({ left, width });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!shallowEqual(nextState, this.state)) return true;
+    return false;
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeTimeLineRightScroll();
+  }
+
+  timeLineRightScroll = ({ scrollLeft }) => {
+    this.scrollLeft = scrollLeft;
+  }
 
   onRowExpand = (evt) => {
     evt.preventDefault();
-    let { row, onRowExpand } = this.props;
-    if (onRowExpand) {
-      onRowExpand(row);
+    const { event } = this.props;
+    const { row } = event;
+    this.props.onRowExpand && this.props.onRowExpand(row);
+  }
+
+  onEventMouseDown = (evt) => {
+    eventStopPropagation(evt);
+    evt.preventDefault && evt.preventDefault();
+    window.addEventListener('mousemove', this.onEventMouseMove);
+    window.addEventListener('mouseup', this.onEventMouseUp);
+    const { start, end, width, left } = this.state;
+    this.distance = {
+      disX: evt.clientX,
+      start,
+      end,
+      width,
+      left,
+      scrollLeft: this.scrollLeft,
+    };
+    this.setState({ isDraggingEvent: true });
+  }
+
+  onEventMouseMove = (evt) => {
+    if (!this.state.isDraggingEvent) return;
+    eventStopPropagation(evt);
+    evt.preventDefault && evt.preventDefault();
+    const currX = evt.clientX;
+    const displacementX = currX - this.distance.disX + this.scrollLeft - this.distance.scrollLeft;
+    if (displacementX === 0) return;
+    const { selectedGridView, event, columnWidth } = this.props;
+    const displacementTime = displacementX / columnWidth;
+    const unit = selectedGridView === 'year' ? 'month' : 'day';
+    const left = this.distance.left + displacementX;
+    const { start: startObject, end: endObject } = event;
+    const { column: startColumn } = startObject;
+    const { column: endColumn } = endObject;
+    const { data: startColumnData } = startColumn;
+    const isStartIncludeHour = startColumnData && startColumnData.format && startColumnData.format.indexOf('HH:mm') > -1;
+    const startFormat = isStartIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
+    const start = moment(this.distance.start).add(displacementTime.toFixed(0), unit).format(startFormat);
+    let columnData = endColumn.data;
+    if (endColumn.type === CELL_TYPE.NUMBER) {
+      const { column: startColumn } = startObject;
+      const { data } = startColumn;
+      columnData = data;
     }
+    const isEndIncludeHour = columnData && columnData.format && columnData.format.indexOf('HH:mm') > -1;
+    const endFormat = isEndIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
+    const end = moment(this.distance.end).add(displacementTime.toFixed(0), unit).format(endFormat);
+    this.setState({ left, start, end });
+  }
+
+  onEventMouseUp = (evt) => {
+    window.removeEventListener('mousemove', this.onEventMouseMove);
+    window.removeEventListener('mouseup', this.onEventMouseUp);
+    eventStopPropagation(evt);
+    evt.preventDefault && evt.preventDefault();
+    const { start, isDraggingEvent } = this.state;
+    if (!isDraggingEvent) return;
+    const { event, overScanStartDate, selectedGridView, columnWidth } = this.props;
+    const left = getEventLeft(selectedGridView, columnWidth, overScanStartDate, start);
+    this.setState({ left, isDraggingEvent: false });
+    this.draggingSideDirection = '';
+    this.distance = {};
+    if (start === event.start.date) return;
+    const { start: startObject, row } = event;
+    const { column } = startObject;
+    this.props.onModifyRow(row, { [column.name]: start });
+  }
+
+  onStartMouseDown = (evt) => {
+    eventStopPropagation(evt);
+    evt.preventDefault && evt.preventDefault();
+    window.addEventListener('mousemove', this.onStartMouseMove);
+    window.addEventListener('mouseup', this.onStartMouseUp);
+    const { start, end, width, left } = this.state;
+    this.distance = {
+      disX: evt.clientX,
+      start,
+      end,
+      width,
+      left,
+      scrollLeft: this.scrollLeft,
+    };
+    this.draggingSideDirection = 'left';
+    this.setState({ isDraggingSide: true });
+  }
+
+  onStartMouseMove = (evt) => {
+    if (!this.state.isDraggingSide) return;
+    if (this.draggingSideDirection !== 'left') return;
+    eventStopPropagation(evt);
+    evt.preventDefault && evt.preventDefault();
+    const currX = evt.clientX;
+    const displacementX = currX - this.distance.disX + this.scrollLeft - this.distance.scrollLeft;
+    const { selectedGridView, event, columnWidth } = this.props;
+    const displacementTime = displacementX / columnWidth;
+    const unit = selectedGridView === 'year' ? 'month' : 'day';
+    const { start: startObject } = event;
+    const { column } = startObject;
+    const { data } = column;
+    const isIncludeHour = data && data.format && data.format.indexOf('HH:mm') > -1;
+    const format = isIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
+    const start = moment(this.distance.start).add(displacementTime.toFixed(0), unit).format(format);
+    const left = this.distance.left + displacementX;
+    const width = this.distance.width - displacementX;
+    this.setState({ start, left, width });
+  };
+
+  onStartMouseUp = (evt) => {
+    window.removeEventListener('mousemove', this.onStartMouseMove);
+    window.removeEventListener('mouseup', this.onStartMouseUp);
+    eventStopPropagation(evt);
+    evt.preventDefault && evt.preventDefault();
+    const { start, end, isDraggingSide } = this.state;
+    if (!isDraggingSide) return;
+    const { event, overScanStartDate, selectedGridView, columnWidth } = this.props;
+    const width = getEventWidth(selectedGridView, columnWidth, start, end);
+    const left = getEventLeft(selectedGridView, columnWidth, overScanStartDate, start);
+    this.setState({ left, width, isDraggingSide: false });
+    this.draggingSideDirection = '';
+    this.distance = {};
+    if (start === event.start.date) return;
+    const { start: startObject, row } = event;
+    const { column } = startObject;
+    this.props.onModifyRow(row, { [column.name]: start });
+  };
+
+  onEndMouseDown = (evt) => {
+    eventStopPropagation(evt);
+    evt.preventDefault && evt.preventDefault();
+    window.addEventListener('mousemove', this.onEndMouseMove);
+    window.addEventListener('mouseup', this.onEndMouseUp);
+    const { start, end, width, left } = this.state;
+    this.distance = {
+      disX: evt.clientX,
+      start,
+      end,
+      width,
+      left,
+      scrollLeft: this.scrollLeft,
+    };
+    this.draggingSideDirection = 'right';
+    this.setState({ isDraggingSide: true });
+  }
+
+  onEndMouseMove = (evt) => {
+    if (!this.state.isDraggingSide) return;
+    if (this.draggingSideDirection !== 'right') return;
+    eventStopPropagation(evt);
+    evt.preventDefault && evt.preventDefault();
+    const currX = evt.clientX;
+    const displacementX = currX - this.distance.disX + this.scrollLeft - this.distance.scrollLeft;
+    const { selectedGridView, event, columnWidth } = this.props;
+    const displacementTime = displacementX / columnWidth;
+    const unit = selectedGridView === 'year' ? 'month' : 'day';
+    const { start: startObject, end: endObject } = event;
+    const { column: endColumn } = endObject;
+    let columnData = endColumn.data;
+    if (endColumn.type === CELL_TYPE.NUMBER) {
+      const { column: startColumn } = startObject;
+      const { data } = startColumn;
+      columnData = data;
+    }
+    const isIncludeHour = columnData && columnData.format && columnData.format.indexOf('HH:mm') > -1;
+    const format = isIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
+    const end = moment(this.distance.end).add(displacementTime.toFixed(0), unit).format(format);
+    const width = this.distance.width + displacementX;
+    this.setState({ end, width });
+  }
+
+  onEndMouseUp = (evt) => {
+    window.removeEventListener('mousemove', this.onEndMouseMove);
+    window.removeEventListener('mouseup', this.onEndMouseUp);
+    eventStopPropagation(evt);
+    evt.preventDefault && evt.preventDefault();
+    if (!this.state.isDraggingSide) return;
+    const { event, overScanStartDate, selectedGridView, columnWidth } = this.props;
+    const { start, end } = this.state;
+    const width = getEventWidth(selectedGridView, columnWidth, start, end);
+    const left = getEventLeft(selectedGridView, columnWidth, overScanStartDate, start);
+    this.setState({ left, width, isDraggingSide: false });
+    this.draggingSideDirection = '';
+    this.distance = {};
+    if (end === event.start.end) return;
+    const { end: endObject, row } = event;
+    const { column } = endObject;
+    const { type, name } = column;
+    let update = { [name]: end };
+    if (type === CELL_TYPE.NUMBER) {
+      const number = width / columnWidth + 1;
+      if (row[name] === number) return;
+      update = { [name]: number };
+    }
+    this.props.onModifyRow(row, update);
   }
 
   render() {
-    let { id, formatter, style, title } = this.props;
-    let eventCellStyle = {
-      ...style
-    };
+    const { event } = this.props;
+    const { label, bgColor, textColor, row } = event;
+    const canEventStartDateBeChanged = event.start.canChange;
+    const canEventEndDateBeChanged = event.end.canChange;
+    const canEventDateBeChanged = canEventStartDateBeChanged && canEventEndDateBeChanged;
+    const { start, end, isDraggingSide, left, width } = this.state; 
+    const { _id: rowId } = row;
+    let formatterLabel = null, formatterStyle = {};
+    if (width < 30) {
+      formatterLabel = '';
+      formatterStyle = {
+        padding: 0
+      };
+    } else {
+      formatterLabel = label;
+      formatterStyle = {
+        padding: '0 10px'
+      };
+    }
+
     return (
       <div
-        className="timeline-event-cell"
-        id={id || ''}
-        style={eventCellStyle}
-        title={title}
-        onClick={this.onRowExpand}
+        className={`timeline-event-cell ${canEventDateBeChanged ? 'can-changed' : ''}`}
+        id={`timeline_event_cell_${rowId}` || ''}
+        style={{ left, zIndex: zIndexes.EVENT_CELL, width }}
+        ref={ref => this.timeLineEventCellRef = ref}
+        title={`${label}(${start} - ${end})`}
+        onDoubleClick={this.onRowExpand}
+        onMouseDown={canEventDateBeChanged ? this.onEventMouseDown : () => {}}
       >
-        {formatter}
+        {canEventStartDateBeChanged && (
+          <div
+            className={`timeline-event-cell-drag-left-line ${isDraggingSide && this.draggingSideDirection === 'left' ? 'isDraggingSide' : ''}`}
+            onMouseDown={this.onStartMouseDown}
+          >
+          </div>
+        )}
+        <EventFormatter
+          label={formatterLabel}
+          bgColor={bgColor}
+          textColor={textColor}
+          formatterStyle={formatterStyle}
+        />
+        {canEventEndDateBeChanged && (
+          <div
+            className={`timeline-event-cell-drag-right-line ${isDraggingSide && this.draggingSideDirection === 'right' ? 'isDraggingSide' : ''}`}
+            onMouseDown={this.onEndMouseDown}
+          ></div>
+        )}
       </div>
     );
   }
 }
 
 EventCell.propTypes = {
-  colorColumnKey: PropTypes.string,
-  formatter: PropTypes.node,
-  style: PropTypes.object,
-  id: PropTypes.string,
-  row: PropTypes.object,
-  title: PropTypes.string,
+  event: PropTypes.object,
+  overScanStartDate: PropTypes.string,
+  selectedGridView: PropTypes.string,
+  columnWidth: PropTypes.number,
   onRowExpand: PropTypes.func,
+  eventBus: PropTypes.object,
+  onModifyRow: PropTypes.func,
 };
 
 export default EventCell;

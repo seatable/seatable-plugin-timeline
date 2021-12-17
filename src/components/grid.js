@@ -44,6 +44,7 @@ Grid.propTypes = {
   onViewportRightScroll: PropTypes.func,
   updateSelectedDate: PropTypes.func,
   onRowExpand: PropTypes.func,
+  onModifyRow: PropTypes.func,
 };
 
 export default Grid;

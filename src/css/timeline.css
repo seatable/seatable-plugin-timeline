@@ -695,6 +695,40 @@
   cursor: pointer;
 }
 
+.timeline-viewport-right .timeline-event-cell.can-changed {
+  cursor: move;
+}
+
+.timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-left-line,
+.timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-right-line {
+  width: 6px;
+  height: 21px;
+  position: absolute;
+  top: 5px;
+  background-color: transparent;
+  border-radius: 3px;
+}
+
+.timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-left-line {
+  left: -3px;
+}
+
+.timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-right-line {
+  right: -3px;
+}
+
+.timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-left-line:hover,
+.timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-right-line:hover {
+  background-color: #2d7ff9;
+  cursor: col-resize;
+}
+
+.timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-left-line.dragging,
+.timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-right-line.dragging {
+  background-color: #2d7ff9;
+  cursor: col-resize;
+}
+
 .timeline-viewport-right .group-item-right {
   position: relative;
 }
