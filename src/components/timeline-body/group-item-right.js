@@ -9,7 +9,7 @@ import { GROUP_HEADER_HEIGHT, zIndexes, ROW_HEIGHT } from '../../constants';
 class GroupItemRight extends Component {
 
   renderRows = (renderedRows) => {
-    let { selectedGridView, selectedDate, columnWidth, overScanDates, renderedDates, group, isExpanded, onRowExpand } = this.props;
+    let { selectedGridView, selectedDate, columnWidth, overScanDates, renderedDates, group, isExpanded } = this.props;
     const bgCells = (
       <BgCells
         selectedGridView={selectedGridView}
@@ -54,7 +54,9 @@ class GroupItemRight extends Component {
                 overScanDates={overScanDates}
                 events={r.events}
                 columnWidth={columnWidth}
-                onRowExpand={onRowExpand}
+                eventBus={this.props.eventBus}
+                onRowExpand={this.props.onRowExpand}
+                onModifyRow={this.props.onModifyRow}
               />
             }
           />
@@ -88,8 +90,10 @@ GroupItemRight.propTypes = {
   renderedDates: PropTypes.array,
   columnWidth: PropTypes.number,
   group: PropTypes.object,
+  eventBus: PropTypes.object,
   isExpanded: PropTypes.bool,
   onRowExpand: PropTypes.func,
+  onModifyRow: PropTypes.func,
 };
 
 export default GroupItemRight;
