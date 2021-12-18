@@ -198,7 +198,7 @@ class EventCell extends React.Component {
     const { column: endColumn } = endObject;
     let update = { [startColumn.name]: start };
     if (endColumn.type === CELL_TYPE.NUMBER) {
-      const number = width / columnWidth + 1;
+      const number = width / columnWidth;
       if (row[endColumn.name] !== number) {
         update[endColumn.name] = number;
       }
@@ -283,7 +283,7 @@ class EventCell extends React.Component {
     const canEventStartDateBeChanged = event.start.canChange;
     const canEventEndDateBeChanged = event.end.canChange;
     const canEventDateBeChanged = canEventStartDateBeChanged && canEventEndDateBeChanged;
-    const { start, end, isDraggingSide, left, width, isDraggingEvent } = this.state; 
+    const { start, end, isDraggingSide, left, width, isDraggingEvent } = this.state;
     const { _id: rowId } = row;
     let formatterLabel = null, formatterStyle = {};
     if (width < 30) {

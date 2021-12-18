@@ -47,6 +47,8 @@
     "no-irregular-whitespace": "warn",
     "no-console": "warn",
     "no-useless-escape": "warn",
+    "no-trailing-spaces": "warn",
+    "eqeqeq": "off",
     
     "react/jsx-indent": ["warn", 2],
     "react/prop-types": "warn",
