@@ -11,6 +11,7 @@ import * as EventTypes from '../../constants/event-types';
 const eventStopPropagation = (event) => {
   if (!event) return;
   event.stopPropagation();
+  event.preventDefault && event.preventDefault();
   event.nativeEvent && event.nativeEvent.stopImmediatePropagation && event.nativeEvent.stopImmediatePropagation();
 };
 
@@ -25,6 +26,7 @@ class EventCell extends React.Component {
     const width = getEventWidth(selectedGridView, columnWidth, startDate, endDate);
     const left = getEventLeft(selectedGridView, columnWidth, overScanStartDate, startDate);
     this.state = {
+      isDraggingEvent: false,
       isDraggingSide: false,
       start: startDate,
       end: endDate,
@@ -32,7 +34,6 @@ class EventCell extends React.Component {
       left,
     };
     this.draggingSideDirection = '';
-    this.scrollLeft = 0;
   }
 
   componentDidMount() {
@@ -46,7 +47,7 @@ class EventCell extends React.Component {
     const { date: endDate } = end;
     const width = getEventWidth(selectedGridView, columnWidth, startDate, endDate);
     const left = getEventLeft(selectedGridView, columnWidth, overScanStartDate, startDate);
-    this.setState({ left, width });
+    this.setState({ left, width, end: endDate, start: startDate });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -58,8 +59,19 @@ class EventCell extends React.Component {
     this.unsubscribeTimeLineRightScroll();
   }
 
-  timeLineRightScroll = ({ scrollLeft }) => {
-    this.scrollLeft = scrollLeft;
+  timeLineRightScroll = () => {
+    if (this.state.isDraggingEvent) {
+      this.onEventMouseUp();
+      return;
+    }
+    if (this.state.isDraggingSide && this.draggingSideDirection === 'left') {
+      this.onStartMouseUp();
+      return;
+    }
+    if (this.state.isDraggingSide && this.draggingSideDirection === 'right') {
+      this.onEndMouseUp();
+      return;
+    }
   }
 
   onRowExpand = (evt) => {
@@ -71,7 +83,6 @@ class EventCell extends React.Component {
 
   onEventMouseDown = (evt) => {
     eventStopPropagation(evt);
-    evt.preventDefault && evt.preventDefault();
     window.addEventListener('mousemove', this.onEventMouseMove);
     window.addEventListener('mouseup', this.onEventMouseUp);
     const { start, end, width, left } = this.state;
@@ -81,20 +92,16 @@ class EventCell extends React.Component {
       end,
       width,
       left,
-      scrollLeft: this.scrollLeft,
     };
     this.setState({ isDraggingEvent: true });
   }
 
-  onEventMouseMove = (evt) => {
-    if (!this.state.isDraggingEvent) return;
-    eventStopPropagation(evt);
-    evt.preventDefault && evt.preventDefault();
-    const currX = evt.clientX;
-    const displacementX = currX - this.distance.disX + this.scrollLeft - this.distance.scrollLeft;
+  calculateEvent = () => {
+    const displacementX = this.movingClientX - this.distance.disX;
     if (displacementX === 0) return;
     const { selectedGridView, event, columnWidth } = this.props;
-    const displacementTime = displacementX > 0 ? Math.ceil(displacementX / columnWidth) : Math.floor(displacementX / columnWidth);
+    const displacement = displacementX / columnWidth;
+    const displacementTime = Number(displacement.toFixed(0));
     const unit = selectedGridView === GRID_VIEWS.YEAR ? DATE_UNIT.MONTH : DATE_UNIT.DAY;
     const left = this.distance.left + displacementX;
     const { start: startObject, end: endObject } = event;
@@ -116,9 +123,15 @@ class EventCell extends React.Component {
     this.setState({ left, start, end });
   }
 
+  onEventMouseMove = (evt) => {
+    this.movingClientX = evt.clientX;
+    if (!this.state.isDraggingEvent) return;
+    eventStopPropagation(evt);
+    this.calculateEvent();
+  }
+
   onEventMouseUp = (evt) => {
     eventStopPropagation(evt);
-    evt.preventDefault && evt.preventDefault();
     const { start, end, isDraggingEvent } = this.state;
     window.removeEventListener('mousemove', this.onEventMouseMove);
     window.removeEventListener('mouseup', this.onEventMouseUp);
@@ -141,7 +154,6 @@ class EventCell extends React.Component {
 
   onStartMouseDown = (evt) => {
     eventStopPropagation(evt);
-    evt.preventDefault && evt.preventDefault();
     window.addEventListener('mousemove', this.onStartMouseMove);
     window.addEventListener('mouseup', this.onStartMouseUp);
     const { start, end, width, left } = this.state;
@@ -151,19 +163,13 @@ class EventCell extends React.Component {
       end,
       width,
       left,
-      scrollLeft: this.scrollLeft,
     };
     this.draggingSideDirection = 'left';
     this.setState({ isDraggingSide: true });
   }
 
-  onStartMouseMove = (evt) => {
-    if (!this.state.isDraggingSide) return;
-    if (this.draggingSideDirection !== 'left') return;
-    eventStopPropagation(evt);
-    evt.preventDefault && evt.preventDefault();
-    const currX = evt.clientX;
-    const displacementX = currX - this.distance.disX + this.scrollLeft - this.distance.scrollLeft;
+  calculateStartMove = () => {
+    const displacementX = this.movingClientX - this.distance.disX;
     const { selectedGridView, event, columnWidth } = this.props;
     const displacementTime = Math.floor(displacementX / columnWidth);
     const unit = selectedGridView === GRID_VIEWS.YEAR ? DATE_UNIT.MONTH : DATE_UNIT.DAY;
@@ -177,13 +183,20 @@ class EventCell extends React.Component {
     const width = this.distance.width - displacementX;
     if (width < 20) return;
     this.setState({ start, left, width });
+  }
+
+  onStartMouseMove = (evt) => {
+    this.movingClientX = evt.clientX;
+    if (!this.state.isDraggingSide) return;
+    if (this.draggingSideDirection !== 'left') return;
+    eventStopPropagation(evt);
+    this.calculateStartMove();
   };
 
   onStartMouseUp = (evt) => {
     window.removeEventListener('mousemove', this.onStartMouseMove);
     window.removeEventListener('mouseup', this.onStartMouseUp);
     eventStopPropagation(evt);
-    evt.preventDefault && evt.preventDefault();
     const { start, end, isDraggingSide } = this.state;
     if (!isDraggingSide) return;
     const { event, overScanStartDate, selectedGridView, columnWidth } = this.props;
@@ -209,7 +222,6 @@ class EventCell extends React.Component {
 
   onEndMouseDown = (evt) => {
     eventStopPropagation(evt);
-    evt.preventDefault && evt.preventDefault();
     window.addEventListener('mousemove', this.onEndMouseMove);
     window.addEventListener('mouseup', this.onEndMouseUp);
     const { start, end, width, left } = this.state;
@@ -219,19 +231,13 @@ class EventCell extends React.Component {
       end,
       width,
       left,
-      scrollLeft: this.scrollLeft,
     };
     this.draggingSideDirection = 'right';
     this.setState({ isDraggingSide: true });
   }
 
-  onEndMouseMove = (evt) => {
-    if (!this.state.isDraggingSide) return;
-    if (this.draggingSideDirection !== 'right') return;
-    eventStopPropagation(evt);
-    evt.preventDefault && evt.preventDefault();
-    const currX = evt.clientX;
-    const displacementX = currX - this.distance.disX + this.scrollLeft - this.distance.scrollLeft;
+  calculateEndMove = () => {
+    const displacementX = this.movingClientX - this.distance.disX;
     const { selectedGridView, event, columnWidth } = this.props;
     const displacementTime = Math.ceil(displacementX / columnWidth);
     const unit = selectedGridView === GRID_VIEWS.YEAR ? DATE_UNIT.MONTH : DATE_UNIT.DAY;
@@ -251,11 +257,18 @@ class EventCell extends React.Component {
     this.setState({ end, width });
   }
 
+  onEndMouseMove = (evt) => {
+    this.movingClientX = evt.clientX;
+    if (!this.state.isDraggingSide) return;
+    if (this.draggingSideDirection !== 'right') return;
+    eventStopPropagation(evt);
+    this.calculateEndMove();
+  }
+
   onEndMouseUp = (evt) => {
     window.removeEventListener('mousemove', this.onEndMouseMove);
     window.removeEventListener('mouseup', this.onEndMouseUp);
     eventStopPropagation(evt);
-    evt.preventDefault && evt.preventDefault();
     if (!this.state.isDraggingSide) return;
     const { event, overScanStartDate, selectedGridView, columnWidth } = this.props;
     const { start, end } = this.state;
@@ -318,7 +331,7 @@ class EventCell extends React.Component {
               className={`timeline-event-cell-drag-left-line ${isDraggingSide && this.draggingSideDirection === 'left' ? 'isDraggingSide' : ''}`}
               onMouseDown={this.onStartMouseDown}
             >
-              <div className="timeline-event-cell-drag-bg"></div>
+              <div className="timeline-event-cell-drag-bg" style={{ backgroundColor: textColor }}></div>
             </div>
           )}
           <EventFormatter
@@ -332,7 +345,7 @@ class EventCell extends React.Component {
               className={`timeline-event-cell-drag-right-line ${isDraggingSide && this.draggingSideDirection === 'right' ? 'isDraggingSide' : ''}`}
               onMouseDown={this.onEndMouseDown}
             >
-              <div className="timeline-event-cell-drag-bg"></div>
+              <div className="timeline-event-cell-drag-bg" style={{ backgroundColor: textColor }}></div>
             </div>
           )}
         </div>
@@ -352,9 +365,9 @@ class EventCell extends React.Component {
           <div
             className="timeline-event-cell old-position"
             style={{
-              left: this.distance.left,
+              left: getEventLeft(selectedGridView, columnWidth, overScanStartDate, this.distance.start),
               zIndex: zIndexes.EVENT_CELL - 2,
-              width: this.distance.width
+              width: getEventWidth(selectedGridView, columnWidth, this.distance.start, this.distance.end)
             }}
           >
             <EventFormatter

@@ -702,9 +702,9 @@
 .timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-left-line,
 .timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-right-line {
   width: 6px;
-  height: 17px;
+  height: 15px;
   position: absolute;
-  top: 7px;
+  top: 8px;
   background-color: transparent;
   border-radius: 1px;
   cursor: col-resize;
@@ -715,7 +715,8 @@
 .timeline-viewport-right .timeline-event-cell-drag-right-line .timeline-event-cell-drag-bg {
   width: 2px;
   height: 100%;
-  background-color: #2d7ff9;
+  opacity: .7;
+  border-radius: 2px;
 }
 
 .timeline-viewport-right .timeline-event-cell:hover .timeline-event-cell-drag-left-line,
@@ -730,7 +731,7 @@
 
 .timeline-viewport-right .timeline-event-cell .timeline-event-cell-drag-right-line {
   right: 0px;
-  padding-right: 2px;
+  padding-left: 2px;
 }
 
 .timeline-viewport-right .timeline-event-cell.old-position {
