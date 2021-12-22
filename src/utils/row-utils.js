@@ -6,9 +6,9 @@ export const getEventWidth = (selectedGridView, columnWidth, eventStartDate, eve
   const formattedEndDate = moment(eventEndDate).format(DATE_FORMAT.YEAR_MONTH_DAY);
   let duration;
   if (selectedGridView === GRID_VIEWS.YEAR) {
-    duration = moment(formattedEndDate).diff(formattedStartDate, DATE_UNIT.MONTH);
+    duration = moment(formattedEndDate).diff(formattedStartDate, DATE_UNIT.MONTH) + 1;
   } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
-    duration = moment(formattedEndDate).diff(formattedStartDate, DATE_UNIT.DAY);
+    duration = moment(formattedEndDate).diff(formattedStartDate, DATE_UNIT.DAY) + 1;
   }
   return (duration || 0) * columnWidth;
 };

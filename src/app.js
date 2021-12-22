@@ -322,7 +322,7 @@ class App extends React.Component {
         const { data: startColumnData } = startColumn;
         const isStartIncludeHour = startColumnData && startColumnData.format && startColumnData.format.indexOf('HH:mm') > -1;
         const startFormat = isStartIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
-        end = moment(start).add(Math.ceil(duration), DATE_UNIT.DAY).format(startFormat);
+        end = moment(start).add(Math.ceil(duration) - 1, DATE_UNIT.DAY).format(startFormat);
       } else {
         end = start;
       }

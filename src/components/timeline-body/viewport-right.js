@@ -173,7 +173,6 @@ class ViewportRight extends React.Component {
       if (this.canUpdateScrollLeft) {
         const scrollWidth = this.viewportRight.scrollWidth;
         const scrollLeft = visibleStartIndex * columnWidth;
-        this.props.eventBus.dispatch(EventTypes.VIEWPORT_RIGHT_SCROLL, {visibleStartDate, scrollLeft});
         this.viewportRight.scrollLeft = scrollLeft;
         this.canUpdateScrollLeft = false;
         if (Object.prototype.toString.call(this.props.onSelectGridView) === '[object Function]') {
