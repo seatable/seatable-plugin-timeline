@@ -13,7 +13,7 @@ class CanvasRight extends React.Component {
 
   renderRows = () => {
     let { selectedGridView, selectedDate, overScanDates, columnWidth, renderedRows,
-      renderedDates, onRowExpand } = this.props;
+      renderedDates } = this.props;
     if (renderedRows.length === 0) {
       return noEventsTips;
     }
@@ -42,7 +42,9 @@ class CanvasRight extends React.Component {
               overScanDates={overScanDates}
               events={r.events}
               columnWidth={columnWidth}
-              onRowExpand={onRowExpand}
+              eventBus={this.props.eventBus}
+              onRowExpand={this.props.onRowExpand}
+              onModifyRow={this.props.onModifyRow}
             />
           }
         />
@@ -127,6 +129,7 @@ class CanvasRight extends React.Component {
 
 CanvasRight.propTypes = {
   renderedRows: PropTypes.array,
+  renderedDates: PropTypes.array,
   selectedGridView: PropTypes.string,
   selectedDate: PropTypes.string,
   columnWidth: PropTypes.number,
@@ -134,8 +137,14 @@ CanvasRight.propTypes = {
   endDateOfMonth: PropTypes.string,
   topOffset: PropTypes.number,
   bottomOffset: PropTypes.number,
+  startOffset: PropTypes.number,
+  endOffset: PropTypes.number,
+  overScanDates: PropTypes.array,
   onViewportRightScroll: PropTypes.func,
   onRowExpand: PropTypes.func,
+  onCanvasRightScroll: PropTypes.func,
+  onModifyRow: PropTypes.func,
+  eventBus: PropTypes.object,
 };
 
 export default CanvasRight;

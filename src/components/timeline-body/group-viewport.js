@@ -160,6 +160,7 @@ class GroupViewport extends Component {
           onRowExpand={onRowExpand}
           onCanvasRightScroll={this.onCanvasRightScroll}
           onViewportRightScroll={onViewportRightScroll}
+          onModifyRow={this.props.onModifyRow}
         />
       </div>
     );
@@ -167,7 +168,14 @@ class GroupViewport extends Component {
 }
 
 GroupViewport.propTypes = {
+  isRenderAll: PropTypes.bool,
   isShowUsers: PropTypes.bool,
+  columns: PropTypes.array,
+  collaborators: PropTypes.array,
+  settings: PropTypes.object,
+  dtable: PropTypes.object,
+  tableID: PropTypes.string,
+  formulaRows: PropTypes.object,
   gridStartDate: PropTypes.string,
   gridEndDate: PropTypes.string,
   selectedGridView: PropTypes.string,
@@ -180,6 +188,8 @@ GroupViewport.propTypes = {
   updateSelectedDate: PropTypes.func,
   onViewportRightScroll: PropTypes.func,
   onRowExpand: PropTypes.func,
+  onModifyRow: PropTypes.func,
+  onModifyTimelineSettings: PropTypes.func,
 };
 
 export default GroupViewport;

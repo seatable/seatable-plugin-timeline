@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import intl from 'react-intl-universal';
-import DTable from 'dtable-sdk';
+import DTable, { CELL_TYPE } from 'dtable-sdk';
 import ViewsTabs from './components/views-tabs';
 import Timeline from './timeline';
 import View from './model/view';
@@ -217,10 +217,10 @@ class App extends React.Component {
     let minDate, maxDate, groupedRows = [];
     originRows.forEach((row) => {
       const dtableRow = this.dtable.getRowById(table, row._id);
-      let { label, bgColor, textColor, start, end } = this.getEventData(row, dtableRow, labelColumn, singleSelectColumn, start_time_column_name,
+      let { label, bgColor, textColor, start, end } = this.getEventData(table, row, dtableRow, labelColumn, singleSelectColumn, start_time_column_name,
         end_time_column_name, record_duration_column_name, colored_by_row_color, record_end_type, options, rowsColor);
-      minDate = !minDate || moment(start).isBefore(minDate) ? start : minDate;
-      maxDate = !maxDate || moment(end).isAfter(maxDate) ? end : maxDate;
+      minDate = !minDate || moment(start.date).isBefore(minDate) ? start.date : minDate;
+      maxDate = !maxDate || moment(end.date).isAfter(maxDate) ? end.date : maxDate;
       const event = new Event({row, label, bgColor, textColor, start, end});
       this.updateRows(groupedRows, dtableRow, event, minDate, maxDate);
     });
@@ -251,12 +251,12 @@ class App extends React.Component {
       let timelineRows = [];
       convertedRows.forEach((row) => {
         const dtableRow = this.dtable.getRowById(table, row._id);
-        const { label, bgColor, textColor, start, end } = this.getEventData(row, dtableRow, labelColumn, singleSelectColumn, start_time_column_name,
+        const { label, bgColor, textColor, start, end } = this.getEventData(table, row, dtableRow, labelColumn, singleSelectColumn, start_time_column_name,
           end_time_column_name, record_duration_column_name, colored_by_row_color, record_end_type, options, rowsColor);
         let timelineRow = new TimelineRow({
           row: dtableRow,
-          min_date: start,
-          max_date: end,
+          min_date: start.date,
+          max_date: end.date,
           events: [
             new Event({row, label, bgColor, textColor, start, end})
           ]
@@ -296,7 +296,7 @@ class App extends React.Component {
     }));
   }
 
-  getEventData = (originalRow, dtableRow, labelColumn, singleSelectColumn, startTimeColumnName, endTimeColumnName, recordDurationColumnName,
+  getEventData = (table, originalRow, dtableRow, labelColumn, singleSelectColumn, startTimeColumnName, endTimeColumnName, recordDurationColumnName,
     coloredByRowColor, recordEndType, options, rowsColor) => {
     const label = this.getEventLabel(originalRow, labelColumn.name, labelColumn.type, {collaborators: this.collaborators});
     let bgColor, textColor;
@@ -311,16 +311,43 @@ class App extends React.Component {
     bgColor = bgColor || DEFAULT_BG_COLOR;
     textColor = textColor || DEFAULT_TEXT_COLOR;
     let start = originalRow[startTimeColumnName];
+    const startColumn = this.dtable.getColumnByName(table, startTimeColumnName);
+    const canChangeStart = startColumn && startColumn.type === CELL_TYPE.DATE;
     let end;
+    let endColumn;
+    let canChangeEnd;
     if (recordEndType === RECORD_END_TYPE.RECORD_DURATION) {
       let duration = originalRow[recordDurationColumnName];
       if (duration && duration !== 0) {
-        end = moment(start).add(Math.ceil(duration) - 1, DATE_UNIT.DAY).format('YYYY-MM-DD');
+        const { data: startColumnData } = startColumn;
+        const isStartIncludeHour = startColumnData && startColumnData.format && startColumnData.format.indexOf('HH:mm') > -1;
+        const startFormat = isStartIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
+        end = moment(start).add(Math.ceil(duration) - 1, DATE_UNIT.DAY).format(startFormat);
+      } else {
+        end = start;
       }
+      endColumn = this.dtable.getColumnByName(table, recordDurationColumnName);
+      canChangeEnd = endColumn && endColumn.type === CELL_TYPE.NUMBER;
     } else {
       end = originalRow[endTimeColumnName];
+      endColumn = this.dtable.getColumnByName(table, endTimeColumnName);
+      canChangeEnd = endColumn && endColumn.type === CELL_TYPE.DATE;
     }
-    return {label, bgColor, textColor, start, end};
+    return {
+      label,
+      bgColor,
+      textColor,
+      start: {
+        date: start,
+        canChange: canChangeStart,
+        column: startColumn
+      },
+      end: {
+        date: end,
+        canChange: canChangeEnd,
+        column: endColumn
+      },
+    };
   }
 
   getEventLabel(originalRow, columnName, columnType, {collaborators} = {}) {
@@ -487,6 +514,10 @@ class App extends React.Component {
     return this.dtable.getTableFormulaResults(table, rows);
   }
 
+  onModifyRow = (table, row, update) => {
+    this.dtable.modifyRow(table, table.id_row_map[row._id], update);
+  }
+
   render() {
     let { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx } = this.state;
     if (isLoading || !showDialog) {
@@ -507,12 +538,12 @@ class App extends React.Component {
     selectedView = Object.assign({}, selectedView, {formula_rows: formulaRows});
 
     let { single_select_column_name, label_column_name, colored_by_row_color } = settings;
-    const singleSelectColumn = columns.filter(item => item.type == this.cellType.SINGLE_SELECT)[0];
+    const singleSelectColumn = columns.filter(item => item.type === this.cellType.SINGLE_SELECT)[0];
     if (singleSelectColumn) {
-      if (!colored_by_row_color && single_select_column_name == undefined) {
+      if (!colored_by_row_color && single_select_column_name === undefined) {
         settings.single_select_column_name = singleSelectColumn.name;
       }
-      if (label_column_name == undefined) {
+      if (label_column_name === undefined) {
         settings.label_column_name = singleSelectColumn.name;
       }
     }
@@ -529,14 +560,17 @@ class App extends React.Component {
         rows = this.getRows(convertedRows, selectedTable, selectedView, settings);
       }
     }
-    /* eslint-disable */
-    console.log(`---------- Timeline plugin logs start ----------`);
-    if (isGroupView) {
-      console.log(groups);
-    } else {
-      console.log(rows);
+    if (window.app === undefined) {
+      /* eslint-disable */
+      console.log(`---------- Timeline plugin logs start ----------`);
+      if (isGroupView) {
+        console.log(groups);
+      } else {
+        console.log(rows);
+      }
+      console.log(`----------- Timeline plugin logs end -----------`);
     }
-    console.log(`----------- Timeline plugin logs end -----------`);
+
     return (
       <div className="dtable-plugin plugin-timeline" ref={ref => this.plugin = ref} onClick={this.onTimelineClick}>
         <div className="plugin-header">
@@ -573,14 +607,15 @@ class App extends React.Component {
           selectedTimelineView={selectedTimelineView}
           eventBus={this.eventBus}
           isShowTimelineSetting={isShowTimelineSetting}
-          onModifyTimelineSettings={this.onModifyTimelineSettings}
-          onHideTimelineSetting={this.onHideTimelineSetting}
-          onRowExpand={this.onRowExpand.bind(this, selectedTable)}
           dtable={this.dtable}
           CellType={this.cellType}
           tableID={selectedTable._id}
           formulaRows={formulaRows}
           columnIconConfig={this.columnIconConfig}
+          onModifyTimelineSettings={this.onModifyTimelineSettings}
+          onHideTimelineSetting={this.onHideTimelineSetting}
+          onRowExpand={this.onRowExpand.bind(this, selectedTable)}
+          onModifyRow={(row, update) => this.onModifyRow(selectedTable, row, update)}
         />
       </div>
     );

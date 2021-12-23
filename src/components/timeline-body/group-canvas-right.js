@@ -20,6 +20,7 @@ class GroupCanvasRight extends Component {
       const isExpanded = isGroupExpanded(foldedGroups, index + groupVisibleStartIdx);
       return (
         <GroupItemRight
+          isExpanded={isExpanded}
           key={`group-item-right-${group.key}`}
           selectedGridView={selectedGridView}
           selectedDate={selectedDate}
@@ -27,8 +28,9 @@ class GroupCanvasRight extends Component {
           overScanDates={overScanDates}
           columnWidth={columnWidth}
           group={group}
-          isExpanded={isExpanded}
+          eventBus={this.props.eventBus}
           onRowExpand={this.props.onRowExpand}
+          onModifyRow={this.props.onModifyRow}
         />
       );
     });
@@ -104,8 +106,10 @@ GroupCanvasRight.propTypes = {
   groupVisibleStartIdx: PropTypes.number,
   groups: PropTypes.array,
   foldedGroups: PropTypes.array,
+  eventBus: PropTypes.object,
   onRowExpand: PropTypes.func,
   onCanvasRightScroll: PropTypes.func,
+  onModifyRow: PropTypes.func,
 };
 
 export default GroupCanvasRight;
