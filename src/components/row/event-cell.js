@@ -181,7 +181,7 @@ class EventCell extends React.Component {
     const start = moment(this.distance.start).add(displacementTime, unit).format(format);
     const left = this.distance.left + displacementX;
     const width = this.distance.width - displacementX;
-    if (width < 20) return;
+    if (width < columnWidth) return;
     this.setState({ start, left, width });
   }
 
@@ -253,7 +253,7 @@ class EventCell extends React.Component {
     const format = isIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
     const end = moment(this.distance.end).add(displacementTime, unit).format(format);
     const width = this.distance.width + displacementX;
-    if (width < 20) return;
+    if (width < columnWidth) return;
     this.setState({ end, width });
   }
 
@@ -293,12 +293,15 @@ class EventCell extends React.Component {
   render() {
     const { event, overScanStartDate, selectedGridView, columnWidth } = this.props;
     const { label, bgColor, textColor, row } = event;
-    const canEventStartDateBeChanged = event.start.canChange;
-    const canEventEndDateBeChanged = event.end.canChange;
-    const canEventDateBeChanged = canEventStartDateBeChanged && canEventEndDateBeChanged;
+    const canEventDateBeChanged = event.start.canChange && event.end.canChange;
     const { start, end, isDraggingSide, left, width, isDraggingEvent } = this.state;
     const { _id: rowId } = row;
-    let formatterLabel = null, formatterStyle = {};
+    const canEventSideBeChanged = selectedGridView === GRID_VIEWS.DAY
+      || (selectedGridView !== GRID_VIEWS.DAY && (width > columnWidth));
+    const canEventStartDateBeChanged = event.start.canChange && canEventSideBeChanged;
+    const canEventEndDateBeChanged = event.end.canChange && canEventSideBeChanged;
+    let formatterLabel = null;
+    let formatterStyle = {};
     if (width < 30) {
       formatterLabel = '';
       formatterStyle = {
@@ -358,7 +361,7 @@ class EventCell extends React.Component {
               width: getEventWidth(selectedGridView, columnWidth, start, end)
             }}
           >
-            <div className="cell-formatter grid-cell-type-single-select"></div>
+            <div className="cell-formatter grid-cell-type-single-select" style={formatterStyle}></div>
           </div>
         )}
         {isDraggingEvent && (
