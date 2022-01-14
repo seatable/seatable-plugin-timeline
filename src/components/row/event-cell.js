@@ -4,7 +4,7 @@ import shallowEqual from 'shallowequal';
 import moment from 'moment';
 import { CELL_TYPE } from 'dtable-sdk';
 import EventFormatter from '../cell-formatter/event-formatter';
-import { getEventWidth, getEventLeft } from '../../utils/row-utils';
+import { getEventWidth, getEventLeft, getEventDaysByDisplacement } from '../../utils/row-utils';
 import { zIndexes, DATE_UNIT, GRID_VIEWS } from '../../constants';
 import * as EventTypes from '../../constants/event-types';
 
@@ -181,7 +181,7 @@ class EventCell extends React.Component {
     const start = moment(this.distance.start).add(displacementTime, unit).format(format);
     const left = this.distance.left + displacementX;
     const width = this.distance.width - displacementX;
-    if (width < 20) return;
+    if (width < Math.min(20, columnWidth)) return;
     this.setState({ start, left, width });
   }
 
@@ -211,7 +211,8 @@ class EventCell extends React.Component {
     const { column: endColumn } = endObject;
     let update = { [startColumn.name]: start };
     if (endColumn.type === CELL_TYPE.NUMBER) {
-      const number = width / columnWidth;
+      let number = width / columnWidth;
+      number = getEventDaysByDisplacement(selectedGridView, start, number);
       if (row[endColumn.name] !== number) {
         update[endColumn.name] = number;
       }
@@ -253,7 +254,7 @@ class EventCell extends React.Component {
     const format = isIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
     const end = moment(this.distance.end).add(displacementTime, unit).format(format);
     const width = this.distance.width + displacementX;
-    if (width < 20) return;
+    if (width < Math.min(20, columnWidth)) return;
     this.setState({ end, width });
   }
 
@@ -283,7 +284,8 @@ class EventCell extends React.Component {
     const { type, name } = column;
     let update = { [name]: end };
     if (type === CELL_TYPE.NUMBER) {
-      const number = width / columnWidth;
+      let number = width / columnWidth;
+      number = getEventDaysByDisplacement(selectedGridView, start, number);
       if (row[name] === number) return;
       update = { [name]: number };
     }
@@ -293,12 +295,15 @@ class EventCell extends React.Component {
   render() {
     const { event, overScanStartDate, selectedGridView, columnWidth } = this.props;
     const { label, bgColor, textColor, row } = event;
-    const canEventStartDateBeChanged = event.start.canChange;
-    const canEventEndDateBeChanged = event.end.canChange;
-    const canEventDateBeChanged = canEventStartDateBeChanged && canEventEndDateBeChanged;
+    const canEventDateBeChanged = event.start.canChange && event.end.canChange;
     const { start, end, isDraggingSide, left, width, isDraggingEvent } = this.state;
     const { _id: rowId } = row;
-    let formatterLabel = null, formatterStyle = {};
+    const canEventSideBeChanged = selectedGridView === GRID_VIEWS.DAY
+      || (selectedGridView !== GRID_VIEWS.DAY && (width > columnWidth));
+    const canEventStartDateBeChanged = event.start.canChange && canEventSideBeChanged;
+    const canEventEndDateBeChanged = event.end.canChange && canEventSideBeChanged;
+    let formatterLabel = null;
+    let formatterStyle = {};
     if (width < 30) {
       formatterLabel = '';
       formatterStyle = {
@@ -358,7 +363,7 @@ class EventCell extends React.Component {
               width: getEventWidth(selectedGridView, columnWidth, start, end)
             }}
           >
-            <div className="cell-formatter grid-cell-type-single-select"></div>
+            <div className="cell-formatter grid-cell-type-single-select" style={formatterStyle}></div>
           </div>
         )}
         {isDraggingEvent && (

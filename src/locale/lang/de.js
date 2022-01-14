@@ -22,7 +22,7 @@ const de = {
   "Color_field": "Farbe",
   "Start_date": "Startdatum",
   "End_date": "Enddatum",
-  "Duration": "Duration (days)",
+  "Duration": "Dauer (Tage)",
   "Jan": "Jan.",
   "Feb": "Feb.",
   "Mar": "Mrz.",

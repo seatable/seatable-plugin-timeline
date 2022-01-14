@@ -1,5 +1,5 @@
 {
-  "Timeline": "Timeline",
+  "Timeline": "Chronologie",
   "New_view": "Nouvelle vue",
   "Rename_view": "Renommer la vue",
   "Delete_view": "Supprimer la vue",
@@ -22,7 +22,7 @@
   "Color_field": "Couleur",
   "Start_date": "Date de départ",
   "End_date": "Date de fin",
-  "Duration": "Duration (days)",
+  "Duration": "Durée (jours)",
   "Jan": "Janv.",
   "Feb": "Févr.",
   "Mar": "Mars",
