@@ -181,7 +181,7 @@ class EventCell extends React.Component {
     const start = moment(this.distance.start).add(displacementTime, unit).format(format);
     const left = this.distance.left + displacementX;
     const width = this.distance.width - displacementX;
-    if (width < columnWidth) return;
+    if (width < 20) return;
     this.setState({ start, left, width });
   }
 
@@ -253,7 +253,7 @@ class EventCell extends React.Component {
     const format = isIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
     const end = moment(this.distance.end).add(displacementTime, unit).format(format);
     const width = this.distance.width + displacementX;
-    if (width < columnWidth) return;
+    if (width < 20) return;
     this.setState({ end, width });
   }
 
