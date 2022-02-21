@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import shallowEqual from 'shallowequal';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { CELL_TYPE } from 'dtable-sdk';
 import EventFormatter from '../cell-formatter/event-formatter';
 import { getEventWidth, getEventLeft, getEventDaysByDisplacement } from '../../utils/row-utils';
@@ -110,7 +110,7 @@ class EventCell extends React.Component {
     const { data: startColumnData } = startColumn;
     const isStartIncludeHour = startColumnData && startColumnData.format && startColumnData.format.indexOf('HH:mm') > -1;
     const startFormat = isStartIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
-    const start = moment(this.distance.start).add(displacementTime, unit).format(startFormat);
+    const start = dayjs(this.distance.start).add(displacementTime, unit).format(startFormat);
     let columnData = endColumn.data;
     if (endColumn.type === CELL_TYPE.NUMBER) {
       const { column: startColumn } = startObject;
@@ -119,7 +119,7 @@ class EventCell extends React.Component {
     }
     const isEndIncludeHour = columnData && columnData.format && columnData.format.indexOf('HH:mm') > -1;
     const endFormat = isEndIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
-    const end = moment(this.distance.end).add(displacementTime, unit).format(endFormat);
+    const end = dayjs(this.distance.end).add(displacementTime, unit).format(endFormat);
     this.setState({ left, start, end });
   }
 
@@ -178,7 +178,7 @@ class EventCell extends React.Component {
     const { data } = column;
     const isIncludeHour = data && data.format && data.format.indexOf('HH:mm') > -1;
     const format = isIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
-    const start = moment(this.distance.start).add(displacementTime, unit).format(format);
+    const start = dayjs(this.distance.start).add(displacementTime, unit).format(format);
     const left = this.distance.left + displacementX;
     const width = this.distance.width - displacementX;
     if (width < Math.min(20, columnWidth)) return;
@@ -252,7 +252,7 @@ class EventCell extends React.Component {
     }
     const isIncludeHour = columnData && columnData.format && columnData.format.indexOf('HH:mm') > -1;
     const format = isIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
-    const end = moment(this.distance.end).add(displacementTime, unit).format(format);
+    const end = dayjs(this.distance.end).add(displacementTime, unit).format(format);
     const width = this.distance.width + displacementX;
     if (width < Math.min(20, columnWidth)) return;
     this.setState({ end, width });

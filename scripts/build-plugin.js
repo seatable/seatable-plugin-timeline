@@ -1,7 +1,7 @@
 const JSZip = require("jszip");
 const fs = require('fs-extra');
 const path = require('path');
-const moment = require('moment');
+const dayjs = require('dayjs');
 const paths = require('../config/paths');
 
 const config = {
@@ -35,7 +35,7 @@ const pluginInfoFilePath = path.join(paths.pluginConfigPath, 'info.json');
 const pluginInfoContent = JSON.parse(getFileContent(pluginInfoFilePath));
 
 const pluginInfoContentExpand = {
-  "last_modified": moment().format(),
+  "last_modified": dayjs().format(),
   "has_css": (isDirExist && cssFilePath) ? true : false,
   "has_icon": isFileExist(paths.pluginConfigPath, 'icon.png'),
   "has_card_image": isFileExist(paths.pluginConfigPath, 'card_image.png')

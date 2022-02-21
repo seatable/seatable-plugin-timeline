@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import intl from 'react-intl-universal';
 import Picker from '@seafile/seafile-calendar/lib/Picker';
 import RangeCalendar from '@seafile/seafile-calendar/lib/RangeCalendar';
@@ -35,7 +35,7 @@ class TimelineSetting extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dateRange: [moment(props.gridStartDate), moment(props.gridEndDate)],
+      dateRange: [dayjs(props.gridStartDate), dayjs(props.gridEndDate)],
     };
   }
 
@@ -43,7 +43,7 @@ class TimelineSetting extends Component {
     if (nextProps.gridStartDate !== this.props.gridStartDate ||
       nextProps.gridEndDate !== this.props.gridEndDate) {
       this.setState({
-        dateRange: [moment(nextProps.gridStartDate), moment(nextProps.gridEndDate)]
+        dateRange: [dayjs(nextProps.gridStartDate), dayjs(nextProps.gridEndDate)]
       });
     }
   }
@@ -315,7 +315,7 @@ class TimelineSetting extends Component {
       ) {
         const { gridStartDate, gridEndDate } = this.props;
         this.setState({
-          dateRange: [moment(gridStartDate), moment(gridEndDate)]
+          dateRange: [dayjs(gridStartDate), dayjs(gridEndDate)]
         });
         return;
       }

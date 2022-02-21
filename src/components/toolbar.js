@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import intl from 'react-intl-universal';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { NAVIGATE, GRID_VIEWS, zIndexes, DATE_UNIT, DATE_FORMAT } from '../constants';
@@ -24,7 +24,7 @@ class Toolbar extends React.Component {
     super(props);
     this.state = {
       isSelectViewDropdownOpen: false,
-      currentDate: moment(props.selectedDate).format(DATE_FORMAT.YEAR_MONTH),
+      currentDate: dayjs(props.selectedDate).format(DATE_FORMAT.YEAR_MONTH),
     };
     this.viewportRightScrollLeft = 0;
   }
@@ -58,9 +58,9 @@ class Toolbar extends React.Component {
       const { currentDate } = this.state;
       return (
         <div className="current-date">
-          <span className="year">{moment(currentDate).format(DATE_FORMAT.YEAR)}</span>
+          <span className="year">{dayjs(currentDate).format(DATE_FORMAT.YEAR)}</span>
           -
-          <span className="month" ref={ref => this.currentDateOfMonth = ref}>{moment(currentDate).format(DATE_FORMAT.MONTH)}</span>
+          <span className="month" ref={ref => this.currentDateOfMonth = ref}>{dayjs(currentDate).format(DATE_FORMAT.MONTH)}</span>
         </div>
       );
     }
@@ -78,10 +78,10 @@ class Toolbar extends React.Component {
       let newDate;
       if (scrollLeft - this.viewportRightScrollLeft > 0) {
         // scroll ro right.
-        newDate = moment(visibleStartDate).add(2, DATE_UNIT.DAY);
+        newDate = dayjs(visibleStartDate).add(2, DATE_UNIT.DAY);
       } else if (scrollLeft - this.viewportRightScrollLeft <= 0) {
         // scroll to left.
-        newDate = moment(visibleStartDate).add(1, DATE_UNIT.DAY);
+        newDate = dayjs(visibleStartDate).add(1, DATE_UNIT.DAY);
       }
       const formattedNewDate = newDate.format(DATE_FORMAT.YEAR_MONTH);
       if (formattedNewDate === currentDate) {

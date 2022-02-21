@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
-import 'moment/locale/zh-cn';
-import 'moment/locale/en-gb';
+import dayjs from 'dayjs';
+import 'dayjs/locale/zh-cn';
+import 'dayjs/locale/en-gb';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 import intl from 'react-intl-universal';
 import Picker from '@seafile/seafile-calendar/lib/Picker';
@@ -23,7 +23,7 @@ class SelectExportDateRangeDialog extends Component {
   constructor(props) {
     super(props);
     const lang = window.dtable ? window.dtable.lang : 'zh-cn';
-    const now = moment();
+    const now = dayjs();
     let startDate = now.clone().startOf(DATE_UNIT.YEAR);
     let endDate = now.clone().endOf(DATE_UNIT.YEAR);
     if (lang === 'zh-cn') {
@@ -92,7 +92,7 @@ class SelectExportDateRangeDialog extends Component {
       if (diffs < 0) {
         const { gridStartDate, gridEndDate } = this.props;
         this.setState({
-          dateRange: [moment(gridStartDate), moment(gridEndDate)]
+          dateRange: [dayjs(gridStartDate), dayjs(gridEndDate)]
         });
         return;
       }

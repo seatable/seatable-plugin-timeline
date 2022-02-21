@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import html2canvas from 'html2canvas';
 import TimelineSetting from './components/timeline-setting';
 import Toolbar from './components/toolbar';
@@ -48,7 +48,7 @@ class Timeline extends React.Component {
       (settings && settings !== oldSettings)) {
       let { gridStartDate, gridEndDate } = this.state;
       let selectedGridView = this.getSelectedGridView(nextProps.selectedTimelineView._id);
-      const diffs = moment(gridEndDate).diff(gridStartDate, DATE_UNIT.YEAR);
+      const diffs = dayjs(gridEndDate).diff(gridStartDate, DATE_UNIT.YEAR);
       let initDateRange = {};
       if (selectedGridView === GRID_VIEWS.YEAR && diffs < 2) {
         initDateRange = this.getInitDateRange();
@@ -66,8 +66,8 @@ class Timeline extends React.Component {
 
   getInitDateRange = () => {
     return {
-      gridStartDate: moment().subtract(2, DATE_UNIT.YEAR).startOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY),
-      gridEndDate: moment().add(2, DATE_UNIT.YEAR).endOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY),
+      gridStartDate: dayjs().subtract(2, DATE_UNIT.YEAR).startOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY),
+      gridEndDate: dayjs().add(2, DATE_UNIT.YEAR).endOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY),
     };
   }
 
@@ -103,7 +103,7 @@ class Timeline extends React.Component {
     }
 
     // not less than 3 years under the view of year.
-    const diffs = moment(gridEndDate).diff(gridStartDate, DATE_UNIT.YEAR);
+    const diffs = dayjs(gridEndDate).diff(gridStartDate, DATE_UNIT.YEAR);
     let initDateRange = {};
     if (selectedGridView === GRID_VIEWS.YEAR && diffs < 2) {
       initDateRange = this.getInitDateRange();
@@ -134,12 +134,12 @@ class Timeline extends React.Component {
       if (!this.state.canScrollToLeft) {
         return;
       }
-      selectedDate = moment(selectedDate).subtract(1, calcDateUnit).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      selectedDate = dayjs(selectedDate).subtract(1, calcDateUnit).format(DATE_FORMAT.YEAR_MONTH_DAY);
     } else if (action === NAVIGATE.NEXT && this.state.canScrollToRight) {
       if (!this.state.canScrollToRight) {
         return;
       }
-      selectedDate = moment(selectedDate).add(1, calcDateUnit).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      selectedDate = dayjs(selectedDate).add(1, calcDateUnit).format(DATE_FORMAT.YEAR_MONTH_DAY);
     } else if (action === NAVIGATE.TODAY) {
       selectedDate = todayDate;
     }
@@ -154,13 +154,13 @@ class Timeline extends React.Component {
 
   isToday = () => {
     let { selectedDate, selectedGridView } = this.state;
-    let today = moment();
-    let yearOfSelectedDate = moment(selectedDate).year();
+    let today = dayjs();
+    let yearOfSelectedDate = dayjs(selectedDate).year();
     let yearOfToday = today.year();
     if (selectedGridView === GRID_VIEWS.YEAR) {
       return yearOfSelectedDate === yearOfToday;
     } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
-      let monthOfSelectedDate = moment(selectedDate).month();
+      let monthOfSelectedDate = dayjs(selectedDate).month();
       let monthOfToday = today.month();
       return yearOfSelectedDate === yearOfToday &&
         monthOfSelectedDate === monthOfToday;
@@ -202,8 +202,8 @@ class Timeline extends React.Component {
   updateDateRange = (gridStartDate, gridEndDate) => {
     const { selectedGridView } = this.state;
     const viewport = window.timelineViewport;
-    const days = moment(gridEndDate).diff(gridStartDate, DATE_UNIT.DAY);
-    const middleDate = moment(gridStartDate).add(Math.floor(days / 2), DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
+    const days = dayjs(gridEndDate).diff(gridStartDate, DATE_UNIT.DAY);
+    const middleDate = dayjs(gridStartDate).add(Math.floor(days / 2), DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
     const today = dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY);
     const canNavigateToday = dates.isDateInRange(today, gridStartDate, gridEndDate) &&
       viewport.viewportRight.canNavigateToday(selectedGridView, today, gridStartDate, gridEndDate);

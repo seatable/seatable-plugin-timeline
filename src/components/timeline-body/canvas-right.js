@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import intl from 'react-intl-universal';
 import EventRow from '../row/event-row';
 import EventCells from '../row/event-cells';
@@ -62,7 +62,7 @@ class CanvasRight extends React.Component {
     let { overScanDates, selectedGridView, columnWidth, renderedRows } = this.props;
     let renderedRowsLen = renderedRows.length;
     if (renderedRowsLen === 0) return null;
-    let today = moment();
+    let today = dayjs();
     if (selectedGridView === GRID_VIEWS.YEAR) {
       today = today.startOf(DATE_UNIT.MONTH);
     }
