@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import intl from 'react-intl-universal';
 import GroupItemRight from './group-item-right';
 import { GRID_VIEWS, DATE_UNIT, DATE_FORMAT, zIndexes } from '../../constants';
@@ -39,7 +39,7 @@ class GroupCanvasRight extends Component {
   renderTodayMarkLine = () => {
     let { overScanDates, selectedGridView, columnWidth, groups } = this.props;
     if (groups.length === 0) return null;
-    let today = moment();
+    let today = dayjs();
     if (selectedGridView === GRID_VIEWS.YEAR) {
       today = today.startOf(DATE_UNIT.MONTH);
     }

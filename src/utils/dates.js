@@ -1,12 +1,14 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { DATE_UNIT, DATE_FORMAT } from '../constants';
+import isBetween from 'dayjs/plugin/isBetween';
+dayjs.extend(isBetween);
 
 export function getToday(format) {
-  return moment().format(format);
+  return dayjs().format(format);
 }
 
 export function getDateWithUnit(date, unit) {
-  let formattedDate = moment(date);
+  let formattedDate = dayjs(date);
   if (!formattedDate.isValid()) return '';
   switch(unit) {
     case DATE_UNIT.YEAR: {
@@ -25,7 +27,7 @@ export function getDateWithUnit(date, unit) {
 }
 
 export function getDatesInMonth(date) {
-  let formattedDate = moment(date, DATE_FORMAT.YEAR_MONTH_DAY, true);
+  let formattedDate = dayjs(date, DATE_FORMAT.YEAR_MONTH_DAY, true);
   if (!formattedDate.isValid()) {
     return [];
   }
@@ -40,8 +42,8 @@ export function getDatesInMonth(date) {
 }
 
 export function getDatesInRange(startDate, endDate, unit = 'day') {
-  let formattedStartDate = moment(startDate);
-  let formattedEndDate = moment(endDate);
+  let formattedStartDate = dayjs(startDate);
+  let formattedEndDate = dayjs(endDate);
   if (!formattedStartDate.isValid() || !formattedEndDate.isValid()) return [];
   let dates = [];
   while(formattedStartDate.isSameOrBefore(formattedEndDate)) {
@@ -52,18 +54,18 @@ export function getDatesInRange(startDate, endDate, unit = 'day') {
 }
 
 export function getDate2Month(date) {
-  return moment(date).format('MMM');
+  return dayjs(date).format('MMM');
 }
 
 export function isDateInRange(targetDate, startDate, endDate) {
-  return moment(targetDate).isBetween(startDate, endDate) ||
+  return dayjs(targetDate).isBetween(startDate, endDate) ||
     targetDate === startDate || targetDate === endDate;
 }
 
 export function getUniqueDates(dates, unit, format) {
   let existFormattedDate, uniqueDates = [];
   Array.isArray(dates) && dates.forEach((d) => {
-    let formattedDate = moment(d);
+    let formattedDate = dayjs(d);
     if (unit === DATE_UNIT.YEAR) {
       formattedDate = formattedDate.format(format);
     } else {

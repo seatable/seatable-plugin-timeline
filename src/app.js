@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import intl from 'react-intl-universal';
 import DTable, { CELL_TYPE } from 'dtable-sdk';
 import ViewsTabs from './components/views-tabs';
@@ -219,8 +219,8 @@ class App extends React.Component {
       const dtableRow = this.dtable.getRowById(table, row._id);
       let { label, bgColor, textColor, start, end } = this.getEventData(table, row, dtableRow, labelColumn, singleSelectColumn, start_time_column_name,
         end_time_column_name, record_duration_column_name, colored_by_row_color, record_end_type, options, rowsColor);
-      minDate = !minDate || moment(start.date).isBefore(minDate) ? start.date : minDate;
-      maxDate = !maxDate || moment(end.date).isAfter(maxDate) ? end.date : maxDate;
+      minDate = !minDate || dayjs(start.date).isBefore(minDate) ? start.date : minDate;
+      maxDate = !maxDate || dayjs(end.date).isAfter(maxDate) ? end.date : maxDate;
       const event = new Event({row, label, bgColor, textColor, start, end});
       this.updateRows(groupedRows, dtableRow, event, minDate, maxDate);
     });
@@ -281,8 +281,8 @@ class App extends React.Component {
     let minDate, maxDate;
     groupedRows.forEach((row) => {
       let { min_date, max_date } = row;
-      minDate = !minDate || moment(min_date).isBefore(minDate) ? min_date : minDate;
-      maxDate = !maxDate || moment(max_date).isAfter(maxDate) ? max_date : maxDate;
+      minDate = !minDate || dayjs(min_date).isBefore(minDate) ? min_date : minDate;
+      maxDate = !maxDate || dayjs(max_date).isAfter(maxDate) ? max_date : maxDate;
     });
     return {minDate, maxDate};
   }
@@ -323,7 +323,7 @@ class App extends React.Component {
         const isStartIncludeHour = startColumnData && startColumnData.format && startColumnData.format.indexOf('HH:mm') > -1;
         const startFormat = isStartIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
         const addDays = Number(Number(duration).toFixed(0)); // rounding
-        end = moment(start).add(addDays, DATE_UNIT.DAY).format(startFormat);
+        end = dayjs(start).add(addDays, DATE_UNIT.DAY).format(startFormat);
       } else {
         end = start;
       }

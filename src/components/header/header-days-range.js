@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import intl from 'react-intl-universal';
 import TodayMark from './today-mark';
 import { DATE_UNIT, DATE_FORMAT } from '../../constants';
@@ -15,7 +15,7 @@ class HeaderDaysRange extends React.Component {
 
   render() {
     let { overScanDates, renderedDates, columnWidth } = this.props;
-    let todayIndex = overScanDates.indexOf(moment().format(DATE_FORMAT.YEAR_MONTH_DAY));
+    let todayIndex = overScanDates.indexOf(dayjs().format(DATE_FORMAT.YEAR_MONTH_DAY));
     let todayMarkStyle = {
       left: todayIndex * columnWidth + (columnWidth - 6) / 2,
       top: 23
@@ -24,11 +24,11 @@ class HeaderDaysRange extends React.Component {
     return (
       <div className="header-days-range">
         {renderedDates.map(d => {
-          let startOfMonth = moment(d).startOf(DATE_UNIT.MONTH);
-          let endOfMonth = moment(d).endOf(DATE_UNIT.MONTH);
+          let startOfMonth = dayjs(d).startOf(DATE_UNIT.MONTH);
+          let endOfMonth = dayjs(d).endOf(DATE_UNIT.MONTH);
           let dateItemWidth = (endOfMonth.diff(d, DATE_UNIT.DAY) + 1) * columnWidth;
           let displayDate;
-          if (moment(d).startOf(DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY) === d) {
+          if (dayjs(d).startOf(DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY) === d) {
             displayDate = intl.get('days_range', {startOfMonthDay: startOfMonth.format('D'), endOfMonthDay: endOfMonth.format('D')});
           }
           return (
