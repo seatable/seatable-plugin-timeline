@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 import EventCell from '../row/event-cell';
 import { dates } from '../../utils';
 import { DATE_UNIT, GRID_VIEWS } from '../../constants';
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-dayjs.extend(isSameOrAfter)
 
 const getEventsInRange = (selectedGridView, selectedDate, events, startDate, endDate) => {
   if (!Array.isArray(events)) {
@@ -19,7 +17,7 @@ const getEventsInRange = (selectedGridView, selectedDate, events, startDate, end
     if (selectedGridView === GRID_VIEWS.YEAR) {
       isValidEvent = dayjs(eventEndDate).diff(eventStartDate, DATE_UNIT.MONTH) > 0;
     } else {
-      isValidEvent = dayjs(eventEndDate).isSameOrAfter(eventStartDate);
+      isValidEvent = dayjs(eventEndDate).isSame(eventStartDate) || dayjs(eventEndDate).isAfter(eventStartDate);
     }
     return isValidEvent && (dates.isDateInRange(eventStartDate, startDate, endDate) ||
       dates.isDateInRange(eventEndDate, startDate, endDate) ||

@@ -1,7 +1,5 @@
 import dayjs from 'dayjs';
 import { DATE_UNIT, DATE_FORMAT } from '../constants';
-import isBetween from 'dayjs/plugin/isBetween';
-dayjs.extend(isBetween);
 
 export function getToday(format) {
   return dayjs().format(format);
@@ -46,7 +44,7 @@ export function getDatesInRange(startDate, endDate, unit = 'day') {
   let formattedEndDate = dayjs(endDate);
   if (!formattedStartDate.isValid() || !formattedEndDate.isValid()) return [];
   let dates = [];
-  while(formattedStartDate.isSameOrBefore(formattedEndDate)) {
+  while(formattedStartDate.isSame(formattedEndDate) || formattedStartDate.isBefore(formattedEndDate)) {
     dates.push(formattedStartDate.format(DATE_FORMAT.YEAR_MONTH_DAY));
     formattedStartDate = formattedStartDate.add(1, unit);
   }
@@ -58,7 +56,7 @@ export function getDate2Month(date) {
 }
 
 export function isDateInRange(targetDate, startDate, endDate) {
-  return dayjs(targetDate).isBetween(startDate, endDate) ||
+  return (dayjs(targetDate).isAfter(startDate) && dayjs(targetDate).isBefore(endDate)) ||
     targetDate === startDate || targetDate === endDate;
 }
 

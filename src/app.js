@@ -519,6 +519,14 @@ class App extends React.Component {
     this.dtable.modifyRow(table, table.id_row_map[row._id], update);
   }
 
+  getFirstLevelGroupView = (view) => {
+    const { groupbys } = view;
+    return {
+      ...view,
+      groupbys: groupbys.slice(0, 1),
+    };
+  }
+
   render() {
     let { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx } = this.state;
     if (isLoading || !showDialog) {
@@ -555,7 +563,7 @@ class App extends React.Component {
     let groups = [];
     if (isValidSettings) {
       if (isGroupView) {
-        const convertedGroups = this.dtable.getGroupRows(selectedView, selectedTable);
+        const convertedGroups = this.dtable.getGroupRows(this.getFirstLevelGroupView(selectedView), selectedTable);
         groups = this.getGroups(convertedGroups, convertedRows, selectedTable, selectedView, settings);
       } else {
         rows = this.getRows(convertedRows, selectedTable, selectedView, settings);
