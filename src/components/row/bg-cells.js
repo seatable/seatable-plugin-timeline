@@ -1,10 +1,11 @@
 import React from 'react';
 import dayjs from 'dayjs';
+import isoWeek from 'dayjs/plugin/isoWeek';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { DATE_FORMAT, DATE_UNIT, GRID_VIEWS } from '../../constants';
-import isoWeek from 'dayjs/plugin/isoWeek';
-dayjs.extend(isoWeek)
+
+dayjs.extend(isoWeek);
 
 function BgCells({selectedGridView, columnWidth, renderedDates}) {
   const isWeekend = (date) => {

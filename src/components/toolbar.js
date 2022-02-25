@@ -9,6 +9,8 @@ import * as EventTypes from '../constants/event-types';
 const propTypes = {
   isGroupView: PropTypes.bool,
   selectedGridView: PropTypes.string,
+  settings: PropTypes.object,
+  columns: PropTypes.array,
   selectedDate: PropTypes.string,
   isShowUsers: PropTypes.bool,
   eventBus: PropTypes.object,

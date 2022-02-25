@@ -14,6 +14,8 @@ import '@seafile/seafile-calendar/assets/index.css';
 
 const propTypes = {
   isExporting: PropTypes.bool,
+  gridStartDate: PropTypes.string,
+  gridEndDate: PropTypes.string,
   onSelectDateRangeToggle: PropTypes.func,
   onConfirmExportDateRange: PropTypes.func,
 };
