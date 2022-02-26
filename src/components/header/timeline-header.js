@@ -4,6 +4,7 @@ import { HEADER_HEIGHT } from '../../constants';
 
 const propTypes = {
   renderedRows: PropTypes.array,
+  renderHeaderYears: PropTypes.func,
   overScanDates: PropTypes.array,
   renderedDates: PropTypes.array,
   columnWidth: PropTypes.number,

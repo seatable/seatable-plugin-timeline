@@ -69,7 +69,9 @@ class ColumnManager extends React.Component {
 }
 
 ColumnManager.propTypes = {
-  columns: PropTypes.array
+  columns: PropTypes.array,
+  updateColumn: PropTypes.func,
+  moveColumn: PropTypes.func,
 };
 
 export default ColumnManager;

@@ -39,7 +39,13 @@ GroupCanvasLeft.propTypes = {
   groups: PropTypes.array,
   foldedGroups: PropTypes.array,
   onExpandGroupToggle: PropTypes.func,
-  shownColumns: PropTypes.array
+  shownColumns: PropTypes.array,
+  collaborators: PropTypes.array,
+  dtable: PropTypes.object,
+  tableID: PropTypes.string,
+  formulaRows: PropTypes.object,
+  topOffset: PropTypes.string,
+  bottomOffset: PropTypes.string,
 };
 
 export default GroupCanvasLeft;

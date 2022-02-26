@@ -15,8 +15,14 @@ class CanvasLeft extends React.Component {
 }
 
 CanvasLeft.propTypes = {
+  collaborators: PropTypes.array,
+  formulaRows: PropTypes.object,
   renderedRows: PropTypes.array,
-  shownColumns: PropTypes.array
+  shownColumns: PropTypes.array,
+  topOffset: PropTypes.number,
+  bottomOffset: PropTypes.number,
+  tableID: PropTypes.string,
+  dtable: PropTypes.object,
 };
 
 export default CanvasLeft;

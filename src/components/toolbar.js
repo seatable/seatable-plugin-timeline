@@ -18,6 +18,8 @@ const propTypes = {
   onShowUsersToggle: PropTypes.func,
   onNavigate: PropTypes.func,
   onSelectGridView: PropTypes.func,
+  settings: PropTypes.object,
+  columns: PropTypes.array,
 };
 
 class Toolbar extends React.Component {
