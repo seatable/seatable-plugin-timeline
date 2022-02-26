@@ -62,6 +62,10 @@ GroupItemLeft.propTypes = {
   shownColumns: PropTypes.array,
   isExpanded: PropTypes.bool,
   onExpandGroupToggle: PropTypes.func,
+  collaborators: PropTypes.array,
+  dtable: PropTypes.object,
+  tableID: PropTypes.string,
+  formulaRows: PropTypes.object,
 };
 
 export default GroupItemLeft;

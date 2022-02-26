@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 
 class ExportView extends Component {
 
@@ -15,6 +16,10 @@ class ExportView extends Component {
     );
   }
 }
+
+ExportView.propTypes = {
+  GridView: PropTypes.object,
+};
 
 export const ExportViewGenerator = (props) => {
   let exportContainer = document.createElement('div');

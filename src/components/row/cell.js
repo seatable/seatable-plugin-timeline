@@ -33,6 +33,7 @@ const propTypes = {
   collaborators: PropTypes.array,
   dtable: PropTypes.object.isRequired,
   tableID: PropTypes.string.isRequired,
+  className: PropTypes.string,
   formulaRows: PropTypes.object,
   autoWidth: PropTypes.bool
 };

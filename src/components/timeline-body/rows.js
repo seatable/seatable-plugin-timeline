@@ -35,8 +35,11 @@ class Rows extends React.Component {
 }
 
 Rows.propTypes = {
+  dtable: PropTypes.object,
   rows: PropTypes.array,
   columns: PropTypes.array,
+  tableID: PropTypes.string,
+  formulaRows: PropTypes.object,
   collaborators: PropTypes.array
 };
 

@@ -124,6 +124,14 @@ ViewportLeft.propTypes = {
   bottomOffset: PropTypes.number,
   onViewportLeftScroll: PropTypes.func,
   onExpandGroupToggle: PropTypes.func,
+  settings: PropTypes.object,
+  columns: PropTypes.array,
+  collaborators: PropTypes.array,
+  dtable: PropTypes.object,
+  tableID: PropTypes.string,
+  formulaRows: PropTypes.object,
+  onModifyTimelineSettings: PropTypes.func,
+  prevScrollTop: PropTypes.string,
 };
 
 export default ViewportLeft;
