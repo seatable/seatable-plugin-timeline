@@ -612,6 +612,7 @@ class App extends React.Component {
           tables={tables}
           views={views}
           selectedTable={selectedTable}
+          selectedView={selectedView}
           rows={rows}
           isGroupView={isGroupView}
           groups={groups}
