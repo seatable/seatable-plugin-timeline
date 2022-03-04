@@ -312,6 +312,7 @@ class Timeline extends React.Component {
             CellType={this.props.CellType}
             columnIconConfig={this.props.columnIconConfig}
             selectedTable={this.props.selectedTable}
+            selectedView={this.props.selectedView}
             selectedGridView={selectedGridView}
             settings={settings || {}}
             gridStartDate={gridStartDate}
@@ -343,6 +344,7 @@ Timeline.propTypes = {
   CellType: PropTypes.object,
   selectedTimelineView: PropTypes.object,
   selectedTable: PropTypes.object,
+  selectedView: PropTypes.object,
   rows: PropTypes.array,
   isGroupView: PropTypes.bool,
   groups: PropTypes.array,

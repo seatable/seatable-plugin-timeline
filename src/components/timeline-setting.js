@@ -21,6 +21,7 @@ const propTypes = {
   CellType: PropTypes.object,
   columnIconConfig: PropTypes.object,
   selectedTable: PropTypes.object,
+  selectedView: PropTypes.object,
   settings: PropTypes.object,
   gridStartDate: PropTypes.string,
   gridEndDate: PropTypes.string,
@@ -49,8 +50,8 @@ class TimelineSetting extends Component {
   }
 
   getSelectorFields = () => {
-    const { dtable, selectedTable, CellType, columnIconConfig, tables } = this.props;
-    const columns = dtable.getColumns(selectedTable);
+    const { dtable, selectedView, selectedTable, CellType, columnIconConfig, tables } = this.props;
+    const columns = dtable.getViewShownColumns(selectedView, selectedTable);
     let dateFields = [], numberFields = [], colorFields = [], labelFields = [];
     Array.isArray(columns) && columns.forEach((column) => {
       const { type, name } = column;
