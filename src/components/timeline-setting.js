@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import intl from 'react-intl-universal';
 import Picker from '@seafile/seafile-calendar/lib/Picker';
 import RangeCalendar from '@seafile/seafile-calendar/lib/RangeCalendar';
-import PluginSelect from './plugin-select';
+import DtableSelect from './dtable-select';
 import { translateCalendar } from '../utils/seafile-calendar-translate';
 import { SETTING_KEY, zIndexes, RECORD_END_TYPE, GRID_VIEWS, DATE_UNIT, DATE_FORMAT } from '../constants';
 
@@ -135,7 +135,7 @@ class TimelineSetting extends Component {
       }
     }
     return (
-      <PluginSelect
+      <DtableSelect
         classNamePrefix={'timeline-view-setting-selector'}
         value={selectedOption}
         options={options}
@@ -157,7 +157,7 @@ class TimelineSetting extends Component {
       selectedOption = options[0];
     }
     return (
-      <PluginSelect
+      <DtableSelect
         classNamePrefix={'timeline-view-setting-selector'}
         value={selectedOption}
         options={options}
