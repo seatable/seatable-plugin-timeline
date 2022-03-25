@@ -12,16 +12,17 @@ const SCROLL_TYPE = {
   NEXT: 'next',
 };
 
-const propTypes = {
-  views: PropTypes.array,
+const viewTabPropTypes = {
+  view: PropTypes.object,
+  index: PropTypes.number,
   selectedViewIdx: PropTypes.number,
+  setViewItem: PropTypes.func,
   onSelectView: PropTypes.func,
   onDeleteView: PropTypes.func,
-  onAddView: PropTypes.func,
-  onRenameView: PropTypes.func,
-  onMoveView: PropTypes.func
+  onMoveView: PropTypes.func,
+  onRenameViewToggle: PropTypes.func,
+  canDelete: PropTypes.bool
 };
-
 
 class ViewTab extends React.Component {
 
@@ -197,6 +198,16 @@ class ViewTab extends React.Component {
   }
 }
 
+const propTypes = {
+  views: PropTypes.array,
+  selectedViewIdx: PropTypes.number,
+  onSelectView: PropTypes.func,
+  onDeleteView: PropTypes.func,
+  onAddView: PropTypes.func,
+  onRenameView: PropTypes.func,
+  onMoveView: PropTypes.func
+};
+
 class ViewsTabs extends React.Component {
 
   constructor(props) {
@@ -320,6 +331,7 @@ class ViewsTabs extends React.Component {
       canScrollPrev, canScrollNext,
     } = this.state;
     let selectedGridView = views[selectedViewIdx] || {};
+    const canDelete = views.length > 1;
     return (
       <div className="timeline-views-tabs">
         <div
@@ -333,6 +345,7 @@ class ViewsTabs extends React.Component {
                 view={view}
                 index={index}
                 selectedViewIdx={selectedViewIdx}
+                canDelete={canDelete}
                 setViewItem={this.setViewItem}
                 onSelectView={this.props.onSelectView}
                 onRenameViewToggle={this.onRenameViewToggle}
@@ -379,6 +392,7 @@ class ViewsTabs extends React.Component {
   }
 }
 
+ViewTab.propTypes = viewTabPropTypes;
 ViewsTabs.propTypes = propTypes;
 
 export default ViewsTabs;
