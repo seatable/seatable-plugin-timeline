@@ -12,16 +12,19 @@ const SCROLL_TYPE = {
   NEXT: 'next',
 };
 
-const propTypes = {
-  views: PropTypes.array,
+const viewTabPropTypes = {
+  view: PropTypes.object,
+  index: PropTypes.number,
   selectedViewIdx: PropTypes.number,
+  setViewItem: PropTypes.func,
   onSelectView: PropTypes.func,
   onDeleteView: PropTypes.func,
-  onAddView: PropTypes.func,
-  onRenameView: PropTypes.func,
+  onMoveView: PropTypes.func,
+  onRenameViewToggle: PropTypes.func,
+  canDelete: PropTypes.bool
 };
 
-class ViewsTabs extends React.Component {
+class ViewTab extends React.Component {
 
   constructor(props) {
     super(props);
@@ -31,6 +34,185 @@ class ViewsTabs extends React.Component {
         top: 0,
         left: 0
       },
+      isItemDropTipShow: false
+    };
+    this.enteredCounter = 0;
+  }
+
+  componentDidMount() {
+    document.addEventListener('click', this.onHideViewDropdown);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.onHideViewDropdown);
+  }
+
+  onDropdownToggle = (evt) => {
+    evt.nativeEvent.stopImmediatePropagation();
+    let { top, left, height } = this.btnViewDropdown.parentNode.getBoundingClientRect();
+    this.setState({
+      isShowViewDropdown: !this.state.isShowViewDropdown,
+      dropdownMenuPosition: {
+        top: top + height - 3,
+        left
+      }
+    });
+  }
+
+  onHideViewDropdown = () => {
+    if (this.state.isShowViewDropdown) {
+      this.setState({isShowViewDropdown: false});
+    }
+  }
+
+  onSelectView = () => {
+    const { view, index, selectedViewIdx } = this.props;
+    const { _id } = view;
+    if (index === selectedViewIdx) return;
+    this.props.onSelectView(_id);
+  }
+
+  onDeleteView = () => {
+    const { view } = this.props;
+    this.props.onDeleteView(view._id);
+  }
+
+  onDragStart = (event) => {
+    event.stopPropagation();
+    let ref = this.itemRef;
+    event.dataTransfer.setDragImage(ref, 10, 10);
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', this.props.view._id);
+  }
+
+  onDragEnter = (event) => {
+    event.stopPropagation();
+    this.enteredCounter++;
+  }
+
+  onDragOver = (event) => {
+    if (event.dataTransfer.dropEffect === 'copy') {
+      return;
+    }
+    event.stopPropagation();
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    this.setState({
+      dropRelativePosition: event.nativeEvent.offsetX <= event.target.clientWidth / 2 ?
+        'before' : 'after'
+    });
+  }
+
+  onDragLeave = (event) => {
+    event.stopPropagation();
+    this.enteredCounter--;
+    if (this.enteredCounter === 0) {
+      this.setState({
+        dropRelativePosition: ''
+      });
+    }
+  }
+
+  onDrop = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    this.enteredCounter = 0;
+    const { dropRelativePosition } = this.state;
+    this.setState({
+      dropRelativePosition: ''
+    });
+
+    const droppedViewID = event.dataTransfer.getData('text/plain');
+    const { _id } = this.props.view;
+    if (droppedViewID == _id) {
+      return;
+    }
+    this.props.onMoveView(droppedViewID, _id, dropRelativePosition);
+  }
+
+  render() {
+    const { view, index, selectedViewIdx } = this.props;
+    const { name } = view;
+    const isActiveView = selectedViewIdx === index;
+
+    const {
+      isShowViewDropdown, dropdownMenuPosition,
+      dropRelativePosition
+    } = this.state;
+    return (
+      <div
+        ref={ref => this.itemRef = ref}
+        draggable="true"
+        onDragStart={this.onDragStart}
+        onDragEnter={this.onDragEnter}
+        onDragOver={this.onDragOver}
+        onDragLeave={this.onDragLeave}
+        onDrop={this.onDrop}
+        className={classnames({
+          'view-item': true,
+          'active': isActiveView,
+          'view-item-can-drop-before': dropRelativePosition == 'before',
+          'view-item-can-drop-after': dropRelativePosition == 'after'
+        })}
+      >
+        <div
+          className="view-item-content d-flex align-items-center justify-content-center position-relative"
+          ref={this.props.setViewItem(index)}
+          onClick={this.onSelectView}
+        >
+          <div className="view-name">{name}</div>
+          {isActiveView &&
+            <div
+              className="btn-view-dropdown d-flex align-items-center justify-content-center"
+              ref={ref => this.btnViewDropdown = ref}
+              onClick={this.onDropdownToggle}
+            >
+              <i className="dtable-font dtable-icon-drop-down"></i>
+              {isShowViewDropdown &&
+                <ModalPortal>
+                  <DropdownMenu
+                    dropdownMenuPosition={dropdownMenuPosition}
+                    options={
+                      <React.Fragment>
+                        <button className="dropdown-item" onClick={this.props.onRenameViewToggle}>
+                          <i className="item-icon dtable-font dtable-icon-rename"></i>
+                          <span className="item-text">{intl.get('Rename_view')}</span>
+                        </button>
+                        {index > 0 &&
+                        <button className="dropdown-item" onClick={this.onDeleteView}>
+                          <i className="item-icon dtable-font dtable-icon-delete"></i>
+                          <span className="item-text">{intl.get('Delete_view')}</span>
+                        </button>
+                        }
+                      </React.Fragment>
+                    }
+                  />
+                </ModalPortal>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    );
+  }
+}
+
+const propTypes = {
+  views: PropTypes.array,
+  selectedViewIdx: PropTypes.number,
+  onSelectView: PropTypes.func,
+  onDeleteView: PropTypes.func,
+  onAddView: PropTypes.func,
+  onRenameView: PropTypes.func,
+  onMoveView: PropTypes.func
+};
+
+class ViewsTabs extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
       isShowNewViewDialog: false,
       isShowRenameViewDialog: false,
       canScrollPrev: false,
@@ -49,11 +231,6 @@ class ViewsTabs extends React.Component {
     } else {
       this.checkAvailableScrollType();
     }
-    document.addEventListener('click', this.onHideViewDropdown);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('click', this.onHideViewDropdown);
   }
 
   checkAvailableScrollType = () => {
@@ -114,24 +291,6 @@ class ViewsTabs extends React.Component {
     this.checkAvailableScrollType();
   }
 
-  onDropdownToggle = (evt) => {
-    evt.nativeEvent.stopImmediatePropagation();
-    let { top, left, height } = this.btnViewDropdown.parentNode.getBoundingClientRect();
-    this.setState({
-      isShowViewDropdown: !this.state.isShowViewDropdown,
-      dropdownMenuPosition: {
-        top: top + height - 3,
-        left
-      }
-    });
-  }
-
-  onHideViewDropdown = () => {
-    if (this.state.isShowViewDropdown) {
-      this.setState({isShowViewDropdown: false});
-    }
-  }
-
   setViewItem = idx => viewItem => {
     this.views[idx] = viewItem;
   }
@@ -165,78 +324,36 @@ class ViewsTabs extends React.Component {
     this.setState({isShowRenameViewDialog: false});
   }
 
-  onSelectView = (id, index) => {
-    let { selectedViewIdx } = this.props;
-    if (index === selectedViewIdx) return;
-    this.props.onSelectView(id);
-  }
-
   render() {
     let { views, selectedViewIdx } = this.props;
     let {
-      isShowViewDropdown, dropdownMenuPosition, isShowNewViewDialog, isShowRenameViewDialog,
+      isShowNewViewDialog, isShowRenameViewDialog,
       canScrollPrev, canScrollNext,
     } = this.state;
     let selectedGridView = views[selectedViewIdx] || {};
+    const canDelete = views.length > 1;
     return (
       <div className="timeline-views-tabs">
         <div
-          className="views-tabs-scroll" ref={ref => this.viewsTabsScroll = ref}
+          className="views-tabs-scroll d-flex pr-1" ref={ref => this.viewsTabsScroll = ref}
           onScroll={this.onViewsScroll}
         >
-          <div className="views d-inline-flex">
-            {views.map((v, i) => {
-              let { _id, name } = v;
-              let isActiveView = selectedViewIdx === i;
-              return (
-                <div
-                  key={`timeline-views-${_id}`}
-                  className={classnames({
-                    'view-item': true,
-                    'active': isActiveView
-                  })}
-                >
-                  <div
-                    className="view-item-content"
-                    ref={this.setViewItem(i)}
-                    onClick={this.onSelectView.bind(this, _id, i)}
-                  >
-                    <div className="view-name">{name}</div>
-                    {isActiveView &&
-                      <div
-                        className="btn-view-dropdown"
-                        ref={ref => this.btnViewDropdown = ref}
-                        onClick={this.onDropdownToggle}
-                      >
-                        <i className="dtable-font dtable-icon-drop-down"></i>
-                        {isShowViewDropdown &&
-                          <ModalPortal>
-                            <DropdownMenu
-                              dropdownMenuPosition={dropdownMenuPosition}
-                              options={
-                                <React.Fragment>
-                                  <button className="dropdown-item" onClick={this.onRenameViewToggle}>
-                                    <i className="item-icon dtable-font dtable-icon-rename"></i>
-                                    <span className="item-text">{intl.get('Rename_view')}</span>
-                                  </button>
-                                  {views.length > 1 &&
-                                    <button className="dropdown-item" onClick={this.props.onDeleteView.bind(this, _id)}>
-                                      <i className="item-icon dtable-font dtable-icon-delete"></i>
-                                      <span className="item-text">{intl.get('Delete_view')}</span>
-                                    </button>
-                                  }
-                                </React.Fragment>
-                              }
-                            />
-                          </ModalPortal>
-                        }
-                      </div>
-                    }
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          {views.map((view, index) => {
+            return (
+              <ViewTab
+                key={index}
+                view={view}
+                index={index}
+                selectedViewIdx={selectedViewIdx}
+                canDelete={canDelete}
+                setViewItem={this.setViewItem}
+                onSelectView={this.props.onSelectView}
+                onRenameViewToggle={this.onRenameViewToggle}
+                onDeleteView={this.props.onDeleteView}
+                onMoveView={this.props.onMoveView}
+              />
+            );
+          })}
         </div>
         {(canScrollPrev || canScrollNext) &&
           <div className="views-scroll-control">
@@ -275,6 +392,7 @@ class ViewsTabs extends React.Component {
   }
 }
 
+ViewTab.propTypes = viewTabPropTypes;
 ViewsTabs.propTypes = propTypes;
 
 export default ViewsTabs;
