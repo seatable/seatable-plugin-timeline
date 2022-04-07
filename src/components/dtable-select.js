@@ -93,7 +93,7 @@ class DtableSelect extends React.Component {
   }
 
   render() {
-    const { options, onChange, value, isSearchable, placeholder, isMulti, menuPosition, isClearable, noOptionsMessage, 
+    const { options, onChange, value, isSearchable, placeholder, isMulti, menuPosition, isClearable, noOptionsMessage,
       classNamePrefix } = this.props;
     return(
       <Select
@@ -107,13 +107,13 @@ class DtableSelect extends React.Component {
         placeholder={placeholder}
         isSearchable={isSearchable}
         isClearable={isClearable}
-        menuPosition={menuPosition || 'fixed'} // when use default menuPosition(absolute), menuPortalTarget is unnecessary. 
+        menuPosition={menuPosition || 'fixed'} // when use default menuPosition(absolute), menuPortalTarget is unnecessary.
         menuShouldScrollIntoView
         menuPortalTarget={this.getMenuPortalTarget()}
         captureMenuScroll={false}
         noOptionsMessage={noOptionsMessage}
       />
-    ); 
+    );
   }
 }
 
