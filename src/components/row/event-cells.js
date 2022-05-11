@@ -13,6 +13,9 @@ const getEventsInRange = (selectedGridView, selectedDate, events, startDate, end
     const { start, end } = e;
     const { date: eventStartDate } = start;
     const { date: eventEndDate } = end;
+    if (!eventStartDate || !eventEndDate) {
+      return false;
+    }
     let isValidEvent = true;
     if (selectedGridView === GRID_VIEWS.YEAR) {
       isValidEvent = dayjs(eventEndDate).diff(eventStartDate, DATE_UNIT.MONTH) > 0;
