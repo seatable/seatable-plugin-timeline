@@ -8,12 +8,9 @@ export const getEventWidth = (selectedGridView, columnWidth, eventStartDate, eve
   if (selectedGridView === GRID_VIEWS.YEAR) {
     duration = dayjs(formattedEndDate).diff(formattedStartDate, DATE_UNIT.MONTH);
   } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
-    if (dayjs(formattedEndDate).isSame(formattedStartDate, DATE_UNIT.DAY)) {
-      return columnWidth;
-    }
     duration = dayjs(formattedEndDate).diff(formattedStartDate, DATE_UNIT.DAY);
   }
-  return (duration || 0) * columnWidth;
+  return ((duration || 0) + 1) * columnWidth;
 };
 
 export const getEventLeft = (selectedGridView, columnWidth, overScanStartDate, eventStartDate) => {
