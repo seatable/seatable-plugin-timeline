@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { UncontrolledTooltip } from 'reactstrap';
 import PropTypes from 'prop-types';
 import shallowEqual from 'shallowequal';
 import dayjs from 'dayjs';
@@ -327,7 +328,6 @@ class EventCell extends React.Component {
             width
           }}
           ref={ref => this.timeLineEventCellRef = ref}
-          title={`${label}(${start} - ${end})`}
           onDoubleClick={this.onRowExpand}
           onMouseDown={canEventDateBeChanged ? this.onEventMouseDown : () => {}}
         >
@@ -354,6 +354,12 @@ class EventCell extends React.Component {
             </div>
           )}
         </div>
+        <UncontrolledTooltip
+          placement="bottom"
+          target={`timeline_event_cell_${rowId}`}
+        >
+          {`${start} - ${end}`}
+        </UncontrolledTooltip>
         {(isDraggingSide || isDraggingEvent) && (
           <div
             className="timeline-event-cell next-position"
