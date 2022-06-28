@@ -261,7 +261,7 @@ class Timeline extends React.Component {
     let GridView = this.gridViews[selectedGridView];
     let isToday = this.isToday();
     return (
-      <div className="timeline-container" ref={ref => this.timeline = ref}>
+      <div className="timeline-container o-hidden" ref={ref => this.timeline = ref}>
         {isAfterDelay &&
           <Fragment>
             <Toolbar
