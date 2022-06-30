@@ -371,8 +371,8 @@ class TimelineSetting extends Component {
         <div className="setting-container">
           <div className="setting-header">
             <div className="setting-header-container">
-              <div className="setting-header-title">{intl.get('Settings')}</div>
-              <div className="dtable-font dtable-icon-x btn-close" onClick={this.props.onHideTimelineSetting}></div>
+              <h3 className="h5 m-0">{intl.get('Settings')}</h3>
+              <i className="dtable-font dtable-icon-x btn-close" onClick={this.props.onHideTimelineSetting}></i>
             </div>
           </div>
           <div className="setting-body">
