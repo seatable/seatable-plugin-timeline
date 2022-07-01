@@ -77,16 +77,8 @@ class TimelineSetting extends Component {
           break;
         }
         case CellType.LINK_FORMULA: {
-          const { display_column_key, linked_table_id } = column.data;
-          const linkedTable = tables.find(table => table._id === linked_table_id);
-          if (!linkedTable) {
-            break;
-          }
-          const linkedColumn = linkedTable.columns.find(column => column.key === display_column_key);
-          if (!linkedColumn) {
-            break;
-          }
-          if (linkedColumn.type === CellType.DATE) {
+          const { result_type, array_type } = column.data;
+          if (result_type == CellType.DATE || (result_type == 'array' && array_type == CellType.DATE)) {
             dateFields.push(columnOption);
           }
           break;
@@ -105,7 +97,7 @@ class TimelineSetting extends Component {
         }
       }
     });
-    return {dateFields, numberFields, colorFields, labelFields};
+    return { dateFields, numberFields, colorFields, labelFields };
   }
 
   createOptions(source, settingKey, valueKey) {
