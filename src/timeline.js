@@ -28,7 +28,7 @@ class Timeline extends React.Component {
       isShowSelectExportDateRangeDialog: false,
       isExporting: false,
       isAfterDelay: false,
-      ...this.getInitDateRange()
+      ...this.getInitDateRange(props.settings)
     };
     this.gridViews = this.getGridViews();
   }
@@ -44,15 +44,9 @@ class Timeline extends React.Component {
   componentWillReceiveProps(nextProps) {
     let { selectedTimelineView: oldSelectedTimelineView, settings: oldSettings } = this.props;
     let { selectedTimelineView, settings } = nextProps;
-    if ((selectedTimelineView && oldSelectedTimelineView !== selectedTimelineView) ||
-      (settings && settings !== oldSettings)) {
-      let { gridStartDate, gridEndDate } = this.state;
-      let selectedGridView = this.getSelectedGridView(nextProps.selectedTimelineView._id);
-      const diffs = dayjs(gridEndDate).diff(gridStartDate, DATE_UNIT.YEAR);
-      let initDateRange = {};
-      if (selectedGridView === GRID_VIEWS.YEAR && diffs < 2) {
-        initDateRange = this.getInitDateRange();
-      }
+    if (selectedTimelineView && oldSelectedTimelineView !== selectedTimelineView) {
+      let selectedGridView = this.getSelectedGridView(selectedTimelineView._id);
+      let initDateRange = this.getInitDateRange(settings);
       this.setState({
         selectedGridView,
         selectedDate: dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY),
@@ -64,10 +58,14 @@ class Timeline extends React.Component {
     }
   }
 
-  getInitDateRange = () => {
+  getInitDateRange = (settings) => {
+    const { gridStartDate, gridEndDate } = settings || {};
+    if (gridStartDate && gridEndDate) {
+      return { gridStartDate, gridEndDate };
+    }
     return {
       gridStartDate: dayjs().subtract(2, DATE_UNIT.YEAR).startOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY),
-      gridEndDate: dayjs().add(2, DATE_UNIT.YEAR).endOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY),
+      gridEndDate: dayjs().add(2, DATE_UNIT.YEAR).endOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY)
     };
   }
 
@@ -102,18 +100,8 @@ class Timeline extends React.Component {
       return;
     }
 
-    // not less than 3 years under the view of year.
-    const diffs = dayjs(gridEndDate).diff(gridStartDate, DATE_UNIT.YEAR);
-    let initDateRange = {};
-    if (selectedGridView === GRID_VIEWS.YEAR && diffs < 2) {
-      initDateRange = this.getInitDateRange();
-      selectedDate = dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY);
-    }
-
     this.setState({
-      selectedDate,
       selectedGridView,
-      ...initDateRange
     }, () => {
       this.storeSelectedGridViews(selectedGridView);
       this.onResetViewportScroll();
@@ -207,6 +195,7 @@ class Timeline extends React.Component {
     const today = dates.getToday(DATE_FORMAT.YEAR_MONTH_DAY);
     const canNavigateToday = dates.isDateInRange(today, gridStartDate, gridEndDate) &&
       viewport.viewportRight.canNavigateToday(selectedGridView, today, gridStartDate, gridEndDate);
+    this.props.onModifyTimelineSettings(Object.assign({}, this.props.settings, {gridStartDate, gridEndDate}));
     this.setState({
       gridStartDate,
       gridEndDate,
