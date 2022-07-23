@@ -646,7 +646,7 @@ class App extends React.Component {
           />
           <div className="timeline-operators">
             <span className="timeline-operator dtable-font dtable-icon-download btn-export-image" onClick={this.onExportAsImage}></span>
-            <span className="timeline-operator dtable-font dtable-icon-settings btn-settings" onClick={this.onTimelineSettingToggle}></span>
+            <span className="timeline-operator dtable-font dtable-icon-set-up btn-settings" onClick={this.onTimelineSettingToggle}></span>
             <span className="timeline-operator dtable-font dtable-icon-x btn-close" onClick={this.onPluginToggle}></span>
           </div>
         </div>
