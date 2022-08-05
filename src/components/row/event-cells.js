@@ -16,12 +16,7 @@ const getEventsInRange = (selectedGridView, selectedDate, events, startDate, end
     if (!eventStartDate || !eventEndDate) {
       return false;
     }
-    let isValidEvent = true;
-    if (selectedGridView === GRID_VIEWS.YEAR) {
-      isValidEvent = dayjs(eventEndDate).diff(eventStartDate, DATE_UNIT.MONTH) > 0;
-    } else {
-      isValidEvent = dayjs(eventEndDate).isSame(eventStartDate) || dayjs(eventEndDate).isAfter(eventStartDate);
-    }
+    const isValidEvent = dayjs(eventEndDate).isSame(eventStartDate) || dayjs(eventEndDate).isAfter(eventStartDate);
     return isValidEvent && (dates.isDateInRange(eventStartDate, startDate, endDate) ||
       dates.isDateInRange(eventEndDate, startDate, endDate) ||
       dates.isDateInRange(selectedDate, eventStartDate, eventEndDate));

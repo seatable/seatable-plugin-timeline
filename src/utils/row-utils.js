@@ -6,7 +6,12 @@ export const getEventWidth = (selectedGridView, columnWidth, eventStartDate, eve
   const formattedEndDate = dayjs(eventEndDate).format(DATE_FORMAT.YEAR_MONTH_DAY);
   let duration;
   if (selectedGridView === GRID_VIEWS.YEAR) {
-    duration = dayjs(formattedEndDate).diff(formattedStartDate, DATE_UNIT.MONTH);
+    // `true` as the third argument: return a floating point number, instead of an integer
+    duration = dayjs(formattedEndDate).diff(formattedStartDate, DATE_UNIT.MONTH, true);
+    // for duration less than 1 month
+    if (duration < 1) {
+      return Math.max(duration * columnWidth, 10); // 10: set the minimum width '10px' for durations which are very short
+    }
   } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
     duration = dayjs(formattedEndDate).diff(formattedStartDate, DATE_UNIT.DAY);
   }
