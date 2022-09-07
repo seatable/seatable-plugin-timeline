@@ -5,7 +5,7 @@ import shallowEqual from 'shallowequal';
 import dayjs from 'dayjs';
 import { CELL_TYPE } from 'dtable-sdk';
 import EventFormatter from '../cell-formatter/event-formatter';
-import { getEventWidth, getEventLeft, getEventDaysByDisplacement } from '../../utils/row-utils';
+import { getEventWidth, getEventLeft, getEventDaysByDisplacement, getEventLabel } from '../../utils/row-utils';
 import { zIndexes, DATE_UNIT, GRID_VIEWS } from '../../constants';
 import * as EventTypes from '../../constants/event-types';
 
@@ -26,6 +26,7 @@ class EventCell extends React.Component {
     const { date: endDate } = end;
     const width = getEventWidth(selectedGridView, columnWidth, startDate, endDate);
     const left = getEventLeft(selectedGridView, columnWidth, overScanStartDate, startDate);
+    const label = getEventLabel(width, event.label);
     this.state = {
       isDraggingEvent: false,
       isDraggingSide: false,
@@ -33,6 +34,7 @@ class EventCell extends React.Component {
       end: endDate,
       width,
       left,
+      label,
     };
     this.draggingSideDirection = '';
   }
@@ -48,7 +50,8 @@ class EventCell extends React.Component {
     const { date: endDate } = end;
     const width = getEventWidth(selectedGridView, columnWidth, startDate, endDate);
     const left = getEventLeft(selectedGridView, columnWidth, overScanStartDate, startDate);
-    this.setState({ left, width, end: endDate, start: startDate });
+    const label = getEventLabel(width, event.label);
+    this.setState({ left, width, label, end: endDate, start: startDate });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -295,23 +298,20 @@ class EventCell extends React.Component {
 
   render() {
     const { event, overScanStartDate, selectedGridView, columnWidth } = this.props;
-    const { label, bgColor, textColor, row } = event;
+    const { bgColor, textColor, row } = event;
     const canEventDateBeChanged = event.start.canChange && event.end.canChange;
-    const { start, end, isDraggingSide, left, width, isDraggingEvent } = this.state;
+    const { start, end, isDraggingSide, left, width, label, isDraggingEvent } = this.state;
     const { _id: rowId } = row;
     const canEventSideBeChanged = selectedGridView === GRID_VIEWS.DAY
       || (selectedGridView !== GRID_VIEWS.DAY && (width > columnWidth));
     const canEventStartDateBeChanged = event.start.canChange && canEventSideBeChanged;
     const canEventEndDateBeChanged = event.end.canChange && canEventSideBeChanged;
-    let formatterLabel = null;
     let formatterStyle = {};
     if (width < 30) {
-      formatterLabel = '';
       formatterStyle = {
         padding: 0
       };
     } else {
-      formatterLabel = label;
       formatterStyle = {
         padding: '0 10px'
       };
@@ -340,7 +340,7 @@ class EventCell extends React.Component {
             </div>
           )}
           <EventFormatter
-            label={formatterLabel}
+            label={label}
             bgColor={bgColor}
             textColor={textColor}
             formatterStyle={formatterStyle}
@@ -382,7 +382,7 @@ class EventCell extends React.Component {
             }}
           >
             <EventFormatter
-              label={formatterLabel}
+              label={label}
               bgColor={bgColor}
               textColor={textColor}
               formatterStyle={formatterStyle}

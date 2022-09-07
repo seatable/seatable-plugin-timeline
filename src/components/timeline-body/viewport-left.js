@@ -122,6 +122,7 @@ ViewportLeft.propTypes = {
   foldedGroups: PropTypes.array,
   topOffset: PropTypes.number,
   bottomOffset: PropTypes.number,
+  prevScrollTop: PropTypes.number,
   onViewportLeftScroll: PropTypes.func,
   onExpandGroupToggle: PropTypes.func,
   settings: PropTypes.object,
@@ -131,7 +132,6 @@ ViewportLeft.propTypes = {
   tableID: PropTypes.string,
   formulaRows: PropTypes.object,
   onModifyTimelineSettings: PropTypes.func,
-  prevScrollTop: PropTypes.string,
 };
 
 export default ViewportLeft;

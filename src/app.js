@@ -2,15 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import intl from 'react-intl-universal';
-import DTable, { CELL_TYPE } from 'dtable-sdk';
+import DTable, { CELL_TYPE, FORMULA_RESULT_TYPE } from 'dtable-sdk';
 import ViewsTabs from './components/views-tabs';
 import Timeline from './timeline';
 import View from './model/view';
 import Group from './model/group';
 import TimelineRow from './model/timeline-row';
 import Event from './model/event';
-import { PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR, DEFAULT_TEXT_COLOR, RECORD_END_TYPE, DATE_UNIT } from './constants';
+import {
+  PLUGIN_NAME, SETTING_KEY, DEFAULT_BG_COLOR, DEFAULT_TEXT_COLOR, RECORD_END_TYPE,
+  DATE_UNIT, COLLABORATOR_COLUMN_TYPES,
+} from './constants';
 import { generatorViewId, getDtableUuid } from './utils';
+import { getCollaboratorsDisplayString } from './utils/value-format-utils';
 import EventBus from './utils/event-bus';
 
 import './locale';
@@ -115,7 +119,7 @@ class App extends React.Component {
     this.cellType = this.dtable.getCellType();
     this.columnIconConfig = this.dtable.getColumnIconConfig();
     this.optionColorsMap = this.getOptionColorsMap();
-    this.collaborators = this.getRelatedUsersFromLocal();
+    this.initCollaborators();
     this.setState({
       isLoading: false,
       showDialog,
@@ -190,6 +194,14 @@ class App extends React.Component {
     return collaborators; // local develop
   }
 
+  initCollaborators = () => {
+    this.collaborators = this.getRelatedUsersFromLocal();
+    this.emailCollaboratorMap = {};
+    this.collaborators.forEach(collaborator => {
+      this.emailCollaboratorMap[collaborator.email] = collaborator;
+    });
+  }
+
   getConvertedRows = (tableName, viewName) => {
     let rows = [];
     this.Id2ConvertedRowMap = {};
@@ -217,7 +229,7 @@ class App extends React.Component {
     let minDate, maxDate, groupedRows = [];
     originRows.forEach((row) => {
       const dtableRow = this.dtable.getRowById(table, row._id);
-      let { label, bgColor, textColor, start, end } = this.getEventData(table, columns, row, dtableRow, labelColumn, singleSelectColumn, start_time_column_name,
+      let { label, bgColor, textColor, start, end } = this.getEventData(columns, row, dtableRow, labelColumn, singleSelectColumn, start_time_column_name,
         end_time_column_name, record_duration_column_name, colored_by_row_color, record_end_type, options, rowsColor);
       minDate = !minDate || dayjs(start.date).isBefore(minDate) ? start.date : minDate;
       maxDate = !maxDate || dayjs(end.date).isAfter(maxDate) ? end.date : maxDate;
@@ -256,7 +268,7 @@ class App extends React.Component {
       let timelineRows = [];
       convertedRows.forEach((row) => {
         const dtableRow = this.dtable.getRowById(table, row._id);
-        const { label, bgColor, textColor, start, end } = this.getEventData(table, columns, row, dtableRow, labelColumn, singleSelectColumn, start_time_column_name,
+        const { label, bgColor, textColor, start, end } = this.getEventData(columns, row, dtableRow, labelColumn, singleSelectColumn, start_time_column_name,
           end_time_column_name, record_duration_column_name, colored_by_row_color, record_end_type, options, rowsColor);
         let timelineRow = new TimelineRow({
           row: dtableRow,
@@ -301,9 +313,9 @@ class App extends React.Component {
     }));
   }
 
-  getEventData = (table, columns, originalRow, dtableRow, labelColumn, singleSelectColumn, startTimeColumnName, endTimeColumnName, recordDurationColumnName,
+  getEventData = (columns, originalRow, dtableRow, labelColumn, singleSelectColumn, startTimeColumnName, endTimeColumnName, recordDurationColumnName,
     coloredByRowColor, recordEndType, options, rowsColor) => {
-    const label = this.getEventLabel(originalRow, labelColumn.name, labelColumn.type, {collaborators: this.collaborators});
+    const label = this.getEventLabel(originalRow, labelColumn);
     let bgColor, textColor;
     if (coloredByRowColor) {
       bgColor = rowsColor[originalRow._id];
@@ -356,7 +368,8 @@ class App extends React.Component {
     };
   }
 
-  getEventLabel(originalRow, columnName, columnType, {collaborators} = {}) {
+  getEventLabel(originalRow, labelColumn) {
+    const { name: columnName, type: columnType, data } = labelColumn;
     const cellValue = originalRow[columnName];
     switch(columnType) {
       case this.cellType.TEXT:
@@ -364,13 +377,20 @@ class App extends React.Component {
         return cellValue;
       }
       case this.cellType.COLLABORATOR: {
-        if (!Array.isArray(cellValue) || !Array.isArray(collaborators)) {
+        return getCollaboratorsDisplayString(cellValue, this.emailCollaboratorMap);
+      }
+      case this.cellType.FORMULA:
+      case this.cellType.LINK_FORMULA: {
+        if (!data) {
           return null;
         }
-        return cellValue.map((email) => {
-          const collaborator = collaborators.find((collaborator) => collaborator.email === email);
-          return collaborator && collaborator.name;
-        }).join(',');
+        const { result_type, array_type } = data;
+        if (result_type === FORMULA_RESULT_TYPE.ARRAY) {
+          if (COLLABORATOR_COLUMN_TYPES.includes(array_type)) {
+            return getCollaboratorsDisplayString(cellValue, this.emailCollaboratorMap);
+          }
+        }
+        return cellValue;
       }
       default: {
         return cellValue;
