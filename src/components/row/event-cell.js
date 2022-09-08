@@ -5,7 +5,7 @@ import shallowEqual from 'shallowequal';
 import dayjs from 'dayjs';
 import { CELL_TYPE } from 'dtable-sdk';
 import EventFormatter from '../cell-formatter/event-formatter';
-import { getEventWidth, getEventLeft, getEventDaysByDisplacement, getEventLabel } from '../../utils/row-utils';
+import { getEventPosition, getEventDaysByDisplacement, getEventLabel } from '../../utils/row-utils';
 import { zIndexes, DATE_UNIT, GRID_VIEWS } from '../../constants';
 import * as EventTypes from '../../constants/event-types';
 
@@ -24,8 +24,7 @@ class EventCell extends React.Component {
     const { start, end } = event;
     const { date: startDate } = start;
     const { date: endDate } = end;
-    const width = getEventWidth(selectedGridView, columnWidth, startDate, endDate);
-    const left = getEventLeft(selectedGridView, columnWidth, overScanStartDate, startDate);
+    const { left, width } = getEventPosition(startDate, endDate, overScanStartDate, columnWidth, selectedGridView);
     const label = getEventLabel(width, event.label);
     this.state = {
       isDraggingEvent: false,
@@ -48,8 +47,7 @@ class EventCell extends React.Component {
     const { start, end } = event;
     const { date: startDate } = start;
     const { date: endDate } = end;
-    const width = getEventWidth(selectedGridView, columnWidth, startDate, endDate);
-    const left = getEventLeft(selectedGridView, columnWidth, overScanStartDate, startDate);
+    const { left, width } = getEventPosition(startDate, endDate, overScanStartDate, columnWidth, selectedGridView);
     const label = getEventLabel(width, event.label);
     this.setState({ left, width, label, end: endDate, start: startDate });
   }
@@ -141,7 +139,7 @@ class EventCell extends React.Component {
     window.removeEventListener('mouseup', this.onEventMouseUp);
     if (!isDraggingEvent) return;
     const { event, overScanStartDate, selectedGridView, columnWidth } = this.props;
-    const left = getEventLeft(selectedGridView, columnWidth, overScanStartDate, start);
+    const { left } = getEventPosition(start, end, overScanStartDate, columnWidth, selectedGridView);
     this.setState({ left, isDraggingEvent: false });
     this.draggingSideDirection = '';
     this.distance = {};
@@ -204,8 +202,7 @@ class EventCell extends React.Component {
     const { start, end, isDraggingSide } = this.state;
     if (!isDraggingSide) return;
     const { event, overScanStartDate, selectedGridView, columnWidth } = this.props;
-    const width = getEventWidth(selectedGridView, columnWidth, start, end);
-    const left = getEventLeft(selectedGridView, columnWidth, overScanStartDate, start);
+    const { left, width } = getEventPosition(start, end, overScanStartDate, columnWidth, selectedGridView);
     this.setState({ left, width, isDraggingSide: false });
     this.draggingSideDirection = '';
     this.distance = {};
@@ -277,8 +274,7 @@ class EventCell extends React.Component {
     if (!this.state.isDraggingSide) return;
     const { event, overScanStartDate, selectedGridView, columnWidth } = this.props;
     const { start, end } = this.state;
-    const width = getEventWidth(selectedGridView, columnWidth, start, end);
-    const left = getEventLeft(selectedGridView, columnWidth, overScanStartDate, start);
+    const { left, width } = getEventPosition(start, end, overScanStartDate, columnWidth, selectedGridView);
     this.setState({ left, width, isDraggingSide: false });
     this.draggingSideDirection = '';
     this.distance = {};
@@ -296,8 +292,50 @@ class EventCell extends React.Component {
     this.props.onModifyRow(row, update);
   }
 
-  render() {
+  renderNextPosition = ({ formatterStyle }) => {
+    const { overScanStartDate, selectedGridView, columnWidth } = this.props;
+    const { start, end } = this.state;
+    const { left, width } = getEventPosition(start, end, overScanStartDate, columnWidth, selectedGridView);
+    return (
+      <div
+        className="timeline-event-cell next-position"
+        style={{
+          left,
+          width,
+          zIndex: zIndexes.EVENT_CELL - 1,
+        }}
+      >
+        <div className="cell-formatter grid-cell-type-single-select" style={formatterStyle}></div>
+      </div>
+    );
+  }
+
+  renderOldPosition = ({ formatterStyle }) => {
     const { event, overScanStartDate, selectedGridView, columnWidth } = this.props;
+    const { label } = this.state;
+    const { bgColor, textColor } = event;
+    const { left, width } = getEventPosition(this.distance.start, this.distance.end, overScanStartDate, columnWidth, selectedGridView);
+    return (
+      <div
+        className="timeline-event-cell old-position"
+        style={{
+          left,
+          width,
+          zIndex: zIndexes.EVENT_CELL - 2,
+        }}
+      >
+        <EventFormatter
+          label={label}
+          bgColor={bgColor}
+          textColor={textColor}
+          formatterStyle={formatterStyle}
+        />
+      </div>
+    );
+  }
+
+  render() {
+    const { event, selectedGridView, columnWidth } = this.props;
     const { bgColor, textColor, row } = event;
     const canEventDateBeChanged = event.start.canChange && event.end.canChange;
     const { start, end, isDraggingSide, left, width, label, isDraggingEvent } = this.state;
@@ -306,16 +344,7 @@ class EventCell extends React.Component {
       || (selectedGridView !== GRID_VIEWS.DAY && (width > columnWidth));
     const canEventStartDateBeChanged = event.start.canChange && canEventSideBeChanged;
     const canEventEndDateBeChanged = event.end.canChange && canEventSideBeChanged;
-    let formatterStyle = {};
-    if (width < 30) {
-      formatterStyle = {
-        padding: 0
-      };
-    } else {
-      formatterStyle = {
-        padding: '0 10px'
-      };
-    }
+    const formatterStyle = width < 30 ? { padding: 0 } : { padding: '0 10px' };
 
     return (
       <Fragment>
@@ -360,35 +389,8 @@ class EventCell extends React.Component {
         >
           {`${start} - ${end}`}
         </UncontrolledTooltip>
-        {(isDraggingSide || isDraggingEvent) && (
-          <div
-            className="timeline-event-cell next-position"
-            style={{
-              left: getEventLeft(selectedGridView, columnWidth, overScanStartDate, start),
-              zIndex: zIndexes.EVENT_CELL - 1,
-              width: getEventWidth(selectedGridView, columnWidth, start, end)
-            }}
-          >
-            <div className="cell-formatter grid-cell-type-single-select" style={formatterStyle}></div>
-          </div>
-        )}
-        {isDraggingEvent && (
-          <div
-            className="timeline-event-cell old-position"
-            style={{
-              left: getEventLeft(selectedGridView, columnWidth, overScanStartDate, this.distance.start),
-              zIndex: zIndexes.EVENT_CELL - 2,
-              width: getEventWidth(selectedGridView, columnWidth, this.distance.start, this.distance.end)
-            }}
-          >
-            <EventFormatter
-              label={label}
-              bgColor={bgColor}
-              textColor={textColor}
-              formatterStyle={formatterStyle}
-            />
-          </div>
-        )}
+        {(isDraggingSide || isDraggingEvent) && this.renderNextPosition({ formatterStyle })}
+        {isDraggingEvent && this.renderOldPosition({ formatterStyle })}
       </Fragment>
     );
   }
