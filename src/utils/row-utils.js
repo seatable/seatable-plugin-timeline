@@ -32,6 +32,11 @@ export const getEventLeft = (selectedGridView, columnWidth, overScanStartDate, e
   return (duration || 0) * columnWidth;
 };
 
+// not display content if event width is too narrow
+export const getEventLabel = (width, label) => {
+  return width < 30 || typeof label === 'object' ? null : label;
+};
+
 export const getEventDaysByDisplacement = (selectedGridView, eventStartDate, number) => {
   if (selectedGridView !== GRID_VIEWS.YEAR) return number;
   const formattedStartDate = dayjs(eventStartDate).format(DATE_FORMAT.YEAR_MONTH_DAY);

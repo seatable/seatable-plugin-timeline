@@ -3,7 +3,6 @@ import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 import EventCell from '../row/event-cell';
 import { dates } from '../../utils';
-import { DATE_UNIT, GRID_VIEWS } from '../../constants';
 
 const getEventsInRange = (selectedGridView, selectedDate, events, startDate, endDate) => {
   if (!Array.isArray(events)) {

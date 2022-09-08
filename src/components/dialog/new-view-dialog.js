@@ -17,6 +17,23 @@ class NewViewDialog extends React.Component {
     };
   }
 
+  componentDidMount() {
+    document.addEventListener('keydown', this.onHotKey);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.onHotKey);
+  }
+
+  onHotKey = (e) => {
+    // Enter
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      this.handleSubmit();
+      return;
+    }
+  }
+
   handleChange = (event) => {
     let value = event.target.value;
     if (value === this.state.viewName) {

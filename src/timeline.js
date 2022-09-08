@@ -42,7 +42,7 @@ class Timeline extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let { selectedTimelineView: oldSelectedTimelineView, settings: oldSettings } = this.props;
+    let { selectedTimelineView: oldSelectedTimelineView } = this.props;
     let { selectedTimelineView, settings } = nextProps;
     if (selectedTimelineView && oldSelectedTimelineView !== selectedTimelineView) {
       let selectedGridView = this.getSelectedGridView(selectedTimelineView._id);
@@ -95,7 +95,6 @@ class Timeline extends React.Component {
   }
 
   onSelectGridView = (selectedGridView) => {
-    let { selectedDate, gridStartDate, gridEndDate } = this.state;
     if (selectedGridView === this.state.selectedGridView) {
       return;
     }
