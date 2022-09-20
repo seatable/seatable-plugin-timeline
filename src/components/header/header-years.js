@@ -12,9 +12,12 @@ const propTypes = {
 class HeaderYears extends React.Component {
 
   renderYearDates = () => {
-    let { selectedGridView, yearDates, columnWidth } = this.props;
+    const { selectedGridView, yearDates, columnWidth } = this.props;
     return Array.isArray(yearDates) && yearDates.map((d) => {
-      let calcUnit, displayFormat, displayDate, dateItemWidth = 0;
+      let calcUnit;
+      let displayFormat;
+      let displayDate;
+      let dateItemWidth = 0;
       if (selectedGridView === GRID_VIEWS.YEAR) {
         calcUnit = DATE_UNIT.YEAR;
         displayFormat = DATE_FORMAT.YEAR;

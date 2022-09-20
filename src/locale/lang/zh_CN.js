@@ -45,7 +45,8 @@ const zh_CN = {
   "Show_columns": "显示字段",
   "Search_a_column": "查找一个列",
   "No_column": "没有列",
-  "Not_used": "不使用"
+  "Not_used": "不使用",
+  "Display_as_swimlane_mode": "显示为泳道模式"
 }
 ;
 

@@ -2,16 +2,19 @@
   position: absolute;
   top: 0;
   right: 0;
+  bottom: 0;
   width: 300px;
-  height: 100%;
   box-shadow: 0px 2px 10px 3px rgba(0, 0, 0, 0.2);
   background: #fff;
+  display: flex;
+  flex-direction: column;
 }
 
 .plugin-timeline-setting .setting-container {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex: 1;
+  overflow: hidden;
 }
 
 .plugin-timeline-setting .setting-header {
@@ -38,7 +41,7 @@
 }
 
 .plugin-timeline-setting .setting-body {
-  padding: 14px 20px;
+  padding: 14px 20px 50px;
   overflow: auto;
   flex: 1;
 }

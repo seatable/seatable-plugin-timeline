@@ -12,35 +12,40 @@ const noEventsTips = <div className="no-events">{intl.get('There_are_no_records'
 class CanvasRight extends React.Component {
 
   renderRows = () => {
-    let { selectedGridView, selectedDate, overScanDates, columnWidth, renderedRows,
-      renderedDates } = this.props;
+    const {
+      selectedGridView, selectedDate, overScanDates, columnWidth, renderedRows, renderedDates,
+    } = this.props;
     if (renderedRows.length === 0) {
       return noEventsTips;
     }
-    let bgRows = [], eventRows = [];
-    let bgCells = (
+    const bgCells = (
       <BgCells
         selectedGridView={selectedGridView}
         columnWidth={columnWidth}
         renderedDates={renderedDates}
       />
     );
-    Array.isArray(renderedRows) && renderedRows.forEach((r, index) => {
+    let bgRows = [];
+    let eventRows = [];
+    Array.isArray(renderedRows) && renderedRows.forEach(row => {
+      const { events } = row;
+      const convertedRow = events[0].row;
+      const convertedRowId = convertedRow._id;
       bgRows.push(
         <EventRow
-          key={`events-bg-row-${r.row._id}`}
+          key={`events-bg-row-${convertedRowId}`}
           cells={bgCells}
         />
       );
       eventRows.push(
         <EventRow
-          key={`timeline-events-row-${r.row._id}`}
+          key={`timeline-events-row-${convertedRowId}`}
           cells={
             <EventCells
               selectedGridView={selectedGridView}
               selectedDate={selectedDate}
               overScanDates={overScanDates}
-              events={r.events}
+              events={events}
               columnWidth={columnWidth}
               eventBus={this.props.eventBus}
               onRowExpand={this.props.onRowExpand}
@@ -81,8 +86,8 @@ class CanvasRight extends React.Component {
   }
 
   onViewportRightScroll = (event) => {
-    let scrollLeft = event.target.scrollLeft;
-    let scrollTop = event.target.scrollTop;
+    const scrollLeft = event.target.scrollLeft;
+    const scrollTop = event.target.scrollTop;
     this.setViewportRightScroll({scrollLeft, scrollTop});
     this.props.onViewportRightScroll({scrollLeft, scrollTop});
   }
@@ -107,15 +112,20 @@ class CanvasRight extends React.Component {
   }
 
   render() {
-    let { columnWidth, startOffset, endOffset, overScanDates, topOffset, bottomOffset } = this.props;
-    let canvasRightStyle = {
+    const { columnWidth, startOffset, endOffset, overScanDates, topOffset, bottomOffset } = this.props;
+    const canvasRightStyle = {
       width: overScanDates.length * columnWidth + startOffset + endOffset,
       paddingLeft: startOffset,
       paddingRight: endOffset,
-      zIndex: zIndexes.CANVAS_RIGHT
+      zIndex: zIndexes.CANVAS_RIGHT,
     };
     return (
-      <div className="canvas-right" ref={ref => this.canvasRight = ref} style={canvasRightStyle} onScroll={this.onCanvasRightScroll}>
+      <div
+        className="canvas-right"
+        ref={ref => this.canvasRight = ref}
+        style={canvasRightStyle}
+        onScroll={this.onCanvasRightScroll}
+      >
         <div className="event-rows-wrapper" style={{paddingTop: topOffset, paddingBottom: bottomOffset}}>
           <div className="position-relative" style={{width: '100%', height: '100%'}}>
             {this.renderRows()}

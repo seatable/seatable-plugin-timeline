@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { COLUMNS_ICON_CONFIG } from 'dtable-store';
+import Switch from '../switch';
 
 const propTypes = {
   column: PropTypes.object.isRequired,
@@ -89,22 +90,16 @@ class ColumnSetting extends React.Component {
         >
           <i className="dtable-font dtable-icon-drag"></i>
         </div>
-        <div className="timeline-column-switch">
-          <label className="custom-switch">
-            <input
-              type="checkbox"
-              className="custom-switch-input"
-              checked={column.shown}
-              onChange={this.updateColumn}
-              name="custom-switch-checkbox"
-            />
-            <span className="custom-switch-description text-truncate">
+        <Switch
+          checked={column.shown}
+          placeholder={(
+            <>
               <i className={`dtable-font ${COLUMNS_ICON_CONFIG[column.type]}`}></i>
               <span>{column.name}</span>
-            </span>
-            <span className="custom-switch-indicator"></span>
-          </label>
-        </div>
+            </>
+          )}
+          onChange={this.updateColumn}
+        />
       </div>
     );
   }

@@ -6,8 +6,8 @@ const propTypes = {
 };
 
 function TodayMark(props) {
-  let { style } = props;
-  let todayMarkStyle = {
+  const { style } = props;
+  const todayMarkStyle = {
     ...style
   };
   return <div className="today-mark" style={todayMarkStyle}></div>;

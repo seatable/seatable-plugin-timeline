@@ -11,7 +11,8 @@ const noEventsTips = <div className="no-events">{intl.get('There_are_no_records'
 class GroupCanvasRight extends Component {
 
   renderGroups = () => {
-    let { selectedGridView, selectedDate, renderedDates, overScanDates, columnWidth, groupVisibleStartIdx,
+    const {
+      selectedGridView, selectedDate, renderedDates, overScanDates, columnWidth, groupVisibleStartIdx,
       groups, foldedGroups } = this.props;
     if (groups.length === 0) {
       return noEventsTips;
@@ -37,7 +38,7 @@ class GroupCanvasRight extends Component {
   }
 
   renderTodayMarkLine = () => {
-    let { overScanDates, selectedGridView, columnWidth, groups } = this.props;
+    const { overScanDates, selectedGridView, columnWidth, groups } = this.props;
     if (groups.length === 0) return null;
     let today = dayjs();
     if (selectedGridView === GRID_VIEWS.YEAR) {
@@ -72,7 +73,9 @@ class GroupCanvasRight extends Component {
   }
 
   render() {
-    let { overScanDates, columnWidth, topOffset, bottomOffset, startOffset, endOffset, groups } = this.props;
+    const {
+      overScanDates, columnWidth, topOffset, bottomOffset, startOffset, endOffset, groups,
+    } = this.props;
     const canvasRightStyle = {
       width: overScanDates.length * columnWidth + startOffset + endOffset,
       paddingLeft: startOffset,

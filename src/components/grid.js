@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Viewport from './timeline-body/viewport';
-import GroupViewport from './timeline-body/group-viewport';
+import Viewport from './grid-body/viewport';
+import GroupViewport from './grid-body/group-viewport';
 
 class Grid extends Component {
 

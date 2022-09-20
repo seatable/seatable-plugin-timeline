@@ -9,7 +9,10 @@ import { GROUP_HEADER_HEIGHT, zIndexes, ROW_HEIGHT } from '../../constants';
 class GroupItemRight extends Component {
 
   renderRows = (renderedRows) => {
-    let { selectedGridView, selectedDate, columnWidth, overScanDates, renderedDates, group, isExpanded } = this.props;
+    const {
+      selectedGridView, selectedDate, columnWidth, overScanDates, renderedDates, group,
+      isExpanded,
+    } = this.props;
     const bgCells = (
       <BgCells
         selectedGridView={selectedGridView}
@@ -37,22 +40,24 @@ class GroupItemRight extends Component {
       />
     ];
     if (isExpanded) {
-      Array.isArray(renderedRows) && renderedRows.forEach((r, index) => {
+      Array.isArray(renderedRows) && renderedRows.forEach(r => {
+        const { events } = r;
+        const originalRowId = events[0].original_row._id;
         bgRows.push(
           <EventRow
-            key={`events-bg-row-${group.cell_value}-${r.row._id}`}
+            key={`events-bg-row-${group.cell_value}-${originalRowId}`}
             cells={bgCells}
           />
         );
         eventRows.push(
           <EventRow
-            key={`timeline-events-row-${group.cell_value}-${r.row._id}`}
+            key={`timeline-events-row-${group.cell_value}-${originalRowId}`}
             cells={
               <EventCells
                 selectedGridView={selectedGridView}
                 selectedDate={selectedDate}
                 overScanDates={overScanDates}
-                events={r.events}
+                events={events}
                 columnWidth={columnWidth}
                 eventBus={this.props.eventBus}
                 onRowExpand={this.props.onRowExpand}
@@ -72,9 +77,9 @@ class GroupItemRight extends Component {
   }
 
   render() {
-    let { group, isExpanded } = this.props;
-    let { rows } = group;
-    let groupItemHeight = isExpanded ? GROUP_HEADER_HEIGHT + rows.length * ROW_HEIGHT : GROUP_HEADER_HEIGHT;
+    const { group, isExpanded } = this.props;
+    const { rows } = group;
+    const groupItemHeight = isExpanded ? GROUP_HEADER_HEIGHT + rows.length * ROW_HEIGHT : GROUP_HEADER_HEIGHT;
     return (
       <div className="group-item-right" style={{height: groupItemHeight}}>
         {this.renderRows(rows)}
