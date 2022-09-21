@@ -110,16 +110,18 @@ class ViewportLeft extends React.Component {
     return (
       <div className="timeline-viewport-left d-flex flex-column">
         <div className='viewport-left-header'>
-          {columnsVisible &&
-            <>
-              <ColumnManager
-                columns={configuredColumns}
-                updateColumn={this.updateColumn}
-                moveColumn={this.moveColumn}
-              />
-              <ColumnsShown columns={shownColumns} isGroupView={isGroupView} />
-            </>
-          }
+          <div className='viewport-left-header-content'>
+            {columnsVisible &&
+              <>
+                <ColumnManager
+                  columns={configuredColumns}
+                  updateColumn={this.updateColumn}
+                  moveColumn={this.moveColumn}
+                />
+                <ColumnsShown columns={shownColumns} isGroupView={isGroupView} />
+              </>
+            }
+          </div>
         </div>
         <div className="canvas-left-wrapper flex-fill o-auto" ref={ref => this.viewportLeft = ref} onScroll={this.onViewportLeftScroll}>
           {this.renderCanvasLeft(shownColumns)}

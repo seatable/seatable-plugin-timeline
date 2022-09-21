@@ -524,6 +524,10 @@
 }
 
 .viewport-left-header {
+  max-height: 85px;
+}
+
+.viewport-left-header-content {
   height: 85px;
 }
 
