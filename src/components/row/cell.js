@@ -54,7 +54,7 @@ class Cell extends React.Component {
     this.calculateCollaboratorData(this.props);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.calculateCollaboratorData(nextProps);
   }
 

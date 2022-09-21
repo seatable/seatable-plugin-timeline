@@ -18,7 +18,7 @@ const propTypes = {
   onPopoverToggle: PropTypes.func,
 };
 
-class TimelinePopover extends React.Component {
+class Popover extends React.Component {
 
   render() {
     let { container, popperClassName, target, offset, header, body } = this.props;
@@ -42,6 +42,6 @@ class TimelinePopover extends React.Component {
   }
 }
 
-TimelinePopover.propTypes = propTypes;
+Popover.propTypes = propTypes;
 
-export default TimelinePopover;
+export default Popover;

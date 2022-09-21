@@ -7,3 +7,4 @@ export const RECORD_END_TYPE = 'record_end_type';
 export const END_TIME_COLUMN_NAME = 'end_time_column_name';
 export const RECORD_DURATION_COLUMN_NAME = 'record_duration_column_name';
 export const LABEL_COLUMN_NAME = 'label_column_name';
+export const DISPLAY_AS_SWIMLANE = 'display_as_swimlane';

@@ -13,9 +13,9 @@ const propTypes = {
 class HeaderDays extends React.Component {
 
   render() {
-    let { overScanDates, columnWidth } = this.props;
-    let todayIndex = overScanDates.indexOf(dayjs().format(DATE_FORMAT.YEAR_MONTH_DAY));
-    let todayMarkStyle = {
+    const { overScanDates, columnWidth } = this.props;
+    const todayIndex = overScanDates.indexOf(dayjs().format(DATE_FORMAT.YEAR_MONTH_DAY));
+    const todayMarkStyle = {
       left: todayIndex * columnWidth + (columnWidth - 6) / 2,
     };
     return (

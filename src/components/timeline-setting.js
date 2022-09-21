@@ -5,20 +5,21 @@ import dayjs from 'dayjs';
 import intl from 'react-intl-universal';
 import Picker from '@seafile/seafile-calendar/lib/Picker';
 import RangeCalendar from '@seafile/seafile-calendar/lib/RangeCalendar';
+import { CELL_TYPE, FORMULA_RESULT_TYPE } from 'dtable-sdk';
 import DtableSelect from './dtable-select';
+import Switch from './switch';
 import { translateCalendar } from '../utils/seafile-calendar-translate';
 import { SETTING_KEY, zIndexes, RECORD_END_TYPE, GRID_VIEWS, DATE_UNIT, DATE_FORMAT } from '../constants';
 
 import '@seafile/seafile-calendar/assets/index.css';
 import '../css/timeline-setting.css';
 
-const RECORD_END_TYPES = [RECORD_END_TYPE.END_TIME, RECORD_END_TYPE.RECORD_DURATION];
+const RECORD_END_TYPES = [ RECORD_END_TYPE.END_TIME, RECORD_END_TYPE.RECORD_DURATION ];
 
 const propTypes = {
   tables: PropTypes.array,
   views: PropTypes.array,
   dtable: PropTypes.object,
-  CellType: PropTypes.object,
   columnIconConfig: PropTypes.object,
   selectedTable: PropTypes.object,
   selectedView: PropTypes.object,
@@ -36,11 +37,11 @@ class TimelineSetting extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dateRange: [dayjs(props.gridStartDate), dayjs(props.gridEndDate)],
+      dateRange: [ dayjs(props.gridStartDate), dayjs(props.gridEndDate) ],
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.gridStartDate !== this.props.gridStartDate ||
       nextProps.gridEndDate !== this.props.gridEndDate) {
       this.setState({
@@ -50,9 +51,12 @@ class TimelineSetting extends Component {
   }
 
   getSelectorFields = () => {
-    const { dtable, selectedView, selectedTable, CellType, columnIconConfig } = this.props;
+    const { dtable, selectedView, selectedTable, columnIconConfig } = this.props;
     const columns = dtable.getViewShownColumns(selectedView, selectedTable);
-    let dateFields = [], numberFields = [], colorFields = [], labelFields = [];
+    let dateFields = [];
+    let numberFields = [];
+    let colorFields = [];
+    let labelFields = [];
     Array.isArray(columns) && columns.forEach((column) => {
       const { type, name } = column;
       const columnOption = {
@@ -61,35 +65,35 @@ class TimelineSetting extends Component {
         iconClass: columnIconConfig[type],
       };
       switch (type) {
-        case CellType.TEXT:
-        case CellType.COLLABORATOR: {
+        case CELL_TYPE.TEXT:
+        case CELL_TYPE.COLLABORATOR: {
           labelFields.push(columnOption);
           break;
         }
-        case CellType.DATE: {
+        case CELL_TYPE.DATE: {
           dateFields.push(columnOption);
           break;
         }
-        case CellType.FORMULA: {
-          if (column.data.result_type === 'date') {
+        case CELL_TYPE.FORMULA: {
+          if (column.data.result_type === FORMULA_RESULT_TYPE.DATE) {
             dateFields.push(columnOption);
           }
           labelFields.push(columnOption);
           break;
         }
-        case CellType.LINK_FORMULA: {
+        case CELL_TYPE.LINK_FORMULA: {
           const { result_type, array_type } = column.data;
-          if (result_type == CellType.DATE || (result_type == 'array' && array_type == CellType.DATE)) {
+          if (result_type == CELL_TYPE.DATE || (result_type == FORMULA_RESULT_TYPE.ARRAY && array_type == CELL_TYPE.DATE)) {
             dateFields.push(columnOption);
           }
           labelFields.push(columnOption);
           break;
         }
-        case CellType.NUMBER: {
+        case CELL_TYPE.NUMBER: {
           numberFields.push(columnOption);
           break;
         }
-        case CellType.SINGLE_SELECT: {
+        case CELL_TYPE.SINGLE_SELECT: {
           labelFields.push(columnOption);
           colorFields.push(columnOption);
           break;
@@ -211,9 +215,8 @@ class TimelineSetting extends Component {
   };
 
   onChangeRecordEndType = (recordEndType) => {
-    let { settings } = this.props;
-    let updated =  Object.assign({}, settings, {[SETTING_KEY.RECORD_END_TYPE]: recordEndType});
-    this.props.onModifyTimelineSettings(updated);
+    const updated = { [SETTING_KEY.RECORD_END_TYPE]: recordEndType };
+    this.props.onModifyTimelineSettings(Object.assign({}, this.props.settings, updated));
   }
 
   onSelectColoredBy = (selectedOption) => {
@@ -226,8 +229,7 @@ class TimelineSetting extends Component {
       update[SETTING_KEY.COLORED_BY_ROW_COLOR] = false;
       update[SETTING_KEY.SINGLE_SELECT_COLUMN_NAME] = value;
     }
-    const newSettings = Object.assign({}, this.props.settings, update);
-    this.props.onModifyTimelineSettings(newSettings);
+    this.props.onModifyTimelineSettings(Object.assign({}, this.props.settings, update));
   }
 
   renderDatePicker = () => {
@@ -320,8 +322,12 @@ class TimelineSetting extends Component {
   }
 
   onTimelineSettingClick = (evt) => {
-    evt.preventDefault();
     evt.stopPropagation();
+  }
+
+  onToggleDisplayInOneLine = (evt) => {
+    const updated = { [SETTING_KEY.DISPLAY_AS_SWIMLANE]: evt.target.checked };
+    this.props.onModifyTimelineSettings(Object.assign({}, this.props.settings, updated));
   }
 
   getSelectorOptions = () => {
@@ -358,10 +364,24 @@ class TimelineSetting extends Component {
     return {tableOptions, viewOptions, startDateFieldOptions, endDateFieldOptions, numberFieldOptions, colorFieldOptions, labelFieldOptions};
   }
 
+  isGroupView = () => {
+    const { dtable, selectedTable, selectedView } = this.props;
+    if (!selectedTable || !selectedView) {
+      return false;
+    }
+    return dtable.isGroupView(selectedView, selectedTable.columns);
+  }
+
   render() {
     const { tableOptions, viewOptions, startDateFieldOptions, endDateFieldOptions, numberFieldOptions, colorFieldOptions, labelFieldOptions } = this.getSelectorOptions();
+    const isGroupView = this.isGroupView();
     return (
-      <div className="plugin-timeline-setting" style={{zIndex: zIndexes.TIMELINE_SETTING}} ref={ref => this.timelineSetting = ref} onClick={this.onTimelineSettingClick}>
+      <div
+        className="plugin-timeline-setting"
+        style={{zIndex: zIndexes.TIMELINE_SETTING}}
+        ref={ref => this.timelineSetting = ref}
+        onClick={this.onTimelineSettingClick}
+      >
         <div className="setting-container">
           <div className="setting-header">
             <div className="setting-header-container">
@@ -404,6 +424,16 @@ class TimelineSetting extends Component {
                   {this.renderDatePicker(endDateFieldOptions)}
                 </div>
               </div>
+              {isGroupView &&
+                <>
+                  <div className="split-line"></div>
+                  <Switch
+                    checked={this.props.settings[SETTING_KEY.DISPLAY_AS_SWIMLANE]}
+                    placeholder={intl.get('Display_as_swimlane_mode')}
+                    onChange={this.onToggleDisplayInOneLine}
+                  />
+                </>
+              }
             </div>
           </div>
         </div>

@@ -40,7 +40,7 @@ class Toolbar extends React.Component {
   }
 
   getDisplaySelectedGridView = () => {
-    let { selectedGridView } = this.props;
+    const { selectedGridView } = this.props;
     switch (selectedGridView) {
       case GRID_VIEWS.YEAR: {
         return intl.get('Grid_view_year');
@@ -106,21 +106,8 @@ class Toolbar extends React.Component {
   }
 
   getLeftPos = () => {
-    let left = 0;
-    const { settings, columns, isGroupView } = this.props;
-    const { columns: configuredColumns } = settings;
-    if (!configuredColumns) {
-      // show the first column by default
-      left = columns[0].width;
-    } else {
-      const shownColumns = configuredColumns.filter(column => column.shown);
-      shownColumns.forEach(column => {
-        const targetColumn = columns.filter(c => c.key == column.key)[0];
-        if (targetColumn) { // the column can be deleted in the table
-          left += targetColumn.width;
-        }
-      });
-    }
+    const { isGroupView } = this.props;
+    let left = this.getShownColumnsWidth();
     if (isGroupView) {
       left += 16; // there is a `pl-4`.
     }
@@ -128,12 +115,38 @@ class Toolbar extends React.Component {
     return left;
   }
 
+  getShownColumnsWidth = () => {
+    const { settings, columns } = this.props;
+    const { columns: configuredColumns, display_as_swimlane } = settings;
+    if (display_as_swimlane) {
+      return 0;
+    }
+    if (configuredColumns) {
+      let totalWidth = 0;
+      let keyShownColumnMap = {};
+      configuredColumns.forEach(column => {
+        // the column can be deleted in the table
+        if (column.shown) {
+          keyShownColumnMap[column.key] = true;
+        }
+      });
+      columns.forEach(column => {
+        if (keyShownColumnMap[column.key]) {
+          totalWidth += column.width;
+        }
+      });
+      return totalWidth;
+    }
+
+    // show the first column by default
+    return columns[0].width;
+  }
+
   render() {
-    let { onShowUsersToggle, isShowUsers, canNavigateToday } = this.props;
-    let displaySelectedGridView = this.getDisplaySelectedGridView();
+    const { onShowUsersToggle, isShowUsers, canNavigateToday } = this.props;
     return (
       <div className="timeline-toolbar">
-        <div className="toolbar-left" style={{zIndex: zIndexes.TOOLBAR, left: isShowUsers ? this.getLeftPos(): 0}}>
+        <div className="toolbar-left" style={{zIndex: zIndexes.TOOLBAR, left: isShowUsers ? this.getLeftPos() : 0}}>
           <div className="toggle-drawer-btn" onClick={onShowUsersToggle}>
             <i className={`dtable-font ${isShowUsers ? 'dtable-icon-retract-com' : 'dtable-icon-open-com'}`}></i>
           </div>
@@ -143,7 +156,7 @@ class Toolbar extends React.Component {
           <div className="btn-select-view">
             <Dropdown group isOpen={this.state.isSelectViewDropdownOpen} size="sm" toggle={this.onSelectViewToggle}>
               <DropdownToggle caret>
-                {displaySelectedGridView}
+                {this.getDisplaySelectedGridView()}
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.YEAR)}>{intl.get('Grid_view_year')}</DropdownItem>

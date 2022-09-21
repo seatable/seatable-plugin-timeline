@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import { CellType } from 'dtable-store';
 import { GROUP_HEADER_HEIGHT, ROW_HEIGHT } from '../../constants';
 import Rows from './rows';
@@ -11,31 +12,40 @@ class GroupItemLeft extends Component {
     this.props.onExpandGroupToggle();
   }
 
+  getEventsCount = () => {
+    const { rows } = this.props.group;
+    if (!Array.isArray(rows) || rows.length === 0) {
+      return 0;
+    }
+    return rows.reduce((curr, next) => curr + next.events.length, 0);
+  }
+
   render() {
-    let { group, isExpanded, shownColumns, collaborators, dtable, tableID, formulaRows } = this.props;
+    const {
+      group, isExpanded, shownColumns, collaborators, dtable, table, tableID, formulaRows,
+    } = this.props;
     const { cell_value, column_name, rows } = group;
     const rowsCount = Array.isArray(rows) ? rows.length : 0;
-    const table = dtable.getTableById(tableID);
     const groupColumn = dtable.getColumnByName(table, column_name);
     const groupTitleClassName = 'first-cell flex-fill px-0';
     return (
-      <div className="group-item-left">
+      <div className={classnames('group-item-left', { expanded: isExpanded })}>
         <div className="group-header" style={{height: GROUP_HEADER_HEIGHT}}>
-          {groupColumn.type == CellType.GEOLOCATION ?
+          {groupColumn.type === CellType.GEOLOCATION ?
             <div className={`timeline-grid-cell ${groupTitleClassName}`}>{cell_value}</div> :
             <Cell
               className={groupTitleClassName}
-              row={rows[0].row}
+              row={rows[0].events[0].original_row}
               column={groupColumn}
               collaborators={collaborators}
               dtable={dtable}
               tableID={tableID}
               formulaRows={formulaRows}
-              autoWidth={true}
+              autoWidth
             />
           }
           <div>
-            <span className="rows-count">{rowsCount}</span>
+            <span className="rows-count">{this.getEventsCount()}</span>
             <span className="btn-group-expand" onClick={this.onExpandGroupToggle}>
               <i className={`group-expand-icon dtable-font ${isExpanded ? 'dtable-icon-drop-down' : 'dtable-icon-right-slide'}`}></i>
             </span>
@@ -64,6 +74,7 @@ GroupItemLeft.propTypes = {
   onExpandGroupToggle: PropTypes.func,
   collaborators: PropTypes.array,
   dtable: PropTypes.object,
+  table: PropTypes.object,
   tableID: PropTypes.string,
   formulaRows: PropTypes.object,
 };

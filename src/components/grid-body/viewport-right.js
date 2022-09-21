@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import TimelineHeader from '../header/timeline-header';
+import Header from '../header/header';
 import CanvasRight from './canvas-right';
 import GroupCanvasRight from './group-canvas-right';
 import {
@@ -32,10 +32,10 @@ class ViewportRight extends React.Component {
   }
 
   componentDidMount() {
-    let { selectedGridView, selectedDate, gridStartDate, gridEndDate } = this.props;
-    let viewportRightWidth = this.viewportRight.offsetWidth;
-    let columnWidth = getColumnWidth(selectedGridView);
-    let initState = getGridInitState(selectedGridView, selectedDate, gridStartDate, gridEndDate, viewportRightWidth);
+    const { selectedGridView, selectedDate, gridStartDate, gridEndDate } = this.props;
+    const viewportRightWidth = this.viewportRight.offsetWidth;
+    const columnWidth = getColumnWidth(selectedGridView);
+    const initState = getGridInitState(selectedGridView, selectedDate, gridStartDate, gridEndDate, viewportRightWidth);
     this.allDates = initState.allDates;
     this.updateScroll({
       viewportRightWidth,
@@ -46,16 +46,18 @@ class ViewportRight extends React.Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
-    let { selectedGridView: newSelectedGridView, selectedDate: newSelectedDate, gridStartDate: newGridStartDate,
-      gridEndDate: newGridEndDate } = nextProps;
-    let columnWidth = getColumnWidth(newSelectedGridView);
-    let viewportRightWidth = this.viewportRight.offsetWidth;
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const {
+      selectedGridView: newSelectedGridView, selectedDate: newSelectedDate, gridStartDate: newGridStartDate,
+      gridEndDate: newGridEndDate,
+    } = nextProps;
+    const columnWidth = getColumnWidth(newSelectedGridView);
+    const viewportRightWidth = this.viewportRight.offsetWidth;
     if (this.props.gridStartDate !== nextProps.gridStartDate || this.props.gridEndDate !== nextProps.gridEndDate) {
       // changed grid date range.
       this.isScrolling = false;
       this.canUpdateScrollLeft = true;
-      let initState = getGridInitState(newSelectedGridView, newSelectedDate, newGridStartDate, newGridEndDate, viewportRightWidth);
+      const initState = getGridInitState(newSelectedGridView, newSelectedDate, newGridStartDate, newGridEndDate, viewportRightWidth);
       this.allDates = initState.allDates;
       this.updateScroll({
         viewportRightWidth,
@@ -68,7 +70,7 @@ class ViewportRight extends React.Component {
       // onNavigate.
       this.isScrolling = false;
       this.canUpdateScrollLeft = true;
-      let initState = getGridInitState(newSelectedGridView, newSelectedDate, newGridStartDate, newGridEndDate, viewportRightWidth);
+      const initState = getGridInitState(newSelectedGridView, newSelectedDate, newGridStartDate, newGridEndDate, viewportRightWidth);
       this.allDates = initState.allDates;
       this.updateScroll({
         viewportRightWidth,
@@ -82,15 +84,15 @@ class ViewportRight extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.isShowUsers !== prevProps.isShowUsers) {
-      let { selectedGridView, selectedDate } = this.props;
-      let unit = getCalcDateUnit(selectedGridView);
-      let scrollLeft = this.viewportRight.scrollLeft;
-      let columnWidth = getColumnWidth(selectedGridView);
-      let overDatesCount = Math.max(0, Math.round(scrollLeft / columnWidth));
-      let viewportRightWidth = this.viewportRight.offsetWidth;
-      let visibleStartDate = this.allDates[overDatesCount];
-      let visibleDatesCount = Math.ceil(viewportRightWidth / columnWidth);
-      let overScanDates = getScanDates(selectedGridView);
+      const { selectedGridView, selectedDate } = this.props;
+      const unit = getCalcDateUnit(selectedGridView);
+      const scrollLeft = this.viewportRight.scrollLeft;
+      const columnWidth = getColumnWidth(selectedGridView);
+      const overDatesCount = Math.max(0, Math.round(scrollLeft / columnWidth));
+      const viewportRightWidth = this.viewportRight.offsetWidth;
+      const visibleStartDate = this.allDates[overDatesCount];
+      const visibleDatesCount = Math.ceil(viewportRightWidth / columnWidth);
+      const overScanDates = getScanDates(selectedGridView);
       this.updateScroll({
         selectedGridView,
         selectedDate,
@@ -103,8 +105,9 @@ class ViewportRight extends React.Component {
   }
 
   renderCanvasRight = (props) => {
-    let { isGroupView, groupVisibleStartIdx, groups, foldedGroups, renderedRows, ...baseProps } = this.props;
-    let CustomCanvasRight, canvasRightProps;
+    const { isGroupView, groupVisibleStartIdx, groups, foldedGroups, renderedRows, ...baseProps } = this.props;
+    let CustomCanvasRight;
+    let canvasRightProps;
     if (isGroupView) {
       CustomCanvasRight = GroupCanvasRight;
       canvasRightProps = {groupVisibleStartIdx, groups, foldedGroups};
@@ -127,15 +130,15 @@ class ViewportRight extends React.Component {
       this.isScrolling = true;
       return;
     }
-    let { selectedGridView, selectedDate } = this.props;
-    let scrollLeft = evt.target.scrollLeft;
-    let unit = getCalcDateUnit(selectedGridView);
-    let columnWidth = getColumnWidth(selectedGridView);
-    let overDatesCount = Math.max(0, Math.round(scrollLeft / columnWidth));
-    let viewportRightWidth = this.viewportRight.offsetWidth;
-    let visibleStartDate = this.allDates[overDatesCount];
-    let visibleDatesCount = Math.ceil(viewportRightWidth / columnWidth);
-    let overScanDates = getScanDates(selectedGridView);
+    const { selectedGridView, selectedDate } = this.props;
+    const scrollLeft = evt.target.scrollLeft;
+    const unit = getCalcDateUnit(selectedGridView);
+    const columnWidth = getColumnWidth(selectedGridView);
+    const overDatesCount = Math.max(0, Math.round(scrollLeft / columnWidth));
+    const viewportRightWidth = this.viewportRight.offsetWidth;
+    const visibleStartDate = this.allDates[overDatesCount];
+    const visibleDatesCount = Math.ceil(viewportRightWidth / columnWidth);
+    const overScanDates = getScanDates(selectedGridView);
     this.props.eventBus.dispatch(EventTypes.VIEWPORT_RIGHT_SCROLL, {visibleStartDate, scrollLeft});
     this.updateScroll({
       selectedGridView,
@@ -149,13 +152,13 @@ class ViewportRight extends React.Component {
   }
 
   updateScroll = ({selectedGridView, selectedDate, visibleStartDate, visibleEndDate, overScanStartDate, overScanEndDate, viewportRightWidth, columnWidth}) => {
-    let visibleDatesCount = Math.ceil(viewportRightWidth / columnWidth);
-    let compareDate = getCompareDate(selectedGridView, visibleStartDate, visibleDatesCount);
+    const visibleDatesCount = Math.ceil(viewportRightWidth / columnWidth);
+    const compareDate = getCompareDate(selectedGridView, visibleStartDate, visibleDatesCount);
     if (canUpdateSelectedDate(selectedDate, compareDate, selectedGridView)) {
       this.props.updateSelectedDate(compareDate, true);
     }
-    let visibleStartIndex = this.allDates.indexOf(visibleStartDate);
-    let visibleEndIndex = this.allDates.indexOf(visibleEndDate);
+    const visibleStartIndex = this.allDates.indexOf(visibleStartDate);
+    const visibleEndIndex = this.allDates.indexOf(visibleEndDate);
     let overScanStartIndex = this.allDates.indexOf(overScanStartDate);
     let overScanEndIndex = this.allDates.indexOf(overScanEndDate);
     if (overScanStartIndex < 0) {
@@ -193,10 +196,12 @@ class ViewportRight extends React.Component {
   }
 
   render() {
-    let { overScanStartIndex, overScanEndIndex } = this.state;
-    let { selectedGridView, selectedDate, renderHeaderYears, renderHeaderDates, isRenderAll } = this.props;
-    let columnWidth = getColumnWidth(selectedGridView);
-    let overScanDates, startOffset, endOffset;
+    const { overScanStartIndex, overScanEndIndex } = this.state;
+    const { selectedGridView, selectedDate, renderHeaderYears, renderHeaderDates, isRenderAll } = this.props;
+    const columnWidth = getColumnWidth(selectedGridView);
+    let overScanDates;
+    let startOffset;
+    let endOffset;
     if (isRenderAll) {
       overScanDates = [...this.allDates];
       startOffset = 0;
@@ -206,10 +211,14 @@ class ViewportRight extends React.Component {
       startOffset = overScanStartIndex * columnWidth;
       endOffset = (this.allDates.length - overScanEndIndex) * columnWidth;
     }
-    let renderedDates = getRenderedDates(selectedGridView, overScanDates);
+    const renderedDates = getRenderedDates(selectedGridView, overScanDates);
     return (
-      <div className="timeline-viewport-right flex-fill" ref={ref => this.viewportRight = ref} onScroll={this.onScroll}>
-        <TimelineHeader
+      <div
+        className="timeline-viewport-right flex-fill"
+        ref={ref => this.viewportRight = ref}
+        onScroll={this.onScroll}
+      >
+        <Header
           selectedGridView={selectedGridView}
           selectedDate={selectedDate}
           overScanDates={overScanDates}

@@ -45,7 +45,8 @@ const fr = {
   "Show_columns": "Afficher les colonnes",
   "Search_a_column": "Rechercher la colonne",
   "No_column": "Aucune colonne",
-  "Not_used": "Ne pas utilisé"
+  "Not_used": "Ne pas utilisé",
+  "Display_as_swimlane_mode": "Display as swimlane mode"
 }
 ;
 

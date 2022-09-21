@@ -21,7 +21,7 @@ class EventCell extends React.Component {
   constructor(props) {
     super(props);
     const { overScanStartDate, selectedGridView, columnWidth, event } = props;
-    const { start, end } = event;
+    const { start, end, bgColor } = event;
     const { date: startDate } = start;
     const { date: endDate } = end;
     const { left, width } = getEventPosition(startDate, endDate, overScanStartDate, columnWidth, selectedGridView);
@@ -34,6 +34,7 @@ class EventCell extends React.Component {
       width,
       left,
       label,
+      bgColor,
     };
     this.draggingSideDirection = '';
   }
@@ -44,12 +45,12 @@ class EventCell extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { overScanStartDate, selectedGridView, columnWidth, event } = nextProps;
-    const { start, end } = event;
+    const { start, end, bgColor } = event;
     const { date: startDate } = start;
     const { date: endDate } = end;
     const { left, width } = getEventPosition(startDate, endDate, overScanStartDate, columnWidth, selectedGridView);
     const label = getEventLabel(width, event.label);
-    this.setState({ left, width, label, end: endDate, start: startDate });
+    this.setState({ left, width, label, end: endDate, start: startDate, bgColor });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -312,8 +313,8 @@ class EventCell extends React.Component {
 
   renderOldPosition = ({ formatterStyle }) => {
     const { event, overScanStartDate, selectedGridView, columnWidth } = this.props;
-    const { label } = this.state;
-    const { bgColor, textColor } = event;
+    const { label, bgColor } = this.state;
+    const { textColor } = event;
     const { left, width } = getEventPosition(this.distance.start, this.distance.end, overScanStartDate, columnWidth, selectedGridView);
     return (
       <div
@@ -336,16 +337,16 @@ class EventCell extends React.Component {
 
   render() {
     const { event, selectedGridView, columnWidth } = this.props;
-    const { bgColor, textColor, row } = event;
+    const { textColor, row } = event;
     const canEventDateBeChanged = event.start.canChange && event.end.canChange;
-    const { start, end, isDraggingSide, left, width, label, isDraggingEvent } = this.state;
+    const { start, end, isDraggingSide, left, width, label, bgColor, isDraggingEvent } = this.state;
     const { _id: rowId } = row;
     const canEventSideBeChanged = selectedGridView === GRID_VIEWS.DAY
       || (selectedGridView !== GRID_VIEWS.DAY && (width > columnWidth));
     const canEventStartDateBeChanged = event.start.canChange && canEventSideBeChanged;
     const canEventEndDateBeChanged = event.end.canChange && canEventSideBeChanged;
     const formatterStyle = width < 30 ? { padding: 0 } : { padding: '0 10px' };
-
+    const dragging = isDraggingSide || isDraggingEvent;
     return (
       <Fragment>
         <div
@@ -353,8 +354,8 @@ class EventCell extends React.Component {
           id={`timeline_event_cell_${rowId}` || ''}
           style={{
             left,
-            zIndex: isDraggingEvent ? zIndexes.EVENT_CELL + 1 : zIndexes.EVENT_CELL,
-            width
+            width,
+            zIndex: dragging ? zIndexes.EVENT_CELL + 1 : zIndexes.EVENT_CELL,
           }}
           ref={ref => this.timeLineEventCellRef = ref}
           onDoubleClick={this.onRowExpand}
@@ -389,7 +390,7 @@ class EventCell extends React.Component {
         >
           {`${start} - ${end}`}
         </UncontrolledTooltip>
-        {(isDraggingSide || isDraggingEvent) && this.renderNextPosition({ formatterStyle })}
+        {dragging && this.renderNextPosition({ formatterStyle })}
         {isDraggingEvent && this.renderOldPosition({ formatterStyle })}
       </Fragment>
     );

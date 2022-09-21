@@ -15,14 +15,25 @@ class ViewportLeft extends React.Component {
   }
 
   renderCanvasLeft = (shownColumns) => {
-    let { isGroupView, groupVisibleStartIdx, renderedRows, groups, onExpandGroupToggle, foldedGroups, collaborators, dtable, tableID, formulaRows, topOffset, bottomOffset } = this.props;
-    let CustomCanvasLeft, canvasLeftProps;
+    const {
+      isGroupView, groupVisibleStartIdx, renderedRows, groups, onExpandGroupToggle, foldedGroups,
+      collaborators, dtable, tableID, formulaRows, topOffset, bottomOffset, columnsVisible,
+    } = this.props;
+    let CustomCanvasLeft;
+    let canvasLeftProps;
     if (isGroupView) {
       CustomCanvasLeft = GroupCanvasLeft;
-      canvasLeftProps = { groupVisibleStartIdx, groups, foldedGroups, onExpandGroupToggle, shownColumns, collaborators, dtable, tableID, formulaRows, topOffset, bottomOffset };
+      canvasLeftProps = {
+        groupVisibleStartIdx, groups, foldedGroups, onExpandGroupToggle, collaborators,
+        dtable, tableID, formulaRows, topOffset, bottomOffset,
+      };
+      canvasLeftProps.shownColumns = columnsVisible ? shownColumns : [];
     } else {
       CustomCanvasLeft = CanvasLeft;
-      canvasLeftProps = { renderedRows, shownColumns, collaborators, dtable, tableID, formulaRows, topOffset, bottomOffset };
+      canvasLeftProps = {
+        renderedRows, shownColumns, collaborators, dtable, tableID, formulaRows, topOffset,
+        bottomOffset,
+      };
     }
     return (
       <CustomCanvasLeft {...canvasLeftProps} />
@@ -89,7 +100,7 @@ class ViewportLeft extends React.Component {
   }
 
   render() {
-    const { columns, isGroupView } = this.props;
+    const { columns, isGroupView, columnsVisible } = this.props;
     this.configuredColumns = this.getCurrentConfiguredColumns();
     const configuredColumns = this.configuredColumns.map((item, index) => {
       const targetItem = columns.filter(c => c.key == item.key)[0];
@@ -98,13 +109,17 @@ class ViewportLeft extends React.Component {
     const shownColumns = configuredColumns.filter(item => item.shown);
     return (
       <div className="timeline-viewport-left d-flex flex-column">
-        <div>
-          <ColumnManager
-            columns={configuredColumns}
-            updateColumn={this.updateColumn}
-            moveColumn={this.moveColumn}
-          />
-          <ColumnsShown columns={shownColumns} isGroupView={isGroupView} />
+        <div className='viewport-left-header'>
+          {columnsVisible &&
+            <>
+              <ColumnManager
+                columns={configuredColumns}
+                updateColumn={this.updateColumn}
+                moveColumn={this.moveColumn}
+              />
+              <ColumnsShown columns={shownColumns} isGroupView={isGroupView} />
+            </>
+          }
         </div>
         <div className="canvas-left-wrapper flex-fill o-auto" ref={ref => this.viewportLeft = ref} onScroll={this.onViewportLeftScroll}>
           {this.renderCanvasLeft(shownColumns)}
@@ -131,6 +146,7 @@ ViewportLeft.propTypes = {
   dtable: PropTypes.object,
   tableID: PropTypes.string,
   formulaRows: PropTypes.object,
+  columnsVisible: PropTypes.bool,
   onModifyTimelineSettings: PropTypes.func,
 };
 

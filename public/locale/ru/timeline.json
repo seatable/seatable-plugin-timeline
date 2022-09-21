@@ -45,5 +45,6 @@
   "Show_columns": "Показать столбцы",
   "Search_a_column": "Поиск в столбце",
   "No_column": "Нет столбца",
-  "Not_used": "Не используется"
+  "Not_used": "Не используется",
+  "Display_as_swimlane_mode": "Display as swimlane mode"
 }

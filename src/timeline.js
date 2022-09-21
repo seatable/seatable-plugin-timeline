@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import html2canvas from 'html2canvas';
 import TimelineSetting from './components/timeline-setting';
 import Toolbar from './components/toolbar';
-import VIEWS from './components/timeline-grid-views';
+import VIEWS from './components/grid-views';
 import SelectExportDateRangeDialog from './components/dialog/select-export-date-range-dialog';
 import { dates, getDtableUuid } from './utils';
 import { PLUGIN_NAME, NAVIGATE, GRID_VIEWS, DATE_FORMAT, DATE_UNIT } from './constants';
@@ -41,7 +41,7 @@ class Timeline extends React.Component {
     }, 300);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let { selectedTimelineView: oldSelectedTimelineView } = this.props;
     let { selectedTimelineView, settings } = nextProps;
     if (selectedTimelineView && oldSelectedTimelineView !== selectedTimelineView) {
@@ -146,7 +146,8 @@ class Timeline extends React.Component {
     let yearOfToday = today.year();
     if (selectedGridView === GRID_VIEWS.YEAR) {
       return yearOfSelectedDate === yearOfToday;
-    } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
+    }
+    if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
       let monthOfSelectedDate = dayjs(selectedDate).month();
       let monthOfToday = today.month();
       return yearOfSelectedDate === yearOfToday &&
@@ -242,12 +243,15 @@ class Timeline extends React.Component {
   }
 
   render() {
-    let { isShowUsers, selectedGridView, selectedDate, changedSelectedByScroll, gridStartDate, gridEndDate,
-      canNavigateToday, isShowSelectExportDateRangeDialog, isExporting, isAfterDelay } = this.state;
-    let { tables, views, isShowTimelineSetting,
-      settings, rows, columns, isGroupView, groups, collaborators } = this.props;
-    let GridView = this.gridViews[selectedGridView];
-    let isToday = this.isToday();
+    const {
+      isShowUsers, selectedGridView, selectedDate, changedSelectedByScroll, gridStartDate, gridEndDate,
+      canNavigateToday, isShowSelectExportDateRangeDialog, isExporting, isAfterDelay,
+    } = this.state;
+    const {
+      tables, views, isShowTimelineSetting, settings, rows, columns, isGroupView, groups, collaborators,
+    } = this.props;
+    const GridView = this.gridViews[selectedGridView];
+    const isToday = this.isToday();
     return (
       <div className="timeline-container o-hidden" ref={ref => this.timeline = ref}>
         {isAfterDelay &&
@@ -257,7 +261,7 @@ class Timeline extends React.Component {
               selectedDate={selectedDate}
               canNavigateToday={!isToday && canNavigateToday}
               isShowUsers={isShowUsers}
-              settings={settings || {}}
+              settings={settings}
               columns={columns}
               isGroupView={isGroupView}
               eventBus={this.props.eventBus}
@@ -277,7 +281,7 @@ class Timeline extends React.Component {
               rows={rows}
               columns={columns}
               collaborators={collaborators}
-              settings={settings || {}}
+              settings={settings}
               onModifyTimelineSettings={this.props.onModifyTimelineSettings}
               isGroupView={isGroupView}
               groups={groups}
@@ -297,12 +301,11 @@ class Timeline extends React.Component {
             tables={tables}
             views={views}
             dtable={this.props.dtable}
-            CellType={this.props.CellType}
             columnIconConfig={this.props.columnIconConfig}
             selectedTable={this.props.selectedTable}
             selectedView={this.props.selectedView}
             selectedGridView={selectedGridView}
-            settings={settings || {}}
+            settings={settings}
             gridStartDate={gridStartDate}
             gridEndDate={gridEndDate}
             onModifyTimelineSettings={this.props.onModifyTimelineSettings}
@@ -329,7 +332,6 @@ Timeline.propTypes = {
   tables: PropTypes.array,
   views: PropTypes.array,
   dtable: PropTypes.object,
-  CellType: PropTypes.object,
   selectedTimelineView: PropTypes.object,
   selectedTable: PropTypes.object,
   selectedView: PropTypes.object,

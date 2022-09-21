@@ -1,0 +1,43 @@
+.timeline-switch {
+  position: relative;
+  flex: 1;
+  display: flex;
+  cursor: pointer;
+}
+
+.timeline-switch .custom-switch {
+  position: relative;
+  width: 100%;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.timeline-switch .custom-switch .custom-switch-description {
+  width: 165px;
+  margin: 0;
+  padding-right: 5px;
+}
+
+.timeline-switch .custom-switch .dtable-font {
+  -webkit-transform: scale(.8);
+  transform: scale(.8);
+  display: inline-block;
+  line-height: 24px;
+  margin-right: 8px;
+  color: #666;
+}
+
+.timeline-switch .custom-switch .custom-switch-indicator {
+  width: 22px;
+  height: 12px;
+  border-radius: 6px;
+}
+
+.timeline-switch .custom-switch .custom-switch-input:checked~.custom-switch-indicator:before {
+  left: 12px;
+}
+
+.timeline-switch .custom-switch .custom-switch-indicator:before {
+  height: 8px;
+  width: 8px;
+}

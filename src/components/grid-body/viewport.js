@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ViewportLeft from './viewport-left';
 import ViewportRight from './viewport-right';
+import { getViewportState, getVisibleBoundaries, getRowOverScanStartIdx, getRowOverScanEndIdx } from '../../utils/viewport-utils';
 import { zIndexes, HEADER_HEIGHT, ROW_HEIGHT } from '../../constants';
 import * as EventTypes from '../../constants/event-types';
-import { getViewportState, getVisibleBoundaries, getRowOverScanStartIdx, getRowOverScanEndIdx } from '../../utils/viewport-utils';
 
 class Viewport extends Component {
 
@@ -15,16 +15,19 @@ class Viewport extends Component {
 
   componentDidMount() {
     window.timelineViewport = this;
-    let viewportHeight = this.viewport.offsetHeight - HEADER_HEIGHT;
-    let { rows } = this.props;
+    const { rows } = this.props;
     this.setState({
-      ...getViewportState(viewportHeight, rows.length)
+      ...getViewportState(this.getViewportHeight(), rows.length)
     });
     this.unsubscribeResetScrollTop = this.props.eventBus.subscribe(EventTypes.RESET_VIEWPORT_SCROLL_TOP, this.onResetViewportScrollTop);
   }
 
   componentWillUnmount() {
     this.unsubscribeResetScrollTop();
+  }
+
+  getViewportHeight = () => {
+    return this.viewport.offsetHeight - HEADER_HEIGHT;
   }
 
   getRenderedRows = (rowOverScanStartIdx, rowOverScanEndIdx) => {
@@ -59,12 +62,11 @@ class Viewport extends Component {
 
   updateScroll = (scrollTop) => {
     this.scrollTop = scrollTop;
-    let { rows } = this.props;
-    let rowsCount = rows.length;
-    let viewportHeight = this.viewport.offsetHeight - HEADER_HEIGHT;
-    let { rowVisibleStartIdx, rowVisibleEndIdx } = getVisibleBoundaries(viewportHeight, scrollTop, rowsCount);
-    let rowOverScanStartIdx = getRowOverScanStartIdx(rowVisibleStartIdx);
-    let rowOverScanEndIdx = getRowOverScanEndIdx(rowVisibleEndIdx, rowsCount);
+    const { rows } = this.props;
+    const rowsCount = rows.length;
+    const { rowVisibleStartIdx, rowVisibleEndIdx } = getVisibleBoundaries(this.getViewportHeight(), scrollTop, rowsCount);
+    const rowOverScanStartIdx = getRowOverScanStartIdx(rowVisibleStartIdx);
+    const rowOverScanEndIdx = getRowOverScanEndIdx(rowVisibleEndIdx, rowsCount);
     this.setState({
       rowVisibleStartIdx,
       rowVisibleEndIdx,
@@ -74,12 +76,16 @@ class Viewport extends Component {
   }
 
   render() {
-    let { rowOverScanStartIdx, rowOverScanEndIdx } = this.state;
-    let { isShowUsers, selectedGridView, selectedDate, gridStartDate, gridEndDate, rows, renderHeaderYears,
+    const { rowOverScanStartIdx, rowOverScanEndIdx } = this.state;
+    const {
+      isShowUsers, selectedGridView, selectedDate, gridStartDate, gridEndDate, rows, renderHeaderYears,
       renderHeaderDates, eventBus, onViewportRightScroll, updateSelectedDate, onRowExpand, changedSelectedByScroll,
-      isRenderAll, columns, collaborators } = this.props;
+      isRenderAll, columns, collaborators,
+    } = this.props;
     const rowsCount = rows.length;
-    let renderedRows, topOffset, bottomOffset;
+    let renderedRows;
+    let topOffset;
+    let bottomOffset;
     if (isRenderAll) {
       renderedRows = [...rows];
       topOffset = 0;

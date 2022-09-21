@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import ViewportLeft from './viewport-left';
 import ViewportRight from './viewport-right';
-import { zIndexes, HEADER_HEIGHT } from '../../constants';
 import { getGroupViewportState, getGroupsHeight, getGroupVisibleBoundaries } from '../../utils/group-viewport-utils';
+import { zIndexes, HEADER_HEIGHT } from '../../constants';
 import * as EventTypes from '../../constants/event-types';
 
 class GroupViewport extends Component {
@@ -20,17 +21,20 @@ class GroupViewport extends Component {
 
   componentDidMount() {
     window.timelineViewport = this;
-    let groupViewportHeight = this.groupViewport.offsetHeight - HEADER_HEIGHT;
-    let { groups } = this.props;
-    let { foldedGroups } = this.state;
+    const { groups } = this.props;
+    const { foldedGroups } = this.state;
     this.setState({
-      ...getGroupViewportState(groupViewportHeight, groups, foldedGroups)
+      ...getGroupViewportState(this.getViewportHeight(), groups, foldedGroups)
     });
     this.unsubscribeResetScrollTop = this.props.eventBus.subscribe(EventTypes.RESET_VIEWPORT_SCROLL_TOP, this.onResetViewportScrollTop);
   }
 
   componentWillUnmount() {
     this.unsubscribeResetScrollTop();
+  }
+
+  getViewportHeight = () => {
+    return this.groupViewport.offsetHeight - HEADER_HEIGHT;
   }
 
   onResetViewportScrollTop = () => {
@@ -40,24 +44,20 @@ class GroupViewport extends Component {
   }
 
   onExpandGroupToggle = (groupIndex) => {
-    let { groups } = this.props;
-    let { foldedGroups, groupVisibleStartIdx: oldGroupVisibleStartIdx } = this.state;
+    const { groups } = this.props;
+    const { foldedGroups, groupVisibleStartIdx: oldGroupVisibleStartIdx } = this.state;
+    const updatedGroupIndex = groupIndex + oldGroupVisibleStartIdx;
     let newFoldedGroups = [...foldedGroups];
-    let updatedGroupIndex = groupIndex + oldGroupVisibleStartIdx;
-    let updatedGroup = groups[updatedGroupIndex];
-    if (!updatedGroup) return;
-    let targetIndex = newFoldedGroups.indexOf(updatedGroupIndex);
+    if (!groups[updatedGroupIndex]) return;
+    const targetIndex = newFoldedGroups.indexOf(updatedGroupIndex);
     if (targetIndex > -1) {
       newFoldedGroups.splice(targetIndex, 1);
     } else {
       newFoldedGroups.push(updatedGroupIndex);
     }
-    let groupViewportHeight = this.groupViewport.offsetHeight - HEADER_HEIGHT;
-    let { groupVisibleStartIdx, groupVisibleEndIdx } = getGroupVisibleBoundaries(groupViewportHeight, this.scrollTop, groups, newFoldedGroups);
     this.setState({
       foldedGroups: newFoldedGroups,
-      groupVisibleStartIdx,
-      groupVisibleEndIdx
+      ...getGroupVisibleBoundaries(this.getViewportHeight(), this.scrollTop, groups, newFoldedGroups),
     });
   }
 
@@ -68,7 +68,8 @@ class GroupViewport extends Component {
     if (groupVisibleStartIdx >= groupsLength || groupVisibleEndIdx >= groupsLength) {
       return [];
     }
-    let i = groupVisibleStartIdx, renderGroups = [];
+    let i = groupVisibleStartIdx;
+    let renderGroups = [];
     while (i <= groupVisibleEndIdx) {
       renderGroups.push(groups[i]);
       i++;
@@ -87,24 +88,25 @@ class GroupViewport extends Component {
   }
 
   updateScroll = (scrollTop) => {
-    let { groups } = this.props;
-    let { foldedGroups } = this.state;
-    let groupViewportHeight = this.groupViewport.offsetHeight - HEADER_HEIGHT;
-    let { groupVisibleStartIdx, groupVisibleEndIdx } = getGroupVisibleBoundaries(groupViewportHeight, scrollTop, groups, foldedGroups);
+    const { groups } = this.props;
+    const { foldedGroups } = this.state;
     this.scrollTop = scrollTop;
     this.setState({
-      groupVisibleStartIdx,
-      groupVisibleEndIdx,
+      ...getGroupVisibleBoundaries(this.getViewportHeight(), scrollTop, groups, foldedGroups),
     });
   }
 
   render() {
-    let { gridStartDate, gridEndDate, isShowUsers, selectedGridView, selectedDate, renderHeaderYears,
+    const {
+      gridStartDate, gridEndDate, isShowUsers, selectedGridView, selectedDate, renderHeaderYears,
       renderHeaderDates, updateSelectedDate, eventBus, onRowExpand, changedSelectedByScroll,
-      onViewportRightScroll, groups, isRenderAll, columns, collaborators } = this.props;
-    let { foldedGroups, groupVisibleStartIdx, groupVisibleEndIdx } = this.state;
+      onViewportRightScroll, groups, isRenderAll, columns, collaborators, settings,
+    } = this.props;
+    const { foldedGroups, groupVisibleStartIdx, groupVisibleEndIdx } = this.state;
     const groupsLen = groups.length;
-    let renderedGroups, topOffset, bottomOffset;
+    let renderedGroups;
+    let topOffset;
+    let bottomOffset;
     if (isRenderAll) {
       renderedGroups = [...groups];
       topOffset = 0;
@@ -114,13 +116,19 @@ class GroupViewport extends Component {
       topOffset = groupVisibleStartIdx > 0 ? getGroupsHeight(groups, foldedGroups, 0, groupVisibleStartIdx) : 0;
       bottomOffset = (groupsLen - groupVisibleEndIdx) > 0 ? getGroupsHeight(groups, foldedGroups, groupVisibleEndIdx + 1, groupsLen) : 0;
     }
+    const { display_as_swimlane } = settings;
     return (
-      <div className="timeline-group-viewport viewport d-flex" ref={ref => this.groupViewport = ref}>
+      <div
+        className={classnames('timeline-group-viewport viewport d-flex', {
+          'is-swimlane': display_as_swimlane,
+        })}
+        ref={ref => this.groupViewport = ref}
+      >
         {isShowUsers &&
           <div className="left-pane-wrapper" style={{zIndex: zIndexes.LEFT_PANE_WRAPPER}}>
             <ViewportLeft
+              isGroupView
               ref={node => this.viewportLeft = node}
-              isGroupView={true}
               groupVisibleStartIdx={groupVisibleStartIdx}
               groups={renderedGroups}
               foldedGroups={foldedGroups}
@@ -129,8 +137,9 @@ class GroupViewport extends Component {
               onExpandGroupToggle={this.onExpandGroupToggle}
               onViewportLeftScroll={this.onViewportLeftScroll}
               columns={columns}
+              columnsVisible={!display_as_swimlane}
               collaborators={collaborators}
-              settings={this.props.settings}
+              settings={settings}
               onModifyTimelineSettings={this.props.onModifyTimelineSettings}
               dtable={this.props.dtable}
               tableID={this.props.tableID}
@@ -139,9 +148,9 @@ class GroupViewport extends Component {
           </div>
         }
         <ViewportRight
+          isGroupView
           ref={node => this.viewportRight = node}
           isShowUsers={isShowUsers}
-          isGroupView={true}
           gridStartDate={gridStartDate}
           gridEndDate={gridEndDate}
           groupVisibleStartIdx={groupVisibleStartIdx}
