@@ -284,7 +284,8 @@ class App extends React.Component {
         rows: timelineRows
       });
     });
-    return groups;
+    const validGroups = groups.filter(group => group.rows.length > 0);
+    return validGroups;
   }
 
   getEventsFromConvertedRows = (convertedRows, table, columns, labelColumn, singleSelectColumn, options, rowsColor, settings) => {
