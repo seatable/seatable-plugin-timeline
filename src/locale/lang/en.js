@@ -8,6 +8,7 @@ const en = {
   "Cancel": "Cancel",
   "Submit": "Submit",
   "Grid_view_year": "Year",
+  "Grid_view_quarter": "Quarter",
   "Grid_view_month": "Month",
   "Grid_view_day": "Day",
   "Today": "Today",

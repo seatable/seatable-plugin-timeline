@@ -11,6 +11,7 @@ const PLUGIN_NAME = 'timeline';
 
 const GRID_VIEWS = {
   YEAR: 'year',
+  QUARTER: 'quarter',
   MONTH: 'month',
   DAY: 'day',
 };

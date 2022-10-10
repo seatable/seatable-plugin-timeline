@@ -45,6 +45,9 @@ class Toolbar extends React.Component {
       case GRID_VIEWS.YEAR: {
         return intl.get('Grid_view_year');
       }
+      case GRID_VIEWS.QUARTER: {
+        return intl.get('Grid_view_quarter');
+      }
       case GRID_VIEWS.MONTH: {
         return intl.get('Grid_view_month');
       }
@@ -160,6 +163,7 @@ class Toolbar extends React.Component {
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.YEAR)}>{intl.get('Grid_view_year')}</DropdownItem>
+                <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.QUARTER)}>{intl.get('Grid_view_quarter')}</DropdownItem>
                 <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.MONTH)}>{intl.get('Grid_view_month')}</DropdownItem>
                 <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.DAY)}>{intl.get('Grid_view_day')}</DropdownItem>
               </DropdownMenu>

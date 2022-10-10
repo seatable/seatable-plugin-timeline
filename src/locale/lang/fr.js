@@ -8,6 +8,7 @@ const fr = {
   "Cancel": "Annuler",
   "Submit": "Soumettre",
   "Grid_view_year": "An",
+  "Grid_view_quarter": "Quarter",
   "Grid_view_month": "Mois",
   "Grid_view_day": "Jour",
   "Today": "Aujourd'hui",

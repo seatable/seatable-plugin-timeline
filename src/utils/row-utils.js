@@ -5,7 +5,7 @@ export const getEventWidth = (selectedGridView, columnWidth, eventStartDate, eve
   const formattedStartDate = dayjs(eventStartDate).format(DATE_FORMAT.YEAR_MONTH_DAY);
   const formattedEndDate = dayjs(eventEndDate).format(DATE_FORMAT.YEAR_MONTH_DAY);
   let duration;
-  if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
+  if (selectedGridView === GRID_VIEWS.QUARTER || selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
     duration = dayjs(formattedEndDate).diff(formattedStartDate, DATE_UNIT.DAY);
   }
   return ((duration || 0) + 1) * columnWidth;
@@ -13,7 +13,7 @@ export const getEventWidth = (selectedGridView, columnWidth, eventStartDate, eve
 
 export const getEventLeft = (selectedGridView, columnWidth, overScanStartDate, eventStartDate) => {
   let duration;
-  if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
+  if (selectedGridView === GRID_VIEWS.QUARTER || selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
     const formattedOverScanStartDate = dayjs(overScanStartDate).format(DATE_FORMAT.YEAR_MONTH_DAY);
     const startDate = dayjs(eventStartDate).format(DATE_FORMAT.YEAR_MONTH_DAY);
     duration = dayjs(startDate).diff(formattedOverScanStartDate, DATE_UNIT.DAY);

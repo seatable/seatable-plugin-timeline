@@ -8,6 +8,7 @@ const zh_CN = {
   "Cancel": "取消",
   "Submit": "提交",
   "Grid_view_year": "年",
+  "Grid_view_quarter": "季度",
   "Grid_view_month": "月",
   "Grid_view_day": "天",
   "Today": "今天",
