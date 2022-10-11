@@ -22,8 +22,8 @@ export const getGridInitState = (selectedGridView, selectedDate, gridStartDate, 
     }
     case GRID_VIEWS.QUARTER: {
       unit = DATE_UNIT.DAY;
-      m_gridStartDate = m_gridStartDate.subtract(1, DATE_UNIT.WEEK);
-      visibleStartDate = dayjs(selectedDate).startOf(DATE_UNIT.QUARTER).subtract(1, DATE_UNIT.WEEK).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      m_gridStartDate = m_gridStartDate.subtract(4, DATE_UNIT.DAY);
+      visibleStartDate = dayjs(selectedDate).startOf(DATE_UNIT.QUARTER).subtract(4, DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
       break;
     }
     case GRID_VIEWS.MONTH: {
@@ -58,7 +58,7 @@ export const getCompareDate = (selectedGridView, visibleStartDate, visibleDatesC
       return dayjs(visibleStartDate).add(5, DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY);
     }
     case GRID_VIEWS.QUARTER: {
-      return dayjs(visibleStartDate).add(1, DATE_UNIT.MONTH).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      return dayjs(visibleStartDate).add(4, DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
     }
     case GRID_VIEWS.MONTH: {
       return dayjs(visibleStartDate).add(15, DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
@@ -77,6 +77,10 @@ export const canUpdateSelectedDate = (dateA, dateB, selectedGridView) => {
   let yearOfDateB = formattedDateB.year();
   if (selectedGridView === GRID_VIEWS.YEAR) {
     return yearOfDateA !== yearOfDateB;
+  } else if (selectedGridView === GRID_VIEWS.QUARTER) {
+    const quarterOfDateA = formattedDateA.quarter();
+    const quarterOfDateB = formattedDateB.quarter();
+    return yearOfDateA !== yearOfDateB || quarterOfDateA !== quarterOfDateB;
   } else {
     let monthOfDateA = formattedDateA.month();
     let monthOfDateB = formattedDateB.month();

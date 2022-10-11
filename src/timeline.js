@@ -117,8 +117,9 @@ class Timeline extends React.Component {
     let calcDateUnit;
     if (selectedGridView === GRID_VIEWS.YEAR) {
       calcDateUnit = DATE_UNIT.YEAR;
+    } else if (selectedGridView === GRID_VIEWS.QUARTER) {
+      calcDateUnit = DATE_UNIT.QUARTER;
     } else if (
-      selectedGridView === GRID_VIEWS.QUARTER ||
       selectedGridView === GRID_VIEWS.MONTH ||
       selectedGridView === GRID_VIEWS.DAY) {
       calcDateUnit = DATE_UNIT.MONTH;

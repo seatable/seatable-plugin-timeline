@@ -58,7 +58,7 @@ class Toolbar extends React.Component {
   }
 
   renderCurrentDate = () => {
-    const { selectedGridView } = this.props;
+    const { selectedGridView, selectedDate } = this.props;
     if (selectedGridView === GRID_VIEWS.DAY) {
       const { currentDate } = this.state;
       return (
@@ -66,6 +66,12 @@ class Toolbar extends React.Component {
           <span className="year">{dayjs(currentDate).format(DATE_FORMAT.YEAR)}</span>
           -
           <span className="month" ref={ref => this.currentDateOfMonth = ref}>{dayjs(currentDate).format(DATE_FORMAT.MONTH)}</span>
+        </div>
+      );
+    } else if (selectedGridView === GRID_VIEWS.QUARTER) {
+      return (
+        <div className="current-date">
+          {dayjs(selectedDate).format(DATE_FORMAT.YEAR_QUARTER)}
         </div>
       );
     }
