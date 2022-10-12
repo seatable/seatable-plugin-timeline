@@ -100,6 +100,7 @@ class Viewport extends Component {
         {isShowUsers &&
           <div className="left-pane-wrapper" style={{zIndex: zIndexes.LEFT_PANE_WRAPPER}}>
             <ViewportLeft
+              columnsVisible
               ref={node => this.viewportLeft = node}
               renderedRows={renderedRows}
               topOffset={topOffset}
