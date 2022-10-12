@@ -116,9 +116,9 @@ class Toolbar extends React.Component {
   }
 
   getShownColumnsWidth = () => {
-    const { settings, columns } = this.props;
+    const { settings, columns, isGroupView } = this.props;
     const { columns: configuredColumns, display_as_swimlane } = settings;
-    if (display_as_swimlane) {
+    if (isGroupView && display_as_swimlane) {
       return 0;
     }
     if (configuredColumns) {
