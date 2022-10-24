@@ -18,7 +18,7 @@ const propTypes = {
   onPopoverToggle: PropTypes.func,
 };
 
-class Popover extends React.Component {
+class CustomPopover extends React.Component {
 
   render() {
     let { container, popperClassName, target, offset, header, body } = this.props;
@@ -42,6 +42,6 @@ class Popover extends React.Component {
   }
 }
 
-Popover.propTypes = propTypes;
+CustomPopover.propTypes = propTypes;
 
-export default Popover;
+export default CustomPopover;
