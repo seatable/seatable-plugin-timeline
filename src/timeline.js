@@ -17,6 +17,7 @@ class Timeline extends React.Component {
 
   constructor(props) {
     super(props);
+    this.gridViews = this.getGridViews();
     this.state = {
       isShowUsers: true,
       selectedGridView: this.getSelectedGridView(props.selectedTimelineView._id),
@@ -30,7 +31,6 @@ class Timeline extends React.Component {
       isAfterDelay: false,
       ...this.getInitDateRange(props.settings)
     };
-    this.gridViews = this.getGridViews();
   }
 
   componentDidMount() {
@@ -87,7 +87,10 @@ class Timeline extends React.Component {
     let dtableUuid = getDtableUuid();
     let localGridViews = this.getSelectedGridViews();
     let localGridView = localGridViews[`${dtableUuid}-${viewId}`];
-    return localGridView || GRID_VIEWS.MONTH;
+    if (!localGridView || !this.gridViews[localGridView]) {
+      return GRID_VIEWS.MONTH;
+    }
+    return localGridView;
   }
 
   onShowUsersToggle = () => {
