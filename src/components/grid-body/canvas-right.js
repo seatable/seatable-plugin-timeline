@@ -86,8 +86,7 @@ class CanvasRight extends React.Component {
   }
 
   onViewportRightScroll = (event) => {
-    const scrollLeft = event.target.scrollLeft;
-    const scrollTop = event.target.scrollTop;
+    const { scrollLeft, scrollTop } = event.target;
     this.setViewportRightScroll({scrollLeft, scrollTop});
     this.props.onViewportRightScroll({scrollLeft, scrollTop});
   }
