@@ -87,9 +87,9 @@
 }
 
 .plugin-timeline-setting .record-end-type-item.selected {
-  box-shadow: 0 0 0 1px rgb(229, 161, 82);
-  color: rgb(229, 161, 82);
-  background-color: rgba(229, 161, 82, .1);
+  box-shadow: 0 0 0 1px #ff8000;
+  color: #ff8000;
+  background-color: #fff2e4;
 }
 
 .plugin-timeline-setting .btn-date-range {
