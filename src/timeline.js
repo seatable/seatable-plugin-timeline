@@ -166,7 +166,7 @@ class Timeline extends React.Component {
   getGridViews = () => {
     const views = [GRID_VIEWS.YEAR, GRID_VIEWS.MONTH, GRID_VIEWS.DAY];
     let viewObject = {};
-    Array.isArray(views) && views.forEach((v) => {
+    views.forEach((v) => {
       viewObject[v] = VIEWS[v];
     });
     return viewObject;
