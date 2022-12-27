@@ -45,6 +45,9 @@ class Toolbar extends React.Component {
       case GRID_VIEWS.YEAR: {
         return intl.get('Grid_view_year');
       }
+      case GRID_VIEWS.QUARTER: {
+        return intl.get('Grid_view_quarter');
+      }
       case GRID_VIEWS.MONTH: {
         return intl.get('Grid_view_month');
       }
@@ -55,7 +58,7 @@ class Toolbar extends React.Component {
   }
 
   renderCurrentDate = () => {
-    const { selectedGridView } = this.props;
+    const { selectedGridView, selectedDate } = this.props;
     if (selectedGridView === GRID_VIEWS.DAY) {
       const { currentDate } = this.state;
       return (
@@ -63,6 +66,12 @@ class Toolbar extends React.Component {
           <span className="year">{dayjs(currentDate).format(DATE_FORMAT.YEAR)}</span>
           -
           <span className="month" ref={ref => this.currentDateOfMonth = ref}>{dayjs(currentDate).format(DATE_FORMAT.MONTH)}</span>
+        </div>
+      );
+    } else if (selectedGridView === GRID_VIEWS.QUARTER) {
+      return (
+        <div className="current-date">
+          {dayjs(selectedDate).format(DATE_FORMAT.YEAR_QUARTER)}
         </div>
       );
     }
@@ -160,6 +169,7 @@ class Toolbar extends React.Component {
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.YEAR)}>{intl.get('Grid_view_year')}</DropdownItem>
+                <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.QUARTER)}>{intl.get('Grid_view_quarter')}</DropdownItem>
                 <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.MONTH)}>{intl.get('Grid_view_month')}</DropdownItem>
                 <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.DAY)}>{intl.get('Grid_view_day')}</DropdownItem>
               </DropdownMenu>

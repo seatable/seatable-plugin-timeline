@@ -608,6 +608,7 @@
 
 .timeline-day-view,
 .timeline-month-view,
+.timeline-quarter-view,
 .timeline-year-view {
   height: 100%;
 }

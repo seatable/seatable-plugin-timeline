@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
 import { DATE_UNIT, DATE_FORMAT, GRID_VIEWS } from '../../constants';
+
+dayjs.extend(advancedFormat); // for 'quarter' view: 'Q'
 
 const propTypes = {
   selectedGridView: PropTypes.string,
@@ -22,6 +25,10 @@ class HeaderYears extends React.Component {
         calcUnit = DATE_UNIT.YEAR;
         displayFormat = DATE_FORMAT.YEAR;
         dateItemWidth = (dayjs(d).endOf(DATE_UNIT.YEAR).diff(d, DATE_UNIT.MONTH) + 1) * columnWidth;
+      } else if (selectedGridView === GRID_VIEWS.QUARTER) {
+        calcUnit = DATE_UNIT.QUARTER;
+        displayFormat = DATE_FORMAT.YEAR_QUARTER;
+        dateItemWidth = (dayjs(d).endOf(DATE_UNIT.QUARTER).diff(d, DATE_UNIT.DAY) + 1) * columnWidth;
       } else if (selectedGridView === GRID_VIEWS.MONTH) {
         calcUnit = DATE_UNIT.MONTH;
         displayFormat = DATE_FORMAT.YEAR_MONTH;

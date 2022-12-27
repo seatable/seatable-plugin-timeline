@@ -1,5 +1,8 @@
 import dayjs from 'dayjs';
+import quarterOfYear from 'dayjs/plugin/quarterOfYear';
 import { DATE_UNIT, DATE_FORMAT } from '../constants';
+
+dayjs.extend(quarterOfYear);
 
 export function getToday(format) {
   return dayjs().format(format);
