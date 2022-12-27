@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import quarterOfYear from 'dayjs/plugin/quarterOfYear';
 import * as dates from './dates';
 import { DATE_UNIT, DATE_FORMAT, GRID_VIEWS } from '../constants';
-import { GENERAL_COLUMN_WIDTH, MONTH_COLUMN_WIDTH } from '../constants/column';
+import { GENERAL_COLUMN_WIDTH, MONTH_COLUMN_WIDTH, QUARTER_COLUMN_WIDTH } from '../constants/column';
 
 dayjs.extend(quarterOfYear);
 
@@ -113,7 +113,9 @@ export const getCalcDateUnit = (selectedGridView) => {
 
 export const getColumnWidth = (selectedGridView) => {
   switch (selectedGridView) {
-    case GRID_VIEWS.QUARTER:
+    case GRID_VIEWS.QUARTER: {
+      return QUARTER_COLUMN_WIDTH;
+    }
     case GRID_VIEWS.MONTH: {
       return MONTH_COLUMN_WIDTH;
     }

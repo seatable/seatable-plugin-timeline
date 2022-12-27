@@ -23,9 +23,9 @@ export const getEventLeft = (selectedGridView, columnWidth, overScanStartDate, e
 
 export const getEventPosition = (startDate, endDate, gridStartDate, columnWidth, viewType) => {
   if (viewType === GRID_VIEWS.YEAR) {
-    const left = getEventLeft4YearView(startDate, gridStartDate, columnWidth);
-    const right = getEventRight4YearView(endDate, gridStartDate, columnWidth);
-    const width = Math.max(right - left, 10);
+    const left = getEventLeft4YearView(startDate, gridStartDate, columnWidth) || 0;
+    const right = getEventRight4YearView(endDate, gridStartDate, columnWidth) || 0;
+    const width = Math.max(right - left, 10) || 0;
     return { left, width };
   }
   return {
