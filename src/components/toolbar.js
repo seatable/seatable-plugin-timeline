@@ -39,6 +39,14 @@ class Toolbar extends React.Component {
     this.unsubscribeGridHorizontalScroll();
   }
 
+  static getDerivedStateFromProps(props, state) {
+    if (dayjs(props.selectedDate).format(DATE_FORMAT.YEAR_MONTH) !== state.currentDate) {
+      return {
+        currentDate: dayjs(props.selectedDate).format(DATE_FORMAT.YEAR_MONTH)
+      };
+    }
+  }
+
   getDisplaySelectedGridView = () => {
     const { selectedGridView } = this.props;
     switch (selectedGridView) {
