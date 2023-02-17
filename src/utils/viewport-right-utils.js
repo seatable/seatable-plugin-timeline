@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import quarterOfYear from 'dayjs/plugin/quarterOfYear';
 import * as dates from './dates';
 import { DATE_UNIT, DATE_FORMAT, GRID_VIEWS } from '../constants';
-import { GENERAL_COLUMN_WIDTH, MONTH_COLUMN_WIDTH, QUARTER_COLUMN_WIDTH } from '../constants/column';
+import { GENERAL_COLUMN_WIDTH, MONTH_COLUMN_WIDTH, QUARTER_COLUMN_WIDTH, WEEK_COLUMN_WIDTH } from '../constants/column';
 
 dayjs.extend(quarterOfYear);
 
@@ -30,6 +30,12 @@ export const getGridInitState = (selectedGridView, selectedDate, gridStartDate, 
       unit = DATE_UNIT.DAY;
       m_gridStartDate = m_gridStartDate.subtract(4, DATE_UNIT.DAY);
       visibleStartDate = dayjs(selectedDate).startOf(DATE_UNIT.MONTH).subtract(4, DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
+      break;
+    }
+    case GRID_VIEWS.WEEK: {
+      unit = DATE_UNIT.DAY;
+      m_gridStartDate = m_gridStartDate.subtract(4, DATE_UNIT.DAY);
+      visibleStartDate = dayjs(selectedDate).startOf(DATE_UNIT.WEEK).subtract(4, DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
       break;
     }
     default: {
@@ -63,6 +69,9 @@ export const getCompareDate = (selectedGridView, visibleStartDate, visibleDatesC
     case GRID_VIEWS.MONTH: {
       return dayjs(visibleStartDate).add(15, DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
     }
+    case GRID_VIEWS.WEEK: {
+      return dayjs(visibleStartDate).add(15, DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
+    }
     default: {
       // default view: Day.
       return dayjs(visibleStartDate).add(Math.ceil(visibleDatesCount / 3), DATE_UNIT.DAY).format(DATE_FORMAT.YEAR_MONTH_DAY);
@@ -91,6 +100,7 @@ export const canUpdateSelectedDate = (dateA, dateB, selectedGridView) => {
 export const getScanDates = (selectedGridView) => {
   switch (selectedGridView) {
     case GRID_VIEWS.QUARTER:
+    case GRID_VIEWS.WEEK:
     case GRID_VIEWS.MONTH: {
       return 40;
     }
@@ -119,6 +129,9 @@ export const getColumnWidth = (selectedGridView) => {
     case GRID_VIEWS.MONTH: {
       return MONTH_COLUMN_WIDTH;
     }
+    case GRID_VIEWS.WEEK: {
+      return WEEK_COLUMN_WIDTH;
+    }
     default: {
       return GENERAL_COLUMN_WIDTH;
     }
@@ -134,6 +147,9 @@ export const getRenderedDates = (selectedGridView, overScanDates) => {
       return dates.getUniqueDates(overScanDates, DATE_UNIT.QUARTER, DATE_FORMAT.YEAR_MONTH_DAY);
     }
     case GRID_VIEWS.MONTH: {
+      return dates.getUniqueDates(overScanDates, DATE_UNIT.MONTH, DATE_FORMAT.YEAR_MONTH_DAY);
+    }
+    case GRID_VIEWS.WEEK: {
       return dates.getUniqueDates(overScanDates, DATE_UNIT.MONTH, DATE_FORMAT.YEAR_MONTH_DAY);
     }
     case GRID_VIEWS.DAY: {

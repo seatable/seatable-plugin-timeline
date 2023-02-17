@@ -13,6 +13,7 @@ const GRID_VIEWS = {
   YEAR: 'year',
   QUARTER: 'quarter',
   MONTH: 'month',
+  WEEK: 'week',
   DAY: 'day',
 };
 

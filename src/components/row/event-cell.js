@@ -8,6 +8,7 @@ import EventFormatter from '../cell-formatter/event-formatter';
 import { getEventPosition, getEventDaysByDisplacement, getEventLabel } from '../../utils/row-utils';
 import { zIndexes, DATE_UNIT, GRID_VIEWS } from '../../constants';
 import * as EventTypes from '../../constants/event-types';
+import { MONTH_COLUMN_WIDTH } from '../../constants/column';
 
 const eventStopPropagation = (event) => {
   if (!event) return;
@@ -335,14 +336,17 @@ class EventCell extends React.Component {
     );
   }
 
+  canModifyWidth = () => {
+    return this.state.width >= MONTH_COLUMN_WIDTH * 2; // easy to modify width or position
+  }
+
   render() {
-    const { event, selectedGridView, columnWidth } = this.props;
+    const { event } = this.props;
     const { textColor, row } = event;
     const canEventDateBeChanged = event.start.canChange && event.end.canChange;
     const { start, end, isDraggingSide, left, width, label, bgColor, isDraggingEvent } = this.state;
     const { _id: rowId } = row;
-    const canEventSideBeChanged = selectedGridView === GRID_VIEWS.DAY
-      || (selectedGridView !== GRID_VIEWS.DAY && (width > columnWidth));
+    const canEventSideBeChanged = this.canModifyWidth();
     const canEventStartDateBeChanged = event.start.canChange && canEventSideBeChanged;
     const canEventEndDateBeChanged = event.end.canChange && canEventSideBeChanged;
     const formatterStyle = width < 30 ? { padding: 0 } : { padding: '0 10px' };
@@ -386,6 +390,8 @@ class EventCell extends React.Component {
         </div>
         <UncontrolledTooltip
           placement="bottom"
+          delay={100}
+          fade={false}
           target={`timeline_event_cell_${rowId}`}
         >
           {`${start} - ${end}`}
