@@ -40,7 +40,8 @@ function BgCells({selectedGridView, columnWidth, renderedDates}) {
         dateItemWidth = (dayjs(endOfQuarter).diff(d, DATE_UNIT.DAY) + 1) * columnWidth;
         break;
       }
-      case GRID_VIEWS.MONTH: {
+      case GRID_VIEWS.MONTH:
+      case GRID_VIEWS.WEEK: {
         isEndRange = true;
         let endOfMonth = dayjs(d).endOf(DATE_UNIT.MONTH);
         dateItemWidth = (dayjs(endOfMonth).diff(d, DATE_UNIT.DAY) + 1) * columnWidth;

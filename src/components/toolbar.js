@@ -51,6 +51,9 @@ class Toolbar extends React.Component {
       case GRID_VIEWS.MONTH: {
         return intl.get('Grid_view_month');
       }
+      case GRID_VIEWS.WEEK: {
+        return intl.get('Grid_view_week');
+      }
       default: {
         return intl.get('Grid_view_day');
       }
@@ -59,7 +62,7 @@ class Toolbar extends React.Component {
 
   renderCurrentDate = () => {
     const { selectedGridView, selectedDate } = this.props;
-    if (selectedGridView === GRID_VIEWS.DAY) {
+    if (selectedGridView === GRID_VIEWS.DAY || selectedGridView === GRID_VIEWS.WEEK) {
       const { currentDate } = this.state;
       return (
         <div className="current-date">
@@ -85,7 +88,7 @@ class Toolbar extends React.Component {
   viewportRightScroll = ({visibleStartDate, scrollLeft}) => {
     const { selectedGridView } = this.props;
     const { currentDate } = this.state;
-    if (selectedGridView === GRID_VIEWS.DAY) {
+    if (selectedGridView === GRID_VIEWS.DAY || selectedGridView === GRID_VIEWS.WEEK) {
       let newDate;
       if (scrollLeft - this.viewportRightScrollLeft > 0) {
         // scroll ro right.
@@ -171,6 +174,7 @@ class Toolbar extends React.Component {
                 <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.YEAR)}>{intl.get('Grid_view_year')}</DropdownItem>
                 <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.QUARTER)}>{intl.get('Grid_view_quarter')}</DropdownItem>
                 <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.MONTH)}>{intl.get('Grid_view_month')}</DropdownItem>
+                <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.WEEK)}>{intl.get('Grid_view_week')}</DropdownItem>
                 <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.DAY)}>{intl.get('Grid_view_day')}</DropdownItem>
               </DropdownMenu>
             </Dropdown>

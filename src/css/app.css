@@ -432,6 +432,7 @@
 }
 
 .timeline-header .year-item,
+.timeline-header .week-date-item,
 .timeline-header .date-item {
   display: flex;
   flex-direction: column;
@@ -607,6 +608,7 @@
 }
 
 .timeline-day-view,
+.timeline-week-view,
 .timeline-month-view,
 .timeline-quarter-view,
 .timeline-year-view {

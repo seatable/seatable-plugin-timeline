@@ -10,6 +10,7 @@ const zh_CN = {
   "Grid_view_year": "年",
   "Grid_view_quarter": "季度",
   "Grid_view_month": "月",
+  "Grid_view_week": "周",
   "Grid_view_day": "天",
   "Today": "今天",
   "There_are_no_records": "没有记录。",

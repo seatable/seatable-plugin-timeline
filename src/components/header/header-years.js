@@ -29,7 +29,7 @@ class HeaderYears extends React.Component {
         calcUnit = DATE_UNIT.QUARTER;
         displayFormat = DATE_FORMAT.YEAR_QUARTER;
         dateItemWidth = (dayjs(d).endOf(DATE_UNIT.QUARTER).diff(d, DATE_UNIT.DAY) + 1) * columnWidth;
-      } else if (selectedGridView === GRID_VIEWS.MONTH) {
+      } else if (selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.WEEK) {
         calcUnit = DATE_UNIT.MONTH;
         displayFormat = DATE_FORMAT.YEAR_MONTH;
         dateItemWidth = (dayjs(d).endOf(DATE_UNIT.MONTH).diff(d, DATE_UNIT.DAY) + 1) * columnWidth;

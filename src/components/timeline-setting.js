@@ -307,7 +307,11 @@ class TimelineSetting extends Component {
       const endDate = dateRange[1].endOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY);
       const diffs = dateRange[1].diff(dateRange[0], DATE_UNIT.YEAR);
       if ((selectedGridView === GRID_VIEWS.YEAR && diffs < 2) ||
-        ((selectedGridView === GRID_VIEWS.QUARTER || selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) &&
+        ((
+          selectedGridView === GRID_VIEWS.QUARTER ||
+          selectedGridView === GRID_VIEWS.MONTH ||
+          selectedGridView === GRID_VIEWS.WEEK ||
+          selectedGridView === GRID_VIEWS.DAY) &&
         dateRange[1].isBefore(dateRange[0]))
       ) {
         const { gridStartDate, gridEndDate } = this.props;

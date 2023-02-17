@@ -121,6 +121,7 @@ class Timeline extends React.Component {
       calcDateUnit = DATE_UNIT.QUARTER;
     } else if (
       selectedGridView === GRID_VIEWS.MONTH ||
+      selectedGridView === GRID_VIEWS.WEEK ||
       selectedGridView === GRID_VIEWS.DAY) {
       calcDateUnit = DATE_UNIT.MONTH;
     }
@@ -157,6 +158,7 @@ class Timeline extends React.Component {
     if (
       selectedGridView === GRID_VIEWS.QUARTER ||
       selectedGridView === GRID_VIEWS.MONTH ||
+      selectedGridView === GRID_VIEWS.WEEK ||
       selectedGridView === GRID_VIEWS.DAY) {
       let monthOfSelectedDate = dayjs(selectedDate).month();
       let monthOfToday = today.month();
@@ -171,7 +173,7 @@ class Timeline extends React.Component {
   }
 
   getGridViews = () => {
-    const views = [GRID_VIEWS.YEAR, GRID_VIEWS.QUARTER, GRID_VIEWS.MONTH, GRID_VIEWS.DAY];
+    const views = Object.values(GRID_VIEWS);
     let viewObject = {};
     views.forEach((v) => {
       viewObject[v] = VIEWS[v];

@@ -1,23 +1,17 @@
 import dayjs from 'dayjs';
 import { DATE_FORMAT, DATE_UNIT, GRID_VIEWS } from '../constants';
 
-export const getEventWidth = (selectedGridView, columnWidth, eventStartDate, eventEndDate) => {
+export const getEventWidth = (columnWidth, eventStartDate, eventEndDate) => {
   const formattedStartDate = dayjs(eventStartDate).format(DATE_FORMAT.YEAR_MONTH_DAY);
   const formattedEndDate = dayjs(eventEndDate).format(DATE_FORMAT.YEAR_MONTH_DAY);
-  let duration;
-  if (selectedGridView === GRID_VIEWS.QUARTER || selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
-    duration = dayjs(formattedEndDate).diff(formattedStartDate, DATE_UNIT.DAY);
-  }
-  return ((duration || 0) + 1) * columnWidth;
+  const duration = dayjs(formattedEndDate).diff(formattedStartDate, DATE_UNIT.DAY);
+  return Math.max(((duration || 0) + 1) * columnWidth, 10);
 };
 
-export const getEventLeft = (selectedGridView, columnWidth, overScanStartDate, eventStartDate) => {
-  let duration;
-  if (selectedGridView === GRID_VIEWS.QUARTER || selectedGridView === GRID_VIEWS.MONTH || selectedGridView === GRID_VIEWS.DAY) {
-    const formattedOverScanStartDate = dayjs(overScanStartDate).format(DATE_FORMAT.YEAR_MONTH_DAY);
-    const startDate = dayjs(eventStartDate).format(DATE_FORMAT.YEAR_MONTH_DAY);
-    duration = dayjs(startDate).diff(formattedOverScanStartDate, DATE_UNIT.DAY);
-  }
+export const getEventLeft = (columnWidth, overScanStartDate, eventStartDate) => {
+  const formattedOverScanStartDate = dayjs(overScanStartDate).format(DATE_FORMAT.YEAR_MONTH_DAY);
+  const startDate = dayjs(eventStartDate).format(DATE_FORMAT.YEAR_MONTH_DAY);
+  const duration = dayjs(startDate).diff(formattedOverScanStartDate, DATE_UNIT.DAY);
   return (duration || 0) * columnWidth;
 };
 
@@ -29,8 +23,8 @@ export const getEventPosition = (startDate, endDate, gridStartDate, columnWidth,
     return { left, width };
   }
   return {
-    left: getEventLeft(viewType, columnWidth, gridStartDate, startDate),
-    width: getEventWidth(viewType, columnWidth, startDate, endDate),
+    left: getEventLeft(columnWidth, gridStartDate, startDate),
+    width: getEventWidth(columnWidth, startDate, endDate),
   };
 };
 
