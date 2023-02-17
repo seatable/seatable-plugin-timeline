@@ -8,8 +8,9 @@ const de = {
   "Cancel": "Abbrechen",
   "Submit": "Absenden",
   "Grid_view_year": "Jahr",
-  "Grid_view_quarter": "Quarter",
+  "Grid_view_quarter": "Quartal",
   "Grid_view_month": "Monat",
+  "Grid_view_week": "Woche",
   "Grid_view_day": "Tag",
   "Today": "Heute",
   "There_are_no_records": "Es gibt keine Einträge.",
@@ -47,7 +48,7 @@ const de = {
   "Search_a_column": "Spalte durchsuchen",
   "No_column": "Keine Spalte",
   "Not_used": "Nicht genutzt",
-  "Display_as_swimlane_mode": "Display as swimlane mode"
+  "Display_as_swimlane_mode": "Anzeigen als Swimlanes"
 }
 ;
 

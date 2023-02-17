@@ -8,8 +8,9 @@
   "Cancel": "Annuler",
   "Submit": "Soumettre",
   "Grid_view_year": "An",
-  "Grid_view_quarter": "Quarter",
+  "Grid_view_quarter": "Trimestre",
   "Grid_view_month": "Mois",
+  "Grid_view_week": "Semaine",
   "Grid_view_day": "Jour",
   "Today": "Aujourd'hui",
   "There_are_no_records": "Il n'y a pas d'enregistrements.",
@@ -47,5 +48,5 @@
   "Search_a_column": "Rechercher la colonne",
   "No_column": "Aucune colonne",
   "Not_used": "Ne pas utilisé",
-  "Display_as_swimlane_mode": "Display as swimlane mode"
+  "Display_as_swimlane_mode": "Afficher comme \"swimlanes\""
 }
