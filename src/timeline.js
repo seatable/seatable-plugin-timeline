@@ -239,7 +239,11 @@ class Timeline extends React.Component {
       if (!ele) return;
       html2canvas(ele, {
         windowWidth: ele.scrollWidth,
-        windowHeight: ele.scrollHeight
+        windowHeight: ele.scrollHeight,
+        ignoreElements: (element) => {
+          if (element.tagName === 'IFRAME') return true;
+          return false;
+        },
       }).then(canvas => {
         this.setState({
           isExporting: false,

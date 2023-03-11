@@ -1,6 +1,6 @@
 {
   "name": "seatable-plugin-timeline",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Visualize the recorded information on the timeline.",
   "repository": {
     "type": "git",
