@@ -144,7 +144,7 @@ class Cell extends React.Component {
       }
       case CellType.GEOLOCATION : {
         if (!cellValue) return EMPTY_CELL_FORMATTER;
-        return <GeolocationFormatter value={cellValue} />;
+        return <GeolocationFormatter value={cellValue} data={columnData} />;
       }
       case CellType.NUMBER: {
         if (!cellValue) return EMPTY_CELL_FORMATTER;
