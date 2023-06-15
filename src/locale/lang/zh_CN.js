@@ -15,7 +15,7 @@ const zh_CN = {
   "Today": "今天",
   "There_are_no_records": "没有记录。",
   "Settings": "设置",
-  "Table": "表格",
+  "Table": "子表",
   "View": "视图",
   "Default_View": "默认视图",
   "Block_colored_by": "块颜色来自",

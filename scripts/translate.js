@@ -4,7 +4,7 @@ const fs = require('fs');
 const sourcePath = path.resolve(__dirname, '../public/locale');
 const targetPath = path.resolve(__dirname, '../src/locale/lang');
 
-const SUPPORT_LANGUAGES = ['en', 'de', 'fr', 'zh_CN'];
+const SUPPORT_LANGUAGES = ['en', 'es', 'de', 'fr', 'ru', 'zh_CN'];
 const files = fs.readdirSync(path.join(sourcePath, SUPPORT_LANGUAGES[0]));
 const pluginName = files[0];
 
