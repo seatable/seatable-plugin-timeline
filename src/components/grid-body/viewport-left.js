@@ -1,9 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { CellType } from 'dtable-store';
 import CanvasLeft from './canvas-left';
 import GroupCanvasLeft from './group-canvas-left';
 import ColumnManager from './column-manager';
 import ColumnsShown from './columns-shown';
+
+const UNSUPPORTED_COLUMN_TYPES = { [CellType.DIGITAL_SIGN]: true };
 
 class ViewportLeft extends React.Component {
 
@@ -79,7 +82,8 @@ class ViewportLeft extends React.Component {
 
   getCurrentConfiguredColumns = () => {
     const { columns, settings } = this.props;
-    const initialConfiguredColumns = columns.map((item, index) => {
+    const supportColumns = columns.filter(column => !UNSUPPORTED_COLUMN_TYPES[column.type]);
+    const initialConfiguredColumns = supportColumns.map((item, index) => {
       return {
         key: item.key,
         shown: index == 0 // show the first column by default
@@ -89,9 +93,9 @@ class ViewportLeft extends React.Component {
     let configuredColumns = initialConfiguredColumns;
     if (settings.columns) {
       const baseConfiguredColumns = settings.columns.filter(item => {
-        return columns.some(c => item.key == c.key);
+        return supportColumns.some(c => item.key == c.key);
       });
-      const addedColumns = columns
+      const addedColumns = supportColumns
         .filter(item => !baseConfiguredColumns.some(c => item.key == c.key))
         .map(item => ({key: item.key, shown: false}));
       configuredColumns = baseConfiguredColumns.concat(addedColumns);
