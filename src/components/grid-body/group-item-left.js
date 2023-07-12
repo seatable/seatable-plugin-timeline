@@ -59,6 +59,7 @@ class GroupItemLeft extends Component {
               collaborators={collaborators}
               dtable={dtable}
               tableID={tableID}
+              formulaRows={formulaRows}
             />
           </div>
         }
