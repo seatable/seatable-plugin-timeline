@@ -1,21 +1,13 @@
 {
   "name": "seatable-plugin-timeline",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Visualize the recorded information on the timeline.",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/seatable/seatable-plugin-timeline.git"
-  },
-  "bugs": {
-    "url": "https://github.com/seatable/seatable-plugin-timeline/issues"
-  },
-  "homepage": "https://github.com/seatable/seatable-plugin-timeline#readme",
   "dependencies": {
     "@seafile/seafile-calendar": "0.0.24",
     "classnames": "^2.2.6",
     "dayjs": "1.10.7",
     "dtable-sdk": "0.2.3",
-    "dtable-ui-component": "0.3.18",
+    "dtable-ui-component": "0.3.20",
     "html2canvas": "^1.0.0-rc.7",
     "react": "16.14.0",
     "react-app-polyfill": "^1.0.6",
@@ -35,6 +27,14 @@
     "pull-translate": "tx pull -a -f && npm run translate",
     "build-plugin": "export GENERATE_SOURCEMAP=false && npm run clean && npm run build && node scripts/build-plugin.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seatable/seatable-plugin-timeline.git"
+  },
+  "bugs": {
+    "url": "https://github.com/seatable/seatable-plugin-timeline/issues"
+  },
+  "homepage": "https://github.com/seatable/seatable-plugin-timeline#readme",
   "browserslist": {
     "production": [
       ">0.2%",
