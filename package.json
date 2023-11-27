@@ -6,7 +6,7 @@
     "@seafile/seafile-calendar": "0.0.24",
     "classnames": "^2.2.6",
     "dayjs": "1.10.7",
-    "dtable-sdk": "0.2.3",
+    "dtable-sdk": "4.3.0",
     "dtable-ui-component": "0.3.26",
     "html2canvas": "^1.4.1",
     "react": "17.0.2",
