@@ -6,7 +6,7 @@ import Cell from '../row/cell';
 class Rows extends React.Component {
 
   render() {
-    const { rows, columns, collaborators, dtable, tableID, formulaRows } = this.props;
+    const { rows, columns, collaborators, tableID, formulaRows } = this.props;
     return (
       <Fragment>
         {Array.isArray(rows) && rows.map((row, index) => {
@@ -21,7 +21,6 @@ class Rows extends React.Component {
                     row={originalRow}
                     column={column}
                     collaborators={collaborators}
-                    dtable={dtable}
                     tableID={tableID}
                     formulaRows={formulaRows}
                   />
@@ -36,7 +35,6 @@ class Rows extends React.Component {
 }
 
 Rows.propTypes = {
-  dtable: PropTypes.object,
   rows: PropTypes.array,
   columns: PropTypes.array,
   tableID: PropTypes.string,

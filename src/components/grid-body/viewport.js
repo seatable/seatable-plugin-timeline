@@ -111,7 +111,6 @@ class Viewport extends Component {
               collaborators={collaborators}
               settings={this.props.settings}
               onModifyTimelineSettings={this.props.onModifyTimelineSettings}
-              dtable={this.props.dtable}
               tableID={this.props.tableID}
               formulaRows={this.props.formulaRows}
             />
@@ -151,7 +150,6 @@ Viewport.propTypes = {
   settings: PropTypes.object,
   table: PropTypes.object,
   tableID: PropTypes.string,
-  dtable: PropTypes.object,
   formulaRows: PropTypes.object,
   selectedGridView: PropTypes.string,
   selectedDate: PropTypes.string,

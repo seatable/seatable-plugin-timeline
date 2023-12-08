@@ -6,7 +6,7 @@ class CanvasLeft extends React.Component {
 
   render() {
     const {
-      renderedRows, shownColumns, collaborators, dtable, tableID, formulaRows, topOffset,
+      renderedRows, shownColumns, collaborators, tableID, formulaRows, topOffset,
       bottomOffset,
     } = this.props;
     return (
@@ -15,7 +15,6 @@ class CanvasLeft extends React.Component {
           rows={renderedRows}
           columns={shownColumns}
           collaborators={collaborators}
-          dtable={dtable}
           tableID={tableID}
           formulaRows={formulaRows}
         />
@@ -32,7 +31,6 @@ CanvasLeft.propTypes = {
   topOffset: PropTypes.number,
   bottomOffset: PropTypes.number,
   tableID: PropTypes.string,
-  dtable: PropTypes.object,
 };
 
 export default CanvasLeft;

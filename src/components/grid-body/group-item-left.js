@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { CellType } from 'dtable-store';
+import { CellType, getTableColumnByName } from 'dtable-utils';
 import { GROUP_HEADER_HEIGHT, ROW_HEIGHT } from '../../constants';
 import Rows from './rows';
 import Cell from '../row/cell';
@@ -22,11 +22,11 @@ class GroupItemLeft extends Component {
 
   render() {
     const {
-      group, isExpanded, shownColumns, collaborators, dtable, table, tableID, formulaRows,
+      group, isExpanded, shownColumns, collaborators, table, tableID, formulaRows,
     } = this.props;
     const { cell_value, column_name, rows } = group;
     const rowsCount = Array.isArray(rows) ? rows.length : 0;
-    const groupColumn = dtable.getColumnByName(table, column_name);
+    const groupColumn = getTableColumnByName(table, column_name);
     const groupTitleClassName = 'first-cell flex-fill px-0';
     return (
       <div className={classnames('group-item-left', { expanded: isExpanded })}>
@@ -38,7 +38,6 @@ class GroupItemLeft extends Component {
               row={rows[0].events[0].original_row}
               column={groupColumn}
               collaborators={collaborators}
-              dtable={dtable}
               tableID={tableID}
               formulaRows={formulaRows}
               autoWidth
@@ -57,7 +56,6 @@ class GroupItemLeft extends Component {
               rows={rows}
               columns={shownColumns}
               collaborators={collaborators}
-              dtable={dtable}
               tableID={tableID}
               formulaRows={formulaRows}
             />
@@ -74,7 +72,6 @@ GroupItemLeft.propTypes = {
   isExpanded: PropTypes.bool,
   onExpandGroupToggle: PropTypes.func,
   collaborators: PropTypes.array,
-  dtable: PropTypes.object,
   table: PropTypes.object,
   tableID: PropTypes.string,
   formulaRows: PropTypes.object,

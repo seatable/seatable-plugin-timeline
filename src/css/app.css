@@ -769,7 +769,7 @@
 }
 
 .timeline-event-cell .cell-formatter span {
-  width: 100%; 
+  width: 100%;
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
@@ -903,6 +903,30 @@
 
 .timeline-grid-cell.first-cell {
   border: 0;
+}
+
+.timeline-grid-cell .link-formatter {
+  display: inline-flex;
+  min-height: 20px;
+  width: 100%;
+}
+
+.timeline-grid-cell .link-formatter .link-item {
+  height: 20px;
+  margin: 0 4px 0 0;
+  max-width: 100%;
+  padding: 0 2px;
+  align-items: center;
+  background: #eceff4;
+  border-radius: 3px;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.timeline-grid-cell .link-formatter .link-item:last-child {
+  margin-right: 0;
 }
 
 .timeline-column-icon {

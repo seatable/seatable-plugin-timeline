@@ -305,7 +305,6 @@ class Timeline extends React.Component {
               updateSelectedDate={this.updateSelectedDate}
               onViewportRightScroll={this.onViewportRightScroll}
               onRowExpand={this.props.onRowExpand}
-              dtable={this.props.dtable}
               tableID={this.props.tableID}
               formulaRows={this.props.formulaRows}
               onModifyRow={this.props.onModifyRow}
@@ -316,8 +315,6 @@ class Timeline extends React.Component {
           <TimelineSetting
             tables={tables}
             views={views}
-            dtable={this.props.dtable}
-            columnIconConfig={this.props.columnIconConfig}
             selectedTable={this.props.selectedTable}
             selectedView={this.props.selectedView}
             selectedGridView={selectedGridView}
@@ -347,7 +344,6 @@ Timeline.propTypes = {
   formulaRows: PropTypes.object,
   tables: PropTypes.array,
   views: PropTypes.array,
-  dtable: PropTypes.object,
   selectedTimelineView: PropTypes.object,
   selectedTable: PropTypes.object,
   selectedView: PropTypes.object,
@@ -355,7 +351,6 @@ Timeline.propTypes = {
   isGroupView: PropTypes.bool,
   groups: PropTypes.array,
   columns: PropTypes.array,
-  columnIconConfig: PropTypes.object,
   settings: PropTypes.object,
   isShowTimelineSetting: PropTypes.bool,
   eventBus: PropTypes.object,

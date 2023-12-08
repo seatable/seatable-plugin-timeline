@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { CellType } from 'dtable-store';
+import { CellType } from 'dtable-utils';
 import CanvasLeft from './canvas-left';
 import GroupCanvasLeft from './group-canvas-left';
 import ColumnManager from './column-manager';
@@ -20,7 +20,7 @@ class ViewportLeft extends React.Component {
   renderCanvasLeft = (shownColumns) => {
     const {
       isGroupView, groupVisibleStartIdx, renderedRows, groups, onExpandGroupToggle, foldedGroups,
-      collaborators, dtable, tableID, formulaRows, topOffset, bottomOffset, columnsVisible,
+      collaborators, tableID, formulaRows, topOffset, bottomOffset, columnsVisible,
     } = this.props;
     let CustomCanvasLeft;
     let canvasLeftProps;
@@ -28,13 +28,13 @@ class ViewportLeft extends React.Component {
       CustomCanvasLeft = GroupCanvasLeft;
       canvasLeftProps = {
         groupVisibleStartIdx, groups, foldedGroups, onExpandGroupToggle, collaborators,
-        dtable, tableID, formulaRows, topOffset, bottomOffset,
+        tableID, formulaRows, topOffset, bottomOffset,
       };
       canvasLeftProps.shownColumns = columnsVisible ? shownColumns : [];
     } else {
       CustomCanvasLeft = CanvasLeft;
       canvasLeftProps = {
-        renderedRows, shownColumns, collaborators, dtable, tableID, formulaRows, topOffset,
+        renderedRows, shownColumns, collaborators, tableID, formulaRows, topOffset,
         bottomOffset,
       };
     }
@@ -149,7 +149,6 @@ ViewportLeft.propTypes = {
   settings: PropTypes.object,
   columns: PropTypes.array,
   collaborators: PropTypes.array,
-  dtable: PropTypes.object,
   tableID: PropTypes.string,
   formulaRows: PropTypes.object,
   columnsVisible: PropTypes.bool,

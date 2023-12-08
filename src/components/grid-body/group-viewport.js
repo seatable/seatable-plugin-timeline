@@ -141,7 +141,6 @@ class GroupViewport extends Component {
               collaborators={collaborators}
               settings={settings}
               onModifyTimelineSettings={this.props.onModifyTimelineSettings}
-              dtable={this.props.dtable}
               tableID={this.props.tableID}
               formulaRows={this.props.formulaRows}
             />
@@ -182,7 +181,6 @@ GroupViewport.propTypes = {
   columns: PropTypes.array,
   collaborators: PropTypes.array,
   settings: PropTypes.object,
-  dtable: PropTypes.object,
   tableID: PropTypes.string,
   formulaRows: PropTypes.object,
   gridStartDate: PropTypes.string,
