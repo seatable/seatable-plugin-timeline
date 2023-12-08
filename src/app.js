@@ -2,7 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import intl from 'react-intl-universal';
-import DTable, { CELL_TYPE, FORMULA_RESULT_TYPE, sortDate } from 'dtable-sdk';
+import {
+  CellType, FORMULA_RESULT_TYPE, SELECT_OPTION_COLORS, sortDate,
+  getRowById, getTableByName, getViewByName, getNonArchiveViews,
+  getViewShownColumns, isGroupView as checkIsGroupView,
+} from 'dtable-utils';
 import ViewsTabs from './components/views-tabs';
 import Timeline from './timeline';
 import View from './model/view';
@@ -43,7 +47,8 @@ const KEY_SELECTED_VIEW_IDS = `${PLUGIN_NAME}-selectedViewIds`;
 const EMPTY_LABEL = `(${intl.get('Empty')})`;
 
 const propTypes = {
-  showDialog: PropTypes.bool
+  isDevelopment: PropTypes.bool,
+  showDialog: PropTypes.bool,
 };
 
 class App extends React.Component {
@@ -58,7 +63,6 @@ class App extends React.Component {
       selectedViewIdx: 0,
     };
     this.eventBus = new EventBus();
-    this.dtable = new DTable();
   }
 
   componentDidMount() {
@@ -75,29 +79,13 @@ class App extends React.Component {
   }
 
   async initPluginDTableData() {
-    if (window.app === undefined) {
+    if (this.props.isDevelopment) {
       // local develop
-      window.app = {};
-      window.app.state = {};
-      window.dtable  = {};
-      await this.dtable.init(window.dtablePluginConfig);
-      await this.dtable.syncWithServer();
-      let relatedUsersRes = await this.getRelatedUsersFromServer(this.dtable.dtableStore);
-      const userList = relatedUsersRes.data.user_list;
-      window.app.collaborators = userList;
-      window.app.state.collaborators = userList;
-      this.dtable.subscribe('dtable-connect', () => { this.onDTableConnect(); });
-    } else {
-      // integrated to dtable app
-      this.dtable.initInBrowser(window.app.dtableStore);
+      window.dtableSDK.subscribe('dtable-connect', () => { this.onDTableConnect(); });
     }
-    this.unsubscribeLocalDtableChanged = this.dtable.subscribe('local-dtable-changed', () => { this.onDTableChanged(); });
-    this.unsubscribeRemoteDtableChanged = this.dtable.subscribe('remote-dtable-changed', () => { this.onDTableChanged(); });
+    this.unsubscribeLocalDtableChanged = window.dtableSDK.subscribe('local-dtable-changed', () => { this.onDTableChanged(); });
+    this.unsubscribeRemoteDtableChanged = window.dtableSDK.subscribe('remote-dtable-changed', () => { this.onDTableChanged(); });
     this.resetData(true);
-  }
-
-  async getRelatedUsersFromServer(dtableStore) {
-    return dtableStore.dtableAPI.getTableRelatedUsers();
   }
 
   onDTableConnect = () => {
@@ -110,7 +98,7 @@ class App extends React.Component {
 
   resetData = (init = false) => {
     let { showDialog, isShowTimelineSetting } = this.state;
-    let plugin_settings = this.dtable.getPluginSettings(PLUGIN_NAME) || {};
+    let plugin_settings = window.dtableSDK.getPluginSettings(PLUGIN_NAME) || {};
     if (!plugin_settings || Object.keys(plugin_settings).length === 0) {
       plugin_settings = DEFAULT_PLUGIN_SETTINGS;
     }
@@ -124,7 +112,6 @@ class App extends React.Component {
       isShowTimelineSetting = !this.isValidViewSettings(views[selectedViewIdx].settings);
       showDialog = true;
     }
-    this.columnIconConfig = this.dtable.getColumnIconConfig();
     this.optionColorsMap = this.getOptionColorsMap();
     this.initCollaborators();
     this.setState({
@@ -159,37 +146,27 @@ class App extends React.Component {
     updatedViews[selectedViewIdx] = updatedView;
     plugin_settings.views = updatedViews;
     this.setState({plugin_settings}, () => {
-      this.dtable.updatePluginSettings(PLUGIN_NAME, plugin_settings);
+      window.dtableSDK.updatePluginSettings(PLUGIN_NAME, plugin_settings);
     });
   }
 
   getOptionColorsMap = () => {
-    let optionColors = this.dtable.getOptionColors();
-    if (!Array.isArray(optionColors)) {
+    if (!Array.isArray(SELECT_OPTION_COLORS)) {
       return {};
     }
     let optionColorsMap = {};
-    optionColors.forEach((optionColor) => {
+    SELECT_OPTION_COLORS.forEach((optionColor) => {
       optionColorsMap[optionColor.COLOR] = optionColor.TEXT_COLOR;
     });
     return optionColorsMap;
   }
 
   getSelectedTable = (tables, settings = {}) => {
-    let selectedTable = this.dtable.getTableByName(settings[SETTING_KEY.TABLE_NAME]);
-    if (!selectedTable) {
-      return tables[0];
-    }
-    return selectedTable;
+    return getTableByName(tables, settings[SETTING_KEY.TABLE_NAME]) || tables[0];
   }
 
   getSelectedView = (table, settings = {}) => {
-    return this.dtable.getViewByName(table, settings[SETTING_KEY.VIEW_NAME]);
-  }
-
-  getViews = (table) => {
-    let { name } = table || {};
-    return this.dtable.getTableViews(name);
+    return getViewByName(table.views, settings[SETTING_KEY.VIEW_NAME]);
   }
 
   getRelatedUsersFromLocal = () => {
@@ -212,7 +189,7 @@ class App extends React.Component {
   getConvertedRows = (tableName, viewName) => {
     let rows = [];
     this.Id2ConvertedRowMap = {};
-    this.dtable.forEachRow(tableName, viewName, (row) => {
+    window.dtableSDK.forEachRow(tableName, viewName, (row) => {
       this.Id2ConvertedRowMap[row._id] = row;
       rows.push(row);
     });
@@ -232,8 +209,8 @@ class App extends React.Component {
     let rowsColor = {};
     let singleSelectColumn = {};
     if (colored_by_row_color) {
-      const viewRows = this.dtable.getViewRows(view, table);
-      rowsColor = this.dtable.getViewRowsColor(viewRows, view, table);
+      const viewRows = window.dtableSDK.getViewRows(view, table);
+      rowsColor = window.dtableSDK.getViewRowsColor(viewRows, view, table);
     } else {
       singleSelectColumn = this.getColumnByName(single_select_column_name, columns) || {};
       const { data: singleSelectColumnData } = singleSelectColumn;
@@ -250,7 +227,7 @@ class App extends React.Component {
   }
 
   getGroups = (table, view, columns, settings) => {
-    const convertedGroups = this.dtable.getGroupRows(this.getFirstLevelGroupView(view), table);
+    const convertedGroups = window.dtableSDK.getGroupRows(this.getFirstLevelGroupView(view), table);
     if (!Array.isArray(convertedGroups) || convertedGroups.length === 0) return [];
     const { single_select_column_name, label_column_name, colored_by_row_color } = settings;
     const labelColumn = this.getColumnByName(label_column_name, columns) || {};
@@ -258,8 +235,8 @@ class App extends React.Component {
     let rowsColor = {};
     let singleSelectColumn = {};
     if (colored_by_row_color) {
-      const viewRows = this.dtable.getViewRows(view, table);
-      rowsColor = this.dtable.getViewRowsColor(viewRows, view, table);
+      const viewRows = window.dtableSDK.getViewRows(view, table);
+      rowsColor = window.dtableSDK.getViewRowsColor(viewRows, view, table);
     } else {
       singleSelectColumn = this.getColumnByName(single_select_column_name, columns);
       const { data: singleSelectColumnData } = singleSelectColumn || {};
@@ -290,7 +267,7 @@ class App extends React.Component {
 
   getEventsFromConvertedRows = (convertedRows, table, columns, labelColumn, singleSelectColumn, options, rowsColor, settings) => {
     const events = convertedRows.map(convertedRow => {
-      const originalRow = this.dtable.getRowById(table, convertedRow._id);
+      const originalRow = getRowById(table, convertedRow._id);
       const eventData = this.getEventData(columns, convertedRow, originalRow, labelColumn, singleSelectColumn, options, rowsColor, settings);
       return new Event({
         ...eventData,
@@ -360,7 +337,7 @@ class App extends React.Component {
     textColor = textColor || DEFAULT_TEXT_COLOR;
     let start = convertedRow[start_time_column_name];
     const startColumn = this.getColumnByName(start_time_column_name, columns);
-    const canChangeStart = startColumn && startColumn.type === CELL_TYPE.DATE;
+    const canChangeStart = startColumn && startColumn.type === CellType.DATE;
     let end;
     let endColumn;
     let canChangeEnd;
@@ -376,11 +353,11 @@ class App extends React.Component {
         end = start;
       }
       endColumn = this.getColumnByName(record_duration_column_name, columns);
-      canChangeEnd = endColumn && endColumn.type === CELL_TYPE.NUMBER;
+      canChangeEnd = endColumn && endColumn.type === CellType.NUMBER;
     } else {
       end = convertedRow[end_time_column_name];
       endColumn = this.getColumnByName(end_time_column_name, columns);
-      canChangeEnd = endColumn && endColumn.type === CELL_TYPE.DATE;
+      canChangeEnd = endColumn && endColumn.type === CellType.DATE;
     }
     return {
       label,
@@ -403,15 +380,15 @@ class App extends React.Component {
     const { name: columnName, type: columnType, data } = labelColumn;
     const cellValue = convertedRow[columnName];
     switch(columnType) {
-      case CELL_TYPE.TEXT:
-      case CELL_TYPE.SINGLE_SELECT: {
+      case CellType.TEXT:
+      case CellType.SINGLE_SELECT: {
         return cellValue;
       }
-      case CELL_TYPE.COLLABORATOR: {
+      case CellType.COLLABORATOR: {
         return getCollaboratorsDisplayString(cellValue, this.emailCollaboratorMap);
       }
-      case CELL_TYPE.FORMULA:
-      case CELL_TYPE.LINK_FORMULA: {
+      case CellType.FORMULA:
+      case CellType.LINK_FORMULA: {
         if (!data) {
           return null;
         }
@@ -445,7 +422,7 @@ class App extends React.Component {
       isShowTimelineSetting
     }, () => {
       this.storeSelectedViewId(updatedViews[selectedViewIdx]._id);
-      this.dtable.updatePluginSettings(PLUGIN_NAME, plugin_settings);
+      window.dtableSDK.updatePluginSettings(PLUGIN_NAME, plugin_settings);
       this.viewsTabs && this.viewsTabs.setViewsTabsScroll();
     });
   }
@@ -458,7 +435,7 @@ class App extends React.Component {
     this.setState({
       plugin_settings
     }, () => {
-      this.dtable.updatePluginSettings(PLUGIN_NAME, plugin_settings);
+      window.dtableSDK.updatePluginSettings(PLUGIN_NAME, plugin_settings);
     });
   }
 
@@ -478,7 +455,7 @@ class App extends React.Component {
         isShowTimelineSetting
       }, () => {
         this.storeSelectedViewId(updatedViews[selectedViewIdx]._id);
-        this.dtable.updatePluginSettings(PLUGIN_NAME, plugin_settings);
+        window.dtableSDK.updatePluginSettings(PLUGIN_NAME, plugin_settings);
       });
     }
   }
@@ -521,7 +498,7 @@ class App extends React.Component {
       plugin_settings,
       selectedViewIdx: newSelectedViewIndex
     }, () => {
-      this.dtable.updatePluginSettings(PLUGIN_NAME, plugin_settings);
+      window.dtableSDK.updatePluginSettings(PLUGIN_NAME, plugin_settings);
     });
   }
 
@@ -560,10 +537,6 @@ class App extends React.Component {
       (end_time_column_name || record_duration_column_name);
   }
 
-  getColumnIconConfig = () => {
-    return this.dtable.getColumnIconConfig();
-  }
-
   getMediaUrl = () => {
     if (window.dtable) {
       return window.dtable.mediaUrl;
@@ -578,21 +551,9 @@ class App extends React.Component {
     return Promise.reject();
   }
 
-  getLinkCellValue = (linkId, table1Id, table2Id, rowId) => {
-    return this.dtable.getLinkCellValue(linkId, table1Id, table2Id, rowId);
-  }
-
-  getRowsByID = (tableId, rowIds) => {
-    return this.dtable.getRowsByID(tableId, rowIds);
-  }
-
-  getTableById = (table_id) => {
-    return this.dtable.getTableById(table_id);
-  }
-
   onRowExpand = (table, row) => {
     if (window.app.expandRow) {
-      let originRow = this.dtable.getRowById(table, row._id);
+      const originRow = getRowById(table, row._id);
       window.app.expandRow(originRow, table);
     }
   }
@@ -609,12 +570,12 @@ class App extends React.Component {
   }
 
   getTableFormulaRows = (table, view) => {
-    let rows = this.dtable.getViewRows(view, table);
-    return this.dtable.getTableFormulaResults(table, rows);
+    let rows = window.dtableSDK.getViewRows(view, table);
+    return window.dtableSDK.getTableFormulaResults(table, rows);
   }
 
   onModifyRow = (table, row, update) => {
-    this.dtable.modifyRow(table, table.id_row_map[row._id], update);
+    window.dtableSDK.modifyRow(table, table.id_row_map[row._id], update);
   }
 
   getFirstLevelGroupView = (view) => {
@@ -626,26 +587,26 @@ class App extends React.Component {
   }
 
   render() {
-    let { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx } = this.state;
+    const { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx } = this.state;
     if (isLoading || !showDialog) {
       return '';
     }
-    let { views: timelineViews } = plugin_settings;
-    let selectedTimelineView = timelineViews[selectedViewIdx];
-    let { settings } = selectedTimelineView || {};
-    let tables = this.dtable.getTables();
-    let selectedTable = this.getSelectedTable(tables, settings);
-    let { name: tableName } = selectedTable || {};
-    let views = this.dtable.getNonArchiveViews(selectedTable);
+    const { views: timelineViews } = plugin_settings;
+    const selectedTimelineView = timelineViews[selectedViewIdx];
+    const { settings } = selectedTimelineView || {};
+    const tables = window.dtableSDK.getTables();
+    const selectedTable = this.getSelectedTable(tables, settings);
+    const { name: tableName } = selectedTable || {};
+    const views = getNonArchiveViews(selectedTable.views);
     let selectedView = this.getSelectedView(selectedTable, settings) || views[0];
-    let columns = this.dtable.getViewShownColumns(selectedView, selectedTable);
-    let { name: viewName } = selectedView;
-    let isGroupView = this.dtable.isGroupView(selectedView, columns);
-    let formulaRows = this.getTableFormulaRows(selectedTable, selectedView);
+    const columns = getViewShownColumns(selectedView, selectedTable && selectedTable.columns);
+    const { name: viewName } = selectedView;
+    const isGroupView = checkIsGroupView(selectedView, columns);
+    const formulaRows = this.getTableFormulaRows(selectedTable, selectedView);
     selectedView = Object.assign({}, selectedView, {formula_rows: formulaRows});
 
-    let { single_select_column_name, label_column_name, colored_by_row_color } = settings;
-    const singleSelectColumn = columns.filter(item => item.type === CELL_TYPE.SINGLE_SELECT)[0];
+    const { single_select_column_name, label_column_name, colored_by_row_color } = settings;
+    const singleSelectColumn = columns.filter(item => item.type === CellType.SINGLE_SELECT)[0];
     if (singleSelectColumn) {
       if (!colored_by_row_color && single_select_column_name === undefined) {
         settings.single_select_column_name = singleSelectColumn.name;
@@ -716,10 +677,8 @@ class App extends React.Component {
           selectedTimelineView={selectedTimelineView}
           eventBus={this.eventBus}
           isShowTimelineSetting={isShowTimelineSetting}
-          dtable={this.dtable}
           tableID={selectedTable._id}
           formulaRows={formulaRows}
-          columnIconConfig={this.columnIconConfig}
           onModifyTimelineSettings={this.onModifyTimelineSettings}
           onHideTimelineSetting={this.onHideTimelineSetting}
           onRowExpand={this.onRowExpand.bind(this, selectedTable)}

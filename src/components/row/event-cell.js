@@ -3,7 +3,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 import PropTypes from 'prop-types';
 import shallowEqual from 'shallowequal';
 import dayjs from 'dayjs';
-import { CELL_TYPE } from 'dtable-sdk';
+import { CellType } from 'dtable-utils';
 import EventFormatter from '../cell-formatter/event-formatter';
 import { getEventPosition, getEventDaysByDisplacement, getEventLabel } from '../../utils/row-utils';
 import { zIndexes, DATE_UNIT, GRID_VIEWS } from '../../constants';
@@ -116,7 +116,7 @@ class EventCell extends React.Component {
     const startFormat = isStartIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
     const start = dayjs(this.distance.start).add(displacementTime, unit).format(startFormat);
     let columnData = endColumn.data;
-    if (endColumn.type === CELL_TYPE.NUMBER) {
+    if (endColumn.type === CellType.NUMBER) {
       const { column: startColumn } = startObject;
       const { data } = startColumn;
       columnData = data;
@@ -150,7 +150,7 @@ class EventCell extends React.Component {
     const { column: startColumn } = startObject;
     const { column: endColumn } = endObject;
     let update = { [startColumn.name]: start };
-    if (endColumn.type === CELL_TYPE.DATE) {
+    if (endColumn.type === CellType.DATE) {
       update[endColumn.name] = end;
     }
     this.props.onModifyRow(row, update);
@@ -213,7 +213,7 @@ class EventCell extends React.Component {
     const { column: startColumn } = startObject;
     const { column: endColumn } = endObject;
     let update = { [startColumn.name]: start };
-    if (endColumn.type === CELL_TYPE.NUMBER) {
+    if (endColumn.type === CellType.NUMBER) {
       let number = width / columnWidth;
       number = getEventDaysByDisplacement(selectedGridView, start, number);
       if (row[endColumn.name] !== number) {
@@ -248,7 +248,7 @@ class EventCell extends React.Component {
     const { start: startObject, end: endObject } = event;
     const { column: endColumn } = endObject;
     let columnData = endColumn.data;
-    if (endColumn.type === CELL_TYPE.NUMBER) {
+    if (endColumn.type === CellType.NUMBER) {
       const { column: startColumn } = startObject;
       const { data } = startColumn;
       columnData = data;
@@ -285,7 +285,7 @@ class EventCell extends React.Component {
     const { column } = endObject;
     const { type, name } = column;
     let update = { [name]: end };
-    if (type === CELL_TYPE.NUMBER) {
+    if (type === CellType.NUMBER) {
       let number = width / columnWidth;
       number = getEventDaysByDisplacement(selectedGridView, start, number);
       if (row[name] === number) return;

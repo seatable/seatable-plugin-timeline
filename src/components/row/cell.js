@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { CellType } from 'dtable-store';
+import { CellType, getTableById, getLinkCellValue, getRowsByIds } from 'dtable-utils';
 import {
   TextFormatter,
   NumberFormatter,
@@ -31,7 +31,6 @@ const propTypes = {
   column: PropTypes.object.isRequired,
   row: PropTypes.object.isRequired,
   collaborators: PropTypes.array,
-  dtable: PropTypes.object.isRequired,
   tableID: PropTypes.string.isRequired,
   className: PropTypes.string,
   formulaRows: PropTypes.object,
@@ -120,7 +119,7 @@ class Cell extends React.Component {
   }
 
   renderFormatter = () => {
-    const { column, row, collaborators, dtable, tableID } = this.props;
+    const { column, row, collaborators, tableID } = this.props;
     const { isDataLoaded, collaborator } = this.state;
     let { type: columnType, key: columnKey, data: columnData } = column;
     const cellValue = row[columnKey];
@@ -199,15 +198,28 @@ class Cell extends React.Component {
         return <FormulaFormatter value={formulaValue} column={column} collaborators={collaborators} />;
       }
       case CellType.LINK: {
+        const tables = window.dtableSDK.getTables();
+        const links = window.dtableSDK.getLinks();
         let linkMetaData = {
-          getLinkedCellValue: dtable.getLinkCellValue.bind(dtable),
-          getLinkedRows: dtable.getRowsByID.bind(dtable),
-          getLinkedTable: dtable.getTableById.bind(dtable),
+          getLinkedTable: (tableId) => getTableById(tables, tableId),
+          getLinkedCellValue: (linkId, table1Id, table2Id, rowId) => getLinkCellValue(links, linkId, table1Id, table2Id, rowId),
+          getLinkedRows: (tableId, rowsIds) => {
+            const table = getTableById(tables, tableId);
+            return getRowsByIds(table, rowsIds);
+          },
           expandLinkedTableRow: function(row, tableId) {
             return false;
           }
         };
-        return <LinkFormatter column={column} row={row} currentTableId={tableID} linkMetaData={linkMetaData} containerClassName="leading-normal" />;
+        return (
+          <LinkFormatter
+            column={column}
+            row={row}
+            currentTableId={tableID}
+            linkMetaData={linkMetaData}
+            containerClassName="leading-normal"
+          />
+        );
       }
       case CellType.AUTO_NUMBER: {
         if (!cellValue) return EMPTY_CELL_FORMATTER;

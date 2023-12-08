@@ -5,7 +5,10 @@ import dayjs from 'dayjs';
 import intl from 'react-intl-universal';
 import Picker from '@seafile/seafile-calendar/lib/Picker';
 import RangeCalendar from '@seafile/seafile-calendar/lib/RangeCalendar';
-import { CELL_TYPE, FORMULA_RESULT_TYPE } from 'dtable-sdk';
+import {
+  CellType, COLUMNS_ICON_CONFIG, FORMULA_RESULT_TYPE, getViewShownColumns,
+  isGroupView,
+} from 'dtable-utils';
 import DtableSelect from './dtable-select';
 import Switch from './switch';
 import { translateCalendar } from '../utils/seafile-calendar-translate';
@@ -19,8 +22,6 @@ const RECORD_END_TYPES = [ RECORD_END_TYPE.END_TIME, RECORD_END_TYPE.RECORD_DURA
 const propTypes = {
   tables: PropTypes.array,
   views: PropTypes.array,
-  dtable: PropTypes.object,
-  columnIconConfig: PropTypes.object,
   selectedTable: PropTypes.object,
   selectedView: PropTypes.object,
   settings: PropTypes.object,
@@ -51,8 +52,8 @@ class TimelineSetting extends Component {
   }
 
   getSelectorFields = () => {
-    const { dtable, selectedView, selectedTable, columnIconConfig } = this.props;
-    const columns = dtable.getViewShownColumns(selectedView, selectedTable);
+    const { selectedView, selectedTable } = this.props;
+    const columns = selectedTable && getViewShownColumns(selectedView, selectedTable.columns);
     let dateFields = [];
     let numberFields = [];
     let colorFields = [];
@@ -62,38 +63,38 @@ class TimelineSetting extends Component {
       const columnOption = {
         name,
         value: name,
-        iconClass: columnIconConfig[type],
+        iconClass: COLUMNS_ICON_CONFIG[type],
       };
       switch (type) {
-        case CELL_TYPE.TEXT:
-        case CELL_TYPE.COLLABORATOR: {
+        case CellType.TEXT:
+        case CellType.COLLABORATOR: {
           labelFields.push(columnOption);
           break;
         }
-        case CELL_TYPE.DATE: {
+        case CellType.DATE: {
           dateFields.push(columnOption);
           break;
         }
-        case CELL_TYPE.FORMULA: {
+        case CellType.FORMULA: {
           if (column.data.result_type === FORMULA_RESULT_TYPE.DATE) {
             dateFields.push(columnOption);
           }
           labelFields.push(columnOption);
           break;
         }
-        case CELL_TYPE.LINK_FORMULA: {
+        case CellType.LINK_FORMULA: {
           const { result_type, array_type } = column.data;
-          if (result_type == CELL_TYPE.DATE || (result_type == FORMULA_RESULT_TYPE.ARRAY && array_type == CELL_TYPE.DATE)) {
+          if (result_type == CellType.DATE || (result_type == FORMULA_RESULT_TYPE.ARRAY && array_type == CellType.DATE)) {
             dateFields.push(columnOption);
           }
           labelFields.push(columnOption);
           break;
         }
-        case CELL_TYPE.NUMBER: {
+        case CellType.NUMBER: {
           numberFields.push(columnOption);
           break;
         }
-        case CELL_TYPE.SINGLE_SELECT: {
+        case CellType.SINGLE_SELECT: {
           labelFields.push(columnOption);
           colorFields.push(columnOption);
           break;
@@ -369,11 +370,11 @@ class TimelineSetting extends Component {
   }
 
   isGroupView = () => {
-    const { dtable, selectedTable, selectedView } = this.props;
+    const { selectedTable, selectedView } = this.props;
     if (!selectedTable || !selectedView) {
       return false;
     }
-    return dtable.isGroupView(selectedView, selectedTable.columns);
+    return isGroupView(selectedView, selectedTable.columns);
   }
 
   render() {

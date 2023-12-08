@@ -1,5 +1,4 @@
-import { CELL_TYPE } from 'dtable-sdk';
-
+import { CellType } from 'dtable-utils';
 import * as SETTING_KEY from './setting-key';
 import * as zIndexes from './zIndexes';
 import {
@@ -39,7 +38,7 @@ const RECORD_END_TYPE = {
 };
 
 export const COLLABORATOR_COLUMN_TYPES = [
-  CELL_TYPE.COLLABORATOR, CELL_TYPE.CREATOR, CELL_TYPE.LAST_MODIFIER,
+  CellType.COLLABORATOR, CellType.CREATOR, CellType.LAST_MODIFIER,
 ];
 
 export {

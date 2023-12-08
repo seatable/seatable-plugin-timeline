@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { COLUMNS_ICON_CONFIG } from 'dtable-store';
+import { COLUMNS_ICON_CONFIG } from 'dtable-utils';
 import { ROW_HEIGHT } from '../../constants';
 
 class ColumnsShow extends React.Component {
