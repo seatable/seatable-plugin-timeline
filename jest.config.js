@@ -1,31 +1,38 @@
 module.exports = {
-  'roots': ['<rootDir>/src'],
-  'collectCoverageFrom': [
-    'src/**/*.{js,jsx,ts,tsx}',
-    '!src/**/*.d.ts'
+  roots: [
+    '<rootDir>/tests/',
   ],
-  'setupFiles': ['react-app-polyfill/jsdom'],
-  'setupFilesAfterEnv': ['<rootDir>/src/setupTests.js'],
-  'testMatch': [
-    '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',
-    '<rootDir>/src/**/*.{spec,test}.{js,jsx,ts,tsx}',
+  collectCoverageFrom: [
+    'tests/**/*.{js,jsx,ts,tsx}',
+    '!tests/**/*.d.ts',
   ],
-  'testEnvironment': 'jest-environment-jsdom-fourteen',
-  'transform': {
-    '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/babel-jest',
+  setupFiles: [
+    'react-app-polyfill/jsdom',
+  ],
+  setupFilesAfterEnv: [
+    '<rootDir>/tests/setupTests.js',
+  ],
+  testMatch: [
+    '<rootDir>/tests/**/__tests__/**/*.{js,jsx,ts,tsx}',
+    '<rootDir>/tests/**/*.{spec,test}.{js,jsx,ts,tsx}',
+  ],
+  testEnvironment: 'jsdom',
+  transform: {
+    '^.+\\.(js|jsx|mjs|cjs|ts|tsx)$': '<rootDir>/config/jest/babelTransform.js',
     '^.+\\.css$': '<rootDir>/config/jest/cssTransform.js',
-    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '<rootDir>/config/jest/fileTransform.js',
+    '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)': '<rootDir>/config/jest/fileTransform.js',
   },
-  'transformIgnorePatterns': [
-    '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$',
-    '^.+\\.module\\.(css|sass|scss)$'
+  transformIgnorePatterns: [
+    '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$',
+    '^.+\\.module\\.(css|sass|scss)$',
   ],
-  'modulePaths': [],
-  'moduleNameMapper': {
+  modulePaths: [],
+  moduleNameMapper: {
     '^react-native$': 'react-native-web',
     '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
+    '^axios$': require.resolve('axios'),
   },
-  'moduleFileExtensions': [
+  moduleFileExtensions: [
     'web.js',
     'js',
     'web.ts',
@@ -37,8 +44,9 @@ module.exports = {
     'jsx',
     'node',
   ],
-  'watchPlugins': [
+  watchPlugins: [
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',
   ],
+  resetMocks: true,
 };
