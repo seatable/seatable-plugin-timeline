@@ -343,7 +343,7 @@ class App extends React.Component {
     let canChangeEnd;
     if (record_end_type === RECORD_END_TYPE.RECORD_DURATION) {
       const duration = convertedRow[record_duration_column_name];
-      if (duration && duration !== 0) {
+      if (duration && duration !== 0 && startColumn) {
         const { data: startColumnData } = startColumn;
         const isStartIncludeHour = startColumnData && startColumnData.format && startColumnData.format.indexOf('HH:mm') > -1;
         const startFormat = isStartIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';

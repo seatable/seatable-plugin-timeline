@@ -111,14 +111,14 @@ class EventCell extends React.Component {
     const { start: startObject, end: endObject } = event;
     const { column: startColumn } = startObject;
     const { column: endColumn } = endObject;
-    const { data: startColumnData } = startColumn;
+    const { data: startColumnData } = startColumn || {};
     const isStartIncludeHour = startColumnData && startColumnData.format && startColumnData.format.indexOf('HH:mm') > -1;
     const startFormat = isStartIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
     const start = dayjs(this.distance.start).add(displacementTime, unit).format(startFormat);
     let columnData = endColumn.data;
     if (endColumn.type === CellType.NUMBER) {
       const { column: startColumn } = startObject;
-      const { data } = startColumn;
+      const { data } = startColumn || {};
       columnData = data;
     }
     const isEndIncludeHour = columnData && columnData.format && columnData.format.indexOf('HH:mm') > -1;
@@ -147,7 +147,7 @@ class EventCell extends React.Component {
     this.distance = {};
     if (start === event.start.date) return;
     const { start: startObject, row, end: endObject } = event;
-    const { column: startColumn } = startObject;
+    const { column: startColumn = {} } = startObject;
     const { column: endColumn } = endObject;
     let update = { [startColumn.name]: start };
     if (endColumn.type === CellType.DATE) {
@@ -210,7 +210,7 @@ class EventCell extends React.Component {
     this.distance = {};
     if (start === event.start.date) return;
     const { start: startObject, row, end: endObject } = event;
-    const { column: startColumn } = startObject;
+    const { column: startColumn = {} } = startObject;
     const { column: endColumn } = endObject;
     let update = { [startColumn.name]: start };
     if (endColumn.type === CellType.NUMBER) {
@@ -250,7 +250,7 @@ class EventCell extends React.Component {
     let columnData = endColumn.data;
     if (endColumn.type === CellType.NUMBER) {
       const { column: startColumn } = startObject;
-      const { data } = startColumn;
+      const { data } = startColumn || {};
       columnData = data;
     }
     const isIncludeHour = columnData && columnData.format && columnData.format.indexOf('HH:mm') > -1;
