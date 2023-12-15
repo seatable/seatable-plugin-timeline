@@ -62,14 +62,14 @@ class Cell extends React.Component {
       return window.dtable.mediaUrl;
     }
     return window.dtablePluginConfig.mediaUrl;
-  }
+  };
 
   getUserCommonInfo = (email, avatar_size) => {
     if (window.dtableWebAPI) {
       return window.dtableWebAPI.getUserCommonInfo(email, avatar_size);
     }
     return Promise.reject();
-  }
+  };
 
   calculateCollaboratorData = (props) => {
     const { row, column } = props;
@@ -78,7 +78,7 @@ class Cell extends React.Component {
     } else if (column.type === CellType.CREATOR) {
       this.getCollaborator(row._creator);
     }
-  }
+  };
 
   getCollaborator = (value) => {
     if (!value) {
@@ -116,7 +116,7 @@ class Cell extends React.Component {
       };
       this.setState({isDataLoaded: true, collaborator: collaborator});
     });
-  }
+  };
 
   renderFormatter = () => {
     const { column, row, collaborators, tableID } = this.props;
@@ -244,7 +244,7 @@ class Cell extends React.Component {
       default:
         return null;
     }
-  }
+  };
 
   render() {
     const { column, className, autoWidth } = this.props;

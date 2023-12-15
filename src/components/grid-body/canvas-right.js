@@ -61,7 +61,7 @@ class CanvasRight extends React.Component {
         <div className="events-rows">{eventRows}</div>
       </React.Fragment>
     );
-  }
+  };
 
   renderTodayMarkLine = () => {
     let { overScanDates, selectedGridView, columnWidth, renderedRows } = this.props;
@@ -83,18 +83,18 @@ class CanvasRight extends React.Component {
     return (
       <div className="today-mark-line" style={lineStyle}></div>
     );
-  }
+  };
 
   onViewportRightScroll = (event) => {
     const { scrollLeft, scrollTop } = event.target;
     this.setViewportRightScroll({scrollLeft, scrollTop});
     this.props.onViewportRightScroll({scrollLeft, scrollTop});
-  }
+  };
 
   setViewportRightScroll = ({scrollLeft, scrollTop}) => {
     this.viewportRight.scrollLeft = scrollLeft;
     this.viewportRight.scrollTop = scrollTop;
-  }
+  };
 
   onCanvasRightScroll = (evt) => {
     evt.stopPropagation();
@@ -103,12 +103,12 @@ class CanvasRight extends React.Component {
       return;
     }
     this.props.onCanvasRightScroll(evt.target.scrollTop);
-  }
+  };
 
   setCanvasRightScroll = (scrollTop) => {
     this.activeScroll = false;
     this.canvasRight.scrollTop = scrollTop;
-  }
+  };
 
   render() {
     const { columnWidth, startOffset, endOffset, overScanDates, topOffset, bottomOffset } = this.props;

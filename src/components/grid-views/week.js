@@ -32,7 +32,7 @@ class Week extends React.Component {
         columnWidth={columnWidth}
       />
     );
-  }
+  };
 
   renderHeaderDates = (props) => {
     const { overScanDates, columnWidth } = props;
@@ -42,7 +42,7 @@ class Week extends React.Component {
         columnWidth={columnWidth}
       />
     );
-  }
+  };
 
   render() {
     return (

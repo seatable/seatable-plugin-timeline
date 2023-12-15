@@ -33,7 +33,7 @@ class Day extends React.Component {
         columnWidth={columnWidth}
       />
     );
-  }
+  };
 
   renderHeaderDates = (props) => {
     let { overScanDates, columnWidth } = props;
@@ -43,7 +43,7 @@ class Day extends React.Component {
         columnWidth={columnWidth}
       />
     );
-  }
+  };
 
   render() {
     return (

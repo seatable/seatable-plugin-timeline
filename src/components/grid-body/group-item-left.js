@@ -10,7 +10,7 @@ class GroupItemLeft extends Component {
 
   onExpandGroupToggle = () => {
     this.props.onExpandGroupToggle();
-  }
+  };
 
   getEventsCount = () => {
     const { rows } = this.props.group;
@@ -18,7 +18,7 @@ class GroupItemLeft extends Component {
       return 0;
     }
     return rows.reduce((curr, next) => curr + next.events.length, 0);
-  }
+  };
 
   render() {
     const {

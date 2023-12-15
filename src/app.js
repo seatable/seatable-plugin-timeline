@@ -90,11 +90,11 @@ class App extends React.Component {
 
   onDTableConnect = () => {
     this.resetData();
-  }
+  };
 
   onDTableChanged = () => {
     this.resetData();
-  }
+  };
 
   resetData = (init = false) => {
     let { showDialog, isShowTimelineSetting } = this.state;
@@ -121,22 +121,22 @@ class App extends React.Component {
       selectedViewIdx,
       isShowTimelineSetting
     });
-  }
+  };
 
   onPluginToggle = () => {
     setTimeout(() => {
       this.setState({showDialog: false});
     }, 500);
     window.app.onClosePlugin && window.app.onClosePlugin();
-  }
+  };
 
   onTimelineSettingToggle = () => {
     this.setState({isShowTimelineSetting: !this.state.isShowTimelineSetting});
-  }
+  };
 
   onHideTimelineSetting = () => {
     this.setState({isShowTimelineSetting: false});
-  }
+  };
 
   onModifyTimelineSettings = (updated) => {
     let { plugin_settings, selectedViewIdx } = this.state;
@@ -148,7 +148,7 @@ class App extends React.Component {
     this.setState({plugin_settings}, () => {
       window.dtableSDK.updatePluginSettings(PLUGIN_NAME, plugin_settings);
     });
-  }
+  };
 
   getOptionColorsMap = () => {
     if (!Array.isArray(SELECT_OPTION_COLORS)) {
@@ -159,15 +159,15 @@ class App extends React.Component {
       optionColorsMap[optionColor.COLOR] = optionColor.TEXT_COLOR;
     });
     return optionColorsMap;
-  }
+  };
 
   getSelectedTable = (tables, settings = {}) => {
     return getTableByName(tables, settings[SETTING_KEY.TABLE_NAME]) || tables[0];
-  }
+  };
 
   getSelectedView = (table, settings = {}) => {
     return getViewByName(table.views, settings[SETTING_KEY.VIEW_NAME]);
-  }
+  };
 
   getRelatedUsersFromLocal = () => {
     let { collaborators, state } = window.app;
@@ -176,7 +176,7 @@ class App extends React.Component {
       return state && state.collaborators;
     }
     return collaborators; // local develop
-  }
+  };
 
   initCollaborators = () => {
     this.collaborators = this.getRelatedUsersFromLocal();
@@ -184,7 +184,7 @@ class App extends React.Component {
     this.collaborators.forEach(collaborator => {
       this.emailCollaboratorMap[collaborator.email] = collaborator;
     });
-  }
+  };
 
   getConvertedRows = (tableName, viewName) => {
     let rows = [];
@@ -194,12 +194,12 @@ class App extends React.Component {
       rows.push(row);
     });
     return rows;
-  }
+  };
 
   getColumnByName = (columnName, columns) => {
     if (!columnName || !Array.isArray(columns)) return;
     return columns.find(column => column.name === columnName);
-  }
+  };
 
   getRows = (convertedRows, table, view, columns, settings) => {
     if (!Array.isArray(convertedRows) || convertedRows.length === 0) return [];
@@ -224,7 +224,7 @@ class App extends React.Component {
         events: [ event ],
       });
     });
-  }
+  };
 
   getGroups = (table, view, columns, settings) => {
     const convertedGroups = window.dtableSDK.getGroupRows(this.getFirstLevelGroupView(view), table);
@@ -263,7 +263,7 @@ class App extends React.Component {
     });
     const validGroups = groups.filter(group => group.rows.length > 0);
     return validGroups;
-  }
+  };
 
   getEventsFromConvertedRows = (convertedRows, table, columns, labelColumn, singleSelectColumn, options, rowsColor, settings) => {
     const events = convertedRows.map(convertedRow => {
@@ -276,7 +276,7 @@ class App extends React.Component {
       });
     });
     return events.filter(event => !dayjs(event.end.date).isBefore(event.start.date));
-  }
+  };
 
   getGroupTimelineRows = (events, settings) => {
     const { display_as_swimlane } = settings;
@@ -305,7 +305,7 @@ class App extends React.Component {
       }));
     });
     return timelineRows;
-  }
+  };
 
   getGroupBoundaryDates = (groupedRows) => {
     let minDate, maxDate;
@@ -315,7 +315,7 @@ class App extends React.Component {
       maxDate = !maxDate || dayjs(max_date).isAfter(maxDate) ? max_date : maxDate;
     });
     return {minDate, maxDate};
-  }
+  };
 
   getEventData = (columns, convertedRow, originalRow, labelColumn, singleSelectColumn,
     options, rowsColor, settings) => {
@@ -374,7 +374,7 @@ class App extends React.Component {
         column: endColumn
       },
     };
-  }
+  };
 
   getEventLabel(convertedRow, labelColumn) {
     const { name: columnName, type: columnType, data } = labelColumn;
@@ -425,7 +425,7 @@ class App extends React.Component {
       window.dtableSDK.updatePluginSettings(PLUGIN_NAME, plugin_settings);
       this.viewsTabs && this.viewsTabs.setViewsTabsScroll();
     });
-  }
+  };
 
   onRenameView = (viewName) => {
     let { plugin_settings, selectedViewIdx } = this.state;
@@ -437,7 +437,7 @@ class App extends React.Component {
     }, () => {
       window.dtableSDK.updatePluginSettings(PLUGIN_NAME, plugin_settings);
     });
-  }
+  };
 
   onDeleteView = (viewId) => {
     let { plugin_settings, selectedViewIdx } = this.state;
@@ -458,7 +458,7 @@ class App extends React.Component {
         window.dtableSDK.updatePluginSettings(PLUGIN_NAME, plugin_settings);
       });
     }
-  }
+  };
 
   // move view, update `selectedViewIdx`
   onMoveView = (targetViewID, targetIndexViewID, relativePosition) => {
@@ -500,7 +500,7 @@ class App extends React.Component {
     }, () => {
       window.dtableSDK.updatePluginSettings(PLUGIN_NAME, plugin_settings);
     });
-  }
+  };
 
   onSelectView = (viewId) => {
     let { plugin_settings } = this.state;
@@ -512,71 +512,71 @@ class App extends React.Component {
       this.setState({selectedViewIdx: viewIdx, isShowTimelineSetting});
       this.storeSelectedViewId(viewId);
     }
-  }
+  };
 
   storeSelectedViewId = (viewId) => {
     let dtableUuid = getDtableUuid();
     let selectedViewIds = this.getSelectedViewIds(KEY_SELECTED_VIEW_IDS);
     selectedViewIds[dtableUuid] = viewId;
     window.localStorage.setItem(KEY_SELECTED_VIEW_IDS, JSON.stringify(selectedViewIds));
-  }
+  };
 
   getSelectedViewIds = (key) => {
     let selectedViewIds = window.localStorage.getItem(key);
     return selectedViewIds ? JSON.parse(selectedViewIds) : {};
-  }
+  };
 
   isValidViewSettings = (settings) => {
     return settings && Object.keys(settings).length > 0;
-  }
+  };
 
   isValidSettings = (settings) => {
     const { start_time_column_name, end_time_column_name,
       record_duration_column_name } = settings;
     return start_time_column_name &&
       (end_time_column_name || record_duration_column_name);
-  }
+  };
 
   getMediaUrl = () => {
     if (window.dtable) {
       return window.dtable.mediaUrl;
     }
     return window.dtablePluginConfig.mediaUrl;
-  }
+  };
 
   getUserCommonInfo = (email, avatar_size) => {
     if (window.dtableWebAPI) {
       return window.dtableWebAPI.getUserCommonInfo(email, avatar_size);
     }
     return Promise.reject();
-  }
+  };
 
   onRowExpand = (table, row) => {
     if (window.app.expandRow) {
       const originRow = getRowById(table, row._id);
       window.app.expandRow(originRow, table);
     }
-  }
+  };
 
   onExportAsImage = () => {
     this.timeline.onExportAsImage();
-  }
+  };
 
   onTimelineClick = () => {
     const { isShowTimelineSetting } = this.state;
     if (isShowTimelineSetting) {
       this.onHideTimelineSetting();
     }
-  }
+  };
 
   getTableFormulaRows = (table, view) => {
     let rows = window.dtableSDK.getViewRows(view, table);
     return window.dtableSDK.getTableFormulaResults(table, rows);
-  }
+  };
 
   onModifyRow = (table, row, update) => {
     window.dtableSDK.modifyRow(table, table.id_row_map[row._id], update);
-  }
+  };
 
   getFirstLevelGroupView = (view) => {
     const { groupbys } = view;
@@ -584,7 +584,7 @@ class App extends React.Component {
       ...view,
       groupbys: groupbys.slice(0, 1),
     };
-  }
+  };
 
   render() {
     const { isLoading, showDialog, isShowTimelineSetting, plugin_settings, selectedViewIdx } = this.state;

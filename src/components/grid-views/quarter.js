@@ -31,7 +31,7 @@ class Quarter extends React.Component {
         columnWidth={columnWidth}
       />
     );
-  }
+  };
 
   renderHeaderDates = (props) => {
     let { overScanDates, renderedDates, columnWidth } = props;
@@ -42,7 +42,7 @@ class Quarter extends React.Component {
         columnWidth={columnWidth}
       />
     );
-  }
+  };
 
   render() {
     return (

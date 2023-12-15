@@ -35,7 +35,7 @@ class GroupCanvasRight extends Component {
         />
       );
     });
-  }
+  };
 
   renderTodayMarkLine = () => {
     const { overScanDates, selectedGridView, columnWidth, groups } = this.props;
@@ -56,7 +56,7 @@ class GroupCanvasRight extends Component {
     return (
       <div className="today-mark-line" style={lineStyle}></div>
     );
-  }
+  };
 
   onCanvasRightScroll = (evt) => {
     evt.stopPropagation();
@@ -65,12 +65,12 @@ class GroupCanvasRight extends Component {
       return;
     }
     this.props.onCanvasRightScroll(evt.target.scrollTop);
-  }
+  };
 
   setCanvasRightScroll = (scrollTop) => {
     this.activeScroll = false;
     this.groupCanvasRight.scrollTop = scrollTop;
-  }
+  };
 
   render() {
     const {
