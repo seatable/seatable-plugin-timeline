@@ -8,7 +8,7 @@ class GroupCanvasLeft extends Component {
 
   onExpandGroupToggle = (groupIndex, isExpanded) => {
     this.props.onExpandGroupToggle(groupIndex, isExpanded);
-  }
+  };
 
   render() {
     const {

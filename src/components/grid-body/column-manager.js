@@ -18,13 +18,13 @@ class ColumnManager extends React.Component {
     this.setState({
       isDropdownOpen: !this.state.isDropdownOpen
     });
-  }
+  };
 
   searchColumn = (e) => {
     this.setState({
       keyword: e.target.value
     });
-  }
+  };
 
   render() {
     const { isDropdownOpen, keyword } = this.state;

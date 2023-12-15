@@ -35,13 +35,13 @@ class GroupViewport extends Component {
 
   getViewportHeight = () => {
     return this.groupViewport.offsetHeight - HEADER_HEIGHT;
-  }
+  };
 
   onResetViewportScrollTop = () => {
     this.viewportLeft && this.viewportLeft.setCanvasLeftScroll(0);
     this.viewportRight && this.viewportRight.setCanvasRightScroll(0);
     this.updateScroll(0);
-  }
+  };
 
   onExpandGroupToggle = (groupIndex) => {
     const { groups } = this.props;
@@ -59,7 +59,7 @@ class GroupViewport extends Component {
       foldedGroups: newFoldedGroups,
       ...getGroupVisibleBoundaries(this.getViewportHeight(), this.scrollTop, groups, newFoldedGroups),
     });
-  }
+  };
 
   getRenderedGroups = (groups, groupVisibleStartIdx, groupVisibleEndIdx) => {
     const groupsLength = groups.length;
@@ -75,17 +75,17 @@ class GroupViewport extends Component {
       i++;
     }
     return renderGroups;
-  }
+  };
 
   onViewportLeftScroll = (scrollTop) => {
     this.viewportRight && this.viewportRight.setCanvasRightScroll(scrollTop);
     this.updateScroll(scrollTop);
-  }
+  };
 
   onCanvasRightScroll = (scrollTop) => {
     this.viewportLeft && this.viewportLeft.setCanvasLeftScroll(scrollTop);
     this.updateScroll(scrollTop);
-  }
+  };
 
   updateScroll = (scrollTop) => {
     const { groups } = this.props;
@@ -94,7 +94,7 @@ class GroupViewport extends Component {
     this.setState({
       ...getGroupVisibleBoundaries(this.getViewportHeight(), scrollTop, groups, foldedGroups),
     });
-  }
+  };
 
   render() {
     const {

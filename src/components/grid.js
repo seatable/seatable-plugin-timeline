@@ -21,7 +21,7 @@ class Grid extends Component {
         {...baseProps}
       />
     );
-  }
+  };
 
   render() {
     return this.renderViewport();

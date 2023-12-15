@@ -76,14 +76,14 @@ class EventCell extends React.Component {
       this.onEndMouseUp();
       return;
     }
-  }
+  };
 
   onRowExpand = (evt) => {
     evt.preventDefault();
     const { event } = this.props;
     const { row } = event;
     this.props.onRowExpand && this.props.onRowExpand(row);
-  }
+  };
 
   onEventMouseDown = (evt) => {
     eventStopPropagation(evt);
@@ -98,7 +98,7 @@ class EventCell extends React.Component {
       left,
     };
     this.setState({ isDraggingEvent: true });
-  }
+  };
 
   calculateEvent = () => {
     const displacementX = this.movingClientX - this.distance.disX;
@@ -125,14 +125,14 @@ class EventCell extends React.Component {
     const endFormat = isEndIncludeHour ? 'YYYY-MM-DD HH:mm' : 'YYYY-MM-DD';
     const end = dayjs(this.distance.end).add(displacementTime, unit).format(endFormat);
     this.setState({ left, start, end });
-  }
+  };
 
   onEventMouseMove = (evt) => {
     this.movingClientX = evt.clientX;
     if (!this.state.isDraggingEvent) return;
     eventStopPropagation(evt);
     this.calculateEvent();
-  }
+  };
 
   onEventMouseUp = (evt) => {
     eventStopPropagation(evt);
@@ -154,7 +154,7 @@ class EventCell extends React.Component {
       update[endColumn.name] = end;
     }
     this.props.onModifyRow(row, update);
-  }
+  };
 
   onStartMouseDown = (evt) => {
     eventStopPropagation(evt);
@@ -170,7 +170,7 @@ class EventCell extends React.Component {
     };
     this.draggingSideDirection = 'left';
     this.setState({ isDraggingSide: true });
-  }
+  };
 
   calculateStartMove = () => {
     const displacementX = this.movingClientX - this.distance.disX;
@@ -187,7 +187,7 @@ class EventCell extends React.Component {
     const width = this.distance.width - displacementX;
     if (width < Math.min(20, columnWidth)) return;
     this.setState({ start, left, width });
-  }
+  };
 
   onStartMouseMove = (evt) => {
     this.movingClientX = evt.clientX;
@@ -238,7 +238,7 @@ class EventCell extends React.Component {
     };
     this.draggingSideDirection = 'right';
     this.setState({ isDraggingSide: true });
-  }
+  };
 
   calculateEndMove = () => {
     const displacementX = this.movingClientX - this.distance.disX;
@@ -259,7 +259,7 @@ class EventCell extends React.Component {
     const width = this.distance.width + displacementX;
     if (width < Math.min(20, columnWidth)) return;
     this.setState({ end, width });
-  }
+  };
 
   onEndMouseMove = (evt) => {
     this.movingClientX = evt.clientX;
@@ -267,7 +267,7 @@ class EventCell extends React.Component {
     if (this.draggingSideDirection !== 'right') return;
     eventStopPropagation(evt);
     this.calculateEndMove();
-  }
+  };
 
   onEndMouseUp = (evt) => {
     window.removeEventListener('mousemove', this.onEndMouseMove);
@@ -292,7 +292,7 @@ class EventCell extends React.Component {
       update = { [name]: number };
     }
     this.props.onModifyRow(row, update);
-  }
+  };
 
   renderNextPosition = ({ formatterStyle }) => {
     const { overScanStartDate, selectedGridView, columnWidth } = this.props;
@@ -310,7 +310,7 @@ class EventCell extends React.Component {
         <div className="cell-formatter grid-cell-type-single-select" style={formatterStyle}></div>
       </div>
     );
-  }
+  };
 
   renderOldPosition = ({ formatterStyle }) => {
     const { event, overScanStartDate, selectedGridView, columnWidth } = this.props;
@@ -334,11 +334,11 @@ class EventCell extends React.Component {
         />
       </div>
     );
-  }
+  };
 
   canModifyWidth = () => {
     return this.state.width >= MONTH_COLUMN_WIDTH * 2; // easy to modify width or position
-  }
+  };
 
   render() {
     const { event } = this.props;

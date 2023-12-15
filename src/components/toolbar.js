@@ -58,7 +58,7 @@ class Toolbar extends React.Component {
         return intl.get('Grid_view_day');
       }
     }
-  }
+  };
 
   renderCurrentDate = () => {
     const { selectedGridView, selectedDate } = this.props;
@@ -79,11 +79,11 @@ class Toolbar extends React.Component {
       );
     }
     return null;
-  }
+  };
 
   onSelectViewToggle = () => {
     this.setState({isSelectViewDropdownOpen: !this.state.isSelectViewDropdownOpen});
-  }
+  };
 
   viewportRightScroll = ({visibleStartDate, scrollLeft}) => {
     const { selectedGridView } = this.props;
@@ -103,19 +103,19 @@ class Toolbar extends React.Component {
       }
       this.setState({currentDate: formattedNewDate});
     }
-  }
+  };
 
   onSelectGridView = (view) => {
     if (Object.prototype.toString.call(this.props.onSelectGridView) === '[object Function]') {
       this.props.onSelectGridView(view);
     }
-  }
+  };
 
   onNavigate = (action) => {
     if (Object.prototype.toString.call(this.props.onNavigate) === '[object Function]') {
       this.props.onNavigate(action);
     }
-  }
+  };
 
   getLeftPos = () => {
     const { isGroupView } = this.props;
@@ -125,7 +125,7 @@ class Toolbar extends React.Component {
     }
     left = Math.max(left, 180);
     return left;
-  }
+  };
 
   getShownColumnsWidth = () => {
     const { settings, columns, isGroupView } = this.props;
@@ -152,7 +152,7 @@ class Toolbar extends React.Component {
 
     // show the first column by default
     return columns[0].width;
-  }
+  };
 
   render() {
     const { onShowUsersToggle, isShowUsers, canNavigateToday } = this.props;

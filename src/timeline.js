@@ -67,12 +67,12 @@ class Timeline extends React.Component {
       gridStartDate: dayjs().subtract(2, DATE_UNIT.YEAR).startOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY),
       gridEndDate: dayjs().add(2, DATE_UNIT.YEAR).endOf(DATE_UNIT.YEAR).format(DATE_FORMAT.YEAR_MONTH_DAY)
     };
-  }
+  };
 
   getSelectedGridViews = () => {
     let selectedGridViews = window.localStorage.getItem(KEY_SELECTED_GRID_VIEWS);
     return selectedGridViews ? JSON.parse(selectedGridViews) : {};
-  }
+  };
 
   storeSelectedGridViews = (gridView) => {
     let { selectedTimelineView } = this.props;
@@ -81,7 +81,7 @@ class Timeline extends React.Component {
     let selectedGridViews = this.getSelectedGridViews();
     selectedGridViews[`${dtableUuid}-${viewId}`] = gridView;
     window.localStorage.setItem(KEY_SELECTED_GRID_VIEWS, JSON.stringify(selectedGridViews));
-  }
+  };
 
   getSelectedGridView = (viewId) => {
     let dtableUuid = getDtableUuid();
@@ -91,11 +91,11 @@ class Timeline extends React.Component {
       return GRID_VIEWS.MONTH;
     }
     return localGridView;
-  }
+  };
 
   onShowUsersToggle = () => {
     this.setState({isShowUsers: !this.state.isShowUsers});
-  }
+  };
 
   onSelectGridView = (selectedGridView) => {
     if (selectedGridView === this.state.selectedGridView) {
@@ -108,7 +108,7 @@ class Timeline extends React.Component {
       this.storeSelectedGridViews(selectedGridView);
       this.onResetViewportScroll();
     });
-  }
+  };
 
   onNavigate = (action) => {
     let { selectedDate, selectedGridView } = this.state;
@@ -141,11 +141,11 @@ class Timeline extends React.Component {
     if (selectedDate !== this.state.selectedDate) {
       this.updateSelectedDate(selectedDate, false);
     }
-  }
+  };
 
   updateSelectedDate = (selectedDate, changedSelectedByScroll) => {
     this.setState({selectedDate, changedSelectedByScroll});
-  }
+  };
 
   isToday = () => {
     let { selectedDate, selectedGridView } = this.state;
@@ -166,11 +166,11 @@ class Timeline extends React.Component {
         monthOfSelectedDate === monthOfToday;
     }
     return false;
-  }
+  };
 
   onResetViewportScroll = () => {
     this.props.eventBus.dispatch(EventTypes.RESET_VIEWPORT_SCROLL_TOP);
-  }
+  };
 
   getGridViews = () => {
     const views = Object.values(GRID_VIEWS);
@@ -179,7 +179,7 @@ class Timeline extends React.Component {
       viewObject[v] = VIEWS[v];
     });
     return viewObject;
-  }
+  };
 
   getGridView = (selectedGridView) => {
     return this.gridViews[selectedGridView];
@@ -197,7 +197,7 @@ class Timeline extends React.Component {
     } else if (!canScrollToRight && viewportRightScrollWidth - viewportRightWidth - viewportRightScrollLeft > 0) {
       this.setState({canScrollToRight: true});
     }
-  }
+  };
 
   updateDateRange = (gridStartDate, gridEndDate) => {
     const { selectedGridView } = this.state;
@@ -214,18 +214,18 @@ class Timeline extends React.Component {
       canNavigateToday,
       selectedDate: middleDate,
     });
-  }
+  };
 
   onExportAsImage = () => {
     this.setState({isShowSelectExportDateRangeDialog: true});
-  }
+  };
 
   onSelectDateRangeToggle = () => {
     this.setState({
       isExporting: false,
       isShowSelectExportDateRangeDialog: !this.state.isShowSelectExportDateRangeDialog
     });
-  }
+  };
 
   onConfirmExport = (gridStartDate, gridEndDate) => {
     const { isShowUsers, selectedGridView, selectedDate } = this.state;
@@ -256,7 +256,7 @@ class Timeline extends React.Component {
         document.body.removeChild(document.querySelector('#timeline-export-container'));
       });
     });
-  }
+  };
 
   render() {
     const {

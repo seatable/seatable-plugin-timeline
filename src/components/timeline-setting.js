@@ -105,7 +105,7 @@ class TimelineSetting extends Component {
       }
     });
     return { dateFields, numberFields, colorFields, labelFields };
-  }
+  };
 
   createOptions(source, settingKey, valueKey) {
     if (!Array.isArray(source)) {
@@ -141,7 +141,7 @@ class TimelineSetting extends Component {
         onChange={this.onModifySettings}
       />
     );
-  }
+  };
 
   renderColorSelector = (options) => {
     const { settings } = this.props;
@@ -163,7 +163,7 @@ class TimelineSetting extends Component {
         onChange={this.onSelectColoredBy}
       />
     );
-  }
+  };
 
   renderRecordEndType = () => {
     const { settings } = this.props;
@@ -184,7 +184,7 @@ class TimelineSetting extends Component {
         </div>
       );
     });
-  }
+  };
 
   renderRecordEndItem = (endDateFieldOptions, numberFieldOptions) => {
     const { settings } = this.props;
@@ -201,7 +201,7 @@ class TimelineSetting extends Component {
         {this.renderSelector(endDateFieldOptions, SETTING_KEY.END_TIME_COLUMN_NAME)}
       </div>
     );
-  }
+  };
 
   onModifySettings = (selectedOption, evt) => {
     let { settings } = this.props;
@@ -218,7 +218,7 @@ class TimelineSetting extends Component {
   onChangeRecordEndType = (recordEndType) => {
     const updated = { [SETTING_KEY.RECORD_END_TYPE]: recordEndType };
     this.props.onModifyTimelineSettings(Object.assign({}, this.props.settings, updated));
-  }
+  };
 
   onSelectColoredBy = (selectedOption) => {
     const { setting_key, value } = selectedOption;
@@ -231,7 +231,7 @@ class TimelineSetting extends Component {
       update[SETTING_KEY.SINGLE_SELECT_COLUMN_NAME] = value;
     }
     this.props.onModifyTimelineSettings(Object.assign({}, this.props.settings, update));
-  }
+  };
 
   renderDatePicker = () => {
     const { dateRange } = this.state;
@@ -258,7 +258,7 @@ class TimelineSetting extends Component {
         }
       </Picker>
     );
-  }
+  };
 
   renderRangeCalendar = () => {
     const { dateRange } = this.state;
@@ -273,7 +273,7 @@ class TimelineSetting extends Component {
         onPanelChange={this.onChangeSelectedRangeDates}
       />
     );
-  }
+  };
 
   disabledDate = (current) => {
     const { dateRange } = this.state;
@@ -283,15 +283,15 @@ class TimelineSetting extends Component {
     const tooLate = dateRange[0] && current.diff(dateRange[0], DATE_UNIT.YEAR) > 3;
     const tooEarly = dateRange[1] && dateRange[1].diff(current, DATE_UNIT.YEAR) > 3;
     return tooEarly || tooLate;
-  }
+  };
 
   onDatePickerChange = (dates) => {
     this.setState({dateRange: dates});
-  }
+  };
 
   onChangeSelectedRangeDates = (dates) => {
     this.setState({dateRange: dates});
-  }
+  };
 
   onOpenChange = (open) => {
     if (!open) {
@@ -324,16 +324,16 @@ class TimelineSetting extends Component {
 
       this.props.updateDateRange(startDate, endDate);
     }
-  }
+  };
 
   onTimelineSettingClick = (evt) => {
     evt.stopPropagation();
-  }
+  };
 
   onToggleDisplayInOneLine = (evt) => {
     const updated = { [SETTING_KEY.DISPLAY_AS_SWIMLANE]: evt.target.checked };
     this.props.onModifyTimelineSettings(Object.assign({}, this.props.settings, updated));
-  }
+  };
 
   getSelectorOptions = () => {
     const { tables, views } = this.props;
@@ -367,7 +367,7 @@ class TimelineSetting extends Component {
       label: <span className={'select-module select-module-name null-option-name'}>{intl.get('Not_used')}</span>
     });
     return {tableOptions, viewOptions, startDateFieldOptions, endDateFieldOptions, numberFieldOptions, colorFieldOptions, labelFieldOptions};
-  }
+  };
 
   isGroupView = () => {
     const { selectedTable, selectedView } = this.props;
@@ -375,7 +375,7 @@ class TimelineSetting extends Component {
       return false;
     }
     return isGroupView(selectedView, selectedTable.columns);
-  }
+  };
 
   render() {
     const { tableOptions, viewOptions, startDateFieldOptions, endDateFieldOptions, numberFieldOptions, colorFieldOptions, labelFieldOptions } = this.getSelectorOptions();

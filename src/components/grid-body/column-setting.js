@@ -21,7 +21,7 @@ class ColumnSetting extends React.Component {
 
   updateColumn = (e) => {
     this.props.updateColumn(this.props.column.key, e.target.checked);
-  }
+  };
 
   onDragStart = (event) => {
     event.stopPropagation();
@@ -29,7 +29,7 @@ class ColumnSetting extends React.Component {
     event.dataTransfer.setDragImage(ref, 10, 10);
     event.dataTransfer.effectAllowed = 'move';
     event.dataTransfer.setData('text/plain', this.props.column.key);
-  }
+  };
 
   onTableDragEnter = (event) => {
     event.stopPropagation();
@@ -40,7 +40,7 @@ class ColumnSetting extends React.Component {
       }
       this.setState({isItemDropTipShow: true});
     }
-  }
+  };
 
   onDragOver = (event) => {
     if (event.dataTransfer.dropEffect === 'copy') {
@@ -49,7 +49,7 @@ class ColumnSetting extends React.Component {
     event.stopPropagation();
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
-  }
+  };
 
   onDragLeave = (event) => {
     event.stopPropagation();
@@ -57,7 +57,7 @@ class ColumnSetting extends React.Component {
     if (this.enteredCounter === 0) {
       this.setState({isItemDropTipShow: false});
     }
-  }
+  };
 
   onDrop = (event) => {
     event.stopPropagation();
@@ -70,7 +70,7 @@ class ColumnSetting extends React.Component {
       return;
     }
     this.props.moveColumn(droppedColumnKey, column.key);
-  }
+  };
 
   render() {
     const { column } = this.props;

@@ -90,7 +90,7 @@ class DtableSelect extends React.Component {
   getMenuPortalTarget = () => {
     let { menuPortalTarget } = this.props;
     return document.querySelector(menuPortalTarget);
-  }
+  };
 
   render() {
     const { options, onChange, value, isSearchable, placeholder, isMulti, menuPosition, isClearable, noOptionsMessage,

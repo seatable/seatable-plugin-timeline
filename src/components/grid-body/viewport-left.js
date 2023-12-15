@@ -41,7 +41,7 @@ class ViewportLeft extends React.Component {
     return (
       <CustomCanvasLeft {...canvasLeftProps} />
     );
-  }
+  };
 
   onViewportLeftScroll = (evt) => {
     if (!this.activeScroll) {
@@ -49,12 +49,12 @@ class ViewportLeft extends React.Component {
       return;
     }
     this.props.onViewportLeftScroll(evt.target.scrollTop);
-  }
+  };
 
   setCanvasLeftScroll = (scrollTop) => {
     this.activeScroll = false;
     this.viewportLeft.scrollTop = scrollTop;
-  }
+  };
 
   updateColumn = (targetColumnKey, targetShown) => {
     const { settings } = this.props;
@@ -65,7 +65,7 @@ class ViewportLeft extends React.Component {
       return item;
     });
     this.props.onModifyTimelineSettings(settings);
-  }
+  };
 
   moveColumn = (targetColumnKey, targetIndexColumnKey) => {
     const { settings } = this.props;
@@ -78,7 +78,7 @@ class ViewportLeft extends React.Component {
     configuredColumns.splice(targetIndex, 0, targetColumn);
     settings.columns = configuredColumns;
     this.props.onModifyTimelineSettings(settings);
-  }
+  };
 
   getCurrentConfiguredColumns = () => {
     const { columns, settings } = this.props;
@@ -101,7 +101,7 @@ class ViewportLeft extends React.Component {
       configuredColumns = baseConfiguredColumns.concat(addedColumns);
     }
     return configuredColumns;
-  }
+  };
 
   render() {
     const { columns, isGroupView, columnsVisible } = this.props;

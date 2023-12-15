@@ -123,7 +123,7 @@ class ViewportRight extends React.Component {
         {...baseProps}
       />
     );
-  }
+  };
 
   onScroll = (evt) => {
     if (!this.isScrolling) {
@@ -149,7 +149,7 @@ class ViewportRight extends React.Component {
       ...getGridDatesBoundaries(visibleStartDate, visibleDatesCount, overScanDates, unit)
     });
     this.props.onViewportRightScroll(scrollLeft, viewportRightWidth, this.viewportRight.scrollWidth);
-  }
+  };
 
   updateScroll = ({selectedGridView, selectedDate, visibleStartDate, visibleEndDate, overScanStartDate, overScanEndDate, viewportRightWidth, columnWidth}) => {
     const visibleDatesCount = Math.ceil(viewportRightWidth / columnWidth);
@@ -183,17 +183,17 @@ class ViewportRight extends React.Component {
         }
       }
     });
-  }
+  };
 
   setCanvasRightScroll = (scrollTop) => {
     this.canvasRight.setCanvasRightScroll(scrollTop);
-  }
+  };
 
   canNavigateToday = (selectedGridView, selectedDate, gridStartDate, gridEndDate) => {
     const viewportRightWidth = this.viewportRight.offsetWidth;
     const { visibleEndDate } = getGridInitState(selectedGridView, selectedDate, gridStartDate, gridEndDate, viewportRightWidth);
     return dates.isDateInRange(visibleEndDate, gridStartDate, gridEndDate);
-  }
+  };
 
   render() {
     const { overScanStartIndex, overScanEndIndex } = this.state;

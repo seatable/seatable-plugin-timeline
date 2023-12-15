@@ -74,7 +74,7 @@ class GroupItemRight extends Component {
         <div className="events-rows">{eventRows}</div>
       </React.Fragment>
     );
-  }
+  };
 
   render() {
     const { group, isExpanded } = this.props;

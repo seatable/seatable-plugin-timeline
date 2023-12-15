@@ -28,7 +28,7 @@ class Viewport extends Component {
 
   getViewportHeight = () => {
     return this.viewport.offsetHeight - HEADER_HEIGHT;
-  }
+  };
 
   getRenderedRows = (rowOverScanStartIdx, rowOverScanEndIdx) => {
     let { rows } = this.props;
@@ -42,23 +42,23 @@ class Viewport extends Component {
       i++;
     }
     return renderRows;
-  }
+  };
 
   onViewportLeftScroll = (scrollTop) => {
     this.viewportRight && this.viewportRight.setCanvasRightScroll(scrollTop);
     this.updateScroll(scrollTop);
-  }
+  };
 
   onCanvasRightScroll = (scrollTop) => {
     this.viewportLeft && this.viewportLeft.setCanvasLeftScroll(scrollTop);
     this.updateScroll(scrollTop);
-  }
+  };
 
   onResetViewportScrollTop = () => {
     this.viewportLeft && this.viewportLeft.setCanvasLeftScroll(0);
     this.viewportRight && this.viewportRight.setCanvasRightScroll(0);
     this.updateScroll(0);
-  }
+  };
 
   updateScroll = (scrollTop) => {
     this.scrollTop = scrollTop;
@@ -73,7 +73,7 @@ class Viewport extends Component {
       rowOverScanStartIdx,
       rowOverScanEndIdx
     });
-  }
+  };
 
   render() {
     const { rowOverScanStartIdx, rowOverScanEndIdx } = this.state;

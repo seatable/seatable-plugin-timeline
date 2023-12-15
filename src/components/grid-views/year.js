@@ -31,7 +31,7 @@ class Year extends React.Component {
         columnWidth={columnWidth}
       />
     );
-  }
+  };
 
   renderHeaderDates = (props) => {
     let { overScanDates, columnWidth } = props;
@@ -41,7 +41,7 @@ class Year extends React.Component {
         columnWidth={columnWidth}
       />
     );
-  }
+  };
 
   render() {
     return (
