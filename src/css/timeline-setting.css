@@ -128,15 +128,7 @@
   cursor: pointer;
 }
 
-.timeline-view-setting-selector__menu .timeline-view-setting-selector__option--is-selected .dtable-font {
-  color: #fff !important;
-}
-
 .plugin-timeline-setting .null-option-name,
 .timeline-view-setting-selector__menu .null-option-name {
   color: rgba(0, 0, 0, .25) !important;
-}
-
-.timeline-view-setting-selector__menu .timeline-view-setting-selector__option--is-selected .null-option-name {
-  color: #fff !important;
 }

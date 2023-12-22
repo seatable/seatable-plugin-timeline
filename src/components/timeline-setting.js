@@ -9,7 +9,7 @@ import {
   CellType, COLUMNS_ICON_CONFIG, FORMULA_RESULT_TYPE, getViewShownColumns,
   isGroupView,
 } from 'dtable-utils';
-import DtableSelect from './dtable-select';
+import { DTableSelect } from 'dtable-ui-component';
 import Switch from './switch';
 import { translateCalendar } from '../utils/seafile-calendar-translate';
 import { SETTING_KEY, zIndexes, RECORD_END_TYPE, GRID_VIEWS, DATE_UNIT, DATE_FORMAT } from '../constants';
@@ -134,7 +134,7 @@ class TimelineSetting extends Component {
       }
     }
     return (
-      <DtableSelect
+      <DTableSelect
         classNamePrefix={'timeline-view-setting-selector'}
         value={selectedOption}
         options={options}
@@ -156,7 +156,7 @@ class TimelineSetting extends Component {
       selectedOption = options[0];
     }
     return (
-      <DtableSelect
+      <DTableSelect
         classNamePrefix={'timeline-view-setting-selector'}
         value={selectedOption}
         options={options}
