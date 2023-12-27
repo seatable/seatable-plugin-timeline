@@ -1,4 +1,5 @@
 # seatable-plugin-timeline
+
 The plugin to show timeline.
 
 ## 项目运行说明
@@ -20,12 +21,12 @@ The plugin to show timeline.
 
 1. 在修改 plugin-config 中 info.json 文件
 
-   ```
+   ```json
     {
-      "name": '',
-      "version": '',
-      "display_name": '',
-      "description": '',
+      "name": "timeline",
+      "version": "1.x.x",
+      "display_name": "",
+      "description": "",
     }
    ```
 
