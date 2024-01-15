@@ -5,7 +5,7 @@ import intl from 'react-intl-universal';
 import {
   CellType, FORMULA_RESULT_TYPE, SELECT_OPTION_COLORS, sortDate,
   getRowById, getTableByName, getViewByName, getNonArchiveViews,
-  getViewShownColumns, isGroupView as checkIsGroupView,
+  getNonPrivateViews, getViewShownColumns, isGroupView as checkIsGroupView,
 } from 'dtable-utils';
 import ViewsTabs from './components/views-tabs';
 import Timeline from './timeline';
@@ -597,7 +597,7 @@ class App extends React.Component {
     const tables = window.dtableSDK.getTables();
     const selectedTable = this.getSelectedTable(tables, settings);
     const { name: tableName } = selectedTable || {};
-    const views = getNonArchiveViews(selectedTable.views);
+    const views = getNonPrivateViews(getNonArchiveViews(selectedTable.views));
     let selectedView = this.getSelectedView(selectedTable, settings) || views[0];
     const columns = getViewShownColumns(selectedView, selectedTable && selectedTable.columns);
     const { name: viewName } = selectedView;
