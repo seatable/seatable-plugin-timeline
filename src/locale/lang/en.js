@@ -48,7 +48,10 @@ const en = {
   "Search_a_column": "Search a column",
   "No_column": "No column",
   "Not_used": "Not used",
-  "Display_as_swimlane_mode": "Display as swimlane mode"
+  "Display_as_swimlane_mode": "Display as swimlane mode",
+  "Expand_group": "Expand group",
+  "Toggle_drawer": "Toggle drawer",
+  "Navigate_to_today": "Navigate to today",
 }
 ;
 

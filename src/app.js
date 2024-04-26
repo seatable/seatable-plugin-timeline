@@ -25,6 +25,7 @@ import './locale';
 import timelineLogo from './assets/image/timeline.png';
 
 import './css/app.css';
+import { handleEnterKeyDown } from './utils/common-utils';
 
 /**
  * notes:
@@ -657,9 +658,24 @@ class App extends React.Component {
             onMoveView={this.onMoveView}
           />
           <div className="timeline-operators">
-            <span className="timeline-operator dtable-font dtable-icon-download btn-export-image" onClick={this.onExportAsImage}></span>
-            <span className="timeline-operator dtable-font dtable-icon-set-up btn-settings" onClick={this.onTimelineSettingToggle}></span>
-            <span className="timeline-operator dtable-font dtable-icon-x btn-close" onClick={this.onPluginToggle}></span>
+            <span
+             className="timeline-operator dtable-font dtable-icon-download btn-export-image" 
+              onClick={this.onExportAsImage}
+              tabIndex={0}
+              onKeyDown={handleEnterKeyDown(this.onExportAsImage)}
+            ></span>
+            <span 
+            className="timeline-operator dtable-font dtable-icon-set-up btn-settings" 
+            onClick={this.onTimelineSettingToggle}
+            tabIndex={0}
+            onKeyDown={handleEnterKeyDown(this.onTimelineSettingToggle)}
+            ></span>
+            <span 
+              className="timeline-operator dtable-font dtable-icon-x btn-close"
+             onClick={this.onPluginToggle}
+             tabIndex={0}
+              onKeyDown={handleEnterKeyDown(this.onPluginToggle)}
+             ></span>
           </div>
         </div>
         <Timeline

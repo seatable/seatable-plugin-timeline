@@ -6,6 +6,7 @@ import ModalPortal from './dialog/modal-portal';
 import NewViewDialog from './dialog/new-view-dialog';
 import RenameViewDialog from './dialog/rename-view-dialog';
 import DropdownMenu from './dropdownmenu';
+import { handleEnterKeyDown } from '../utils/common-utils';
 
 const SCROLL_TYPE = {
   PREV: 'prev',
@@ -160,13 +161,19 @@ class ViewTab extends React.Component {
           className="view-item-content d-flex align-items-center justify-content-center position-relative"
           ref={this.props.setViewItem(index)}
           onClick={this.onSelectView}
+          
         >
-          <div className="view-name">{name}</div>
+          <div className="view-name"
+            onKeyDown={handleEnterKeyDown(this.onSelectView)}
+            tabIndex={0}
+          >{name}</div>
           {isActiveView &&
             <div
               className="btn-view-dropdown d-flex align-items-center justify-content-center"
               ref={ref => this.btnViewDropdown = ref}
               onClick={this.onDropdownToggle}
+              onKeyDown={handleEnterKeyDown(this.onDropdownToggle)}
+              tabIndex={0}
             >
               <i className="dtable-font dtable-icon-drop-down"></i>
               {isShowViewDropdown &&
@@ -372,7 +379,12 @@ class ViewsTabs extends React.Component {
           </div>
         }
         <div className="btn-add-view" onClick={this.onNewViewToggle}>
-          <i className="dtable-font dtable-icon-add-table"></i>
+          <i 
+            className="dtable-font dtable-icon-add-table"
+            onKeyDown={handleEnterKeyDown(this.onNewViewToggle)}
+            tabIndex={0}
+            aria-label={intl.get('Add_new_view')}
+          ></i>
         </div>
         {isShowNewViewDialog &&
           <NewViewDialog

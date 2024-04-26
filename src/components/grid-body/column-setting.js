@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { COLUMNS_ICON_CONFIG } from 'dtable-utils';
 import Switch from '../switch';
+import { handleEnterKeyDown } from '../../utils/common-utils';
 
 const propTypes = {
   column: PropTypes.object.isRequired,
@@ -91,6 +92,7 @@ class ColumnSetting extends React.Component {
           <i className="dtable-font dtable-icon-drag"></i>
         </div>
         <Switch
+          column = {column}
           checked={column.shown}
           placeholder={(
             <>

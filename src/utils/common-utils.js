@@ -32,3 +32,11 @@ export const isValidEmail = (email) => {
   const reg = /^[A-Za-zd]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,6}$/;
   return reg.test(email);
 };
+
+export const handleEnterKeyDown = (callback) => {
+  return function(event) {
+    if (event.keyCode === 13) {
+      if(callback && typeof callback === 'function') callback(event);
+    }
+  };
+};

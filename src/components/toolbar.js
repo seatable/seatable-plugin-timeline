@@ -5,6 +5,7 @@ import intl from 'react-intl-universal';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { NAVIGATE, GRID_VIEWS, zIndexes, DATE_UNIT, DATE_FORMAT } from '../constants';
 import * as EventTypes from '../constants/event-types';
+import { handleEnterKeyDown } from '../utils/common-utils';
 
 const propTypes = {
   isGroupView: PropTypes.bool,
@@ -159,7 +160,13 @@ class Toolbar extends React.Component {
     return (
       <div className="timeline-toolbar">
         <div className="toolbar-left" style={{zIndex: zIndexes.TOOLBAR, left: isShowUsers ? this.getLeftPos() : 0}}>
-          <div className="toggle-drawer-btn" onClick={onShowUsersToggle}>
+          <div 
+            className="toggle-drawer-btn"
+            onClick={onShowUsersToggle}
+            tabIndex={0}
+            aria-label={intl.get('Toggle_drawer')}
+            onKeyDown={handleEnterKeyDown(onShowUsersToggle)}
+          >
             <i className={`dtable-font ${isShowUsers ? 'dtable-icon-retract-com' : 'dtable-icon-open-com'}`}></i>
           </div>
           {this.renderCurrentDate()}
@@ -180,17 +187,31 @@ class Toolbar extends React.Component {
             </Dropdown>
           </div>
           <div className="btn-switch-group">
-            <span className="btn-switch-icon" onClick={this.onNavigate.bind(this, NAVIGATE.PREVIOUS)}>
+            <span className="btn-switch-icon" 
+              onClick={this.onNavigate.bind(this, NAVIGATE.PREVIOUS)}
+              tabIndex={0}
+              aria-label={intl.get('Previous')}
+              onKeyDown={handleEnterKeyDown(this.onNavigate.bind(this, NAVIGATE.PREVIOUS))}
+            >
               <i className="dtable-font dtable-icon-left"></i>
             </span>
             <span className="btn-switch-split-line"></span>
-            <span className="btn-switch-icon" onClick={this.onNavigate.bind(this, NAVIGATE.NEXT)}>
+            <span 
+              className="btn-switch-icon" 
+              onClick={this.onNavigate.bind(this, NAVIGATE.NEXT)}
+              tabIndex={0}
+              aria-label={intl.get('Next')}
+              onKeyDown={handleEnterKeyDown(this.onNavigate.bind(this, NAVIGATE.NEXT))}
+            >
               <i className="dtable-font dtable-icon-right"></i>
             </span>
           </div>
           <div
             className={`btn-today ${!canNavigateToday && 'btn-today-disabled'}`}
             onClick={canNavigateToday ? this.onNavigate.bind(this, NAVIGATE.TODAY) : undefined}
+            tabIndex={0}
+            aria-label={intl.get('Navigate_to_today')}
+            onKeyDown={canNavigateToday ? handleEnterKeyDown(this.onNavigate.bind(this, NAVIGATE.TODAY)) : undefined}
           >{intl.get('Today')}</div>
         </div>
       </div>
