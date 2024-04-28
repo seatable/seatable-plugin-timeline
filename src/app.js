@@ -662,18 +662,21 @@ class App extends React.Component {
              className="timeline-operator dtable-font dtable-icon-download btn-export-image" 
               onClick={this.onExportAsImage}
               tabIndex={0}
+              aria-label={intl.get('Choose_time_range')}
               onKeyDown={handleEnterKeyDown(this.onExportAsImage)}
             ></span>
             <span 
             className="timeline-operator dtable-font dtable-icon-set-up btn-settings" 
             onClick={this.onTimelineSettingToggle}
             tabIndex={0}
+            aria-label={intl.get('Settings')}
             onKeyDown={handleEnterKeyDown(this.onTimelineSettingToggle)}
             ></span>
             <span 
-              className="timeline-operator dtable-font dtable-icon-x btn-close"
+            className="timeline-operator dtable-font dtable-icon-x btn-close"
              onClick={this.onPluginToggle}
              tabIndex={0}
+              aria-label={intl.get('Close_plugin')}
               onKeyDown={handleEnterKeyDown(this.onPluginToggle)}
              ></span>
           </div>

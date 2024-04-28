@@ -52,6 +52,13 @@ const en = {
   "Expand_group": "Expand group",
   "Toggle_drawer": "Toggle drawer",
   "Navigate_to_today": "Navigate to today",
+  "Open_view_dropdown_options": "Open view dropdown options",
+  "Search_column": "Search column",
+  "Previous": "Previous",
+  "Next": "Next",
+  "Add_new_view": "Add new view",
+  "Choose_time_range": "Choose time range",
+  "Close_plugin": "Close plugin",
 }
 ;
 

@@ -41,7 +41,38 @@ class ViewTab extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener('click', this.onHideViewDropdown);
+    document.addEventListener('click', this.onHideViewDropdown);    
+  }
+
+  componentDidUpdate() {
+    if(this.handleArrowKeyDown) {
+      document.removeEventListener('keydown', this.handleArrowKeyDown);
+    }
+
+    const btns = document.querySelectorAll('.dropdown-item-btn');
+    const dropDownBtn = document.querySelector('.btn-view-dropdown');
+    if(!btns.length) return;
+    let currentIdx = -1;
+    this.handleArrowKeyDown = (e) => {
+      if (e.key === 'ArrowUp') {
+        currentIdx--;
+        if (currentIdx < 0) {
+          dropDownBtn.focus();
+          currentIdx = -1;
+        } else {
+          btns[currentIdx].focus();
+        }
+      } else if (e.key === 'ArrowDown') {
+        currentIdx++;
+        if (currentIdx >= btns.length) {
+          dropDownBtn.focus();
+          currentIdx = -1;
+        } else {
+          btns[currentIdx].focus();
+        }
+      }
+    };
+    document.addEventListener('keydown', this.handleArrowKeyDown);
   }
 
   componentWillUnmount() {
@@ -174,6 +205,8 @@ class ViewTab extends React.Component {
               onClick={this.onDropdownToggle}
               onKeyDown={handleEnterKeyDown(this.onDropdownToggle)}
               tabIndex={0}
+              aria-label={intl.get('Open_view_dropdown_options')}
+              aria-expanded={isShowViewDropdown}
             >
               <i className="dtable-font dtable-icon-drop-down"></i>
               {isShowViewDropdown &&
@@ -182,12 +215,20 @@ class ViewTab extends React.Component {
                     dropdownMenuPosition={dropdownMenuPosition}
                     options={
                       <React.Fragment>
-                        <button className="dropdown-item" onClick={this.props.onRenameViewToggle}>
+                        <button 
+                          className="dropdown-item dropdown-item-btn" 
+                          onClick={this.props.onRenameViewToggle}
+                          onKeyDown={handleEnterKeyDown(this.props.onRenameViewToggle)}
+                        >
                           <i className="item-icon dtable-font dtable-icon-rename"></i>
                           <span className="item-text">{intl.get('Rename_view')}</span>
                         </button>
                         {index > 0 &&
-                        <button className="dropdown-item" onClick={this.onDeleteView}>
+                        <button 
+                          className="dropdown-item dropdown-item-btn" 
+                          onClick={this.onDeleteView}
+                          onKeyDown={handleEnterKeyDown(this.onDeleteView)}
+                        >
                           <i className="item-icon dtable-font dtable-icon-delete"></i>
                           <span className="item-text">{intl.get('Delete_view')}</span>
                         </button>

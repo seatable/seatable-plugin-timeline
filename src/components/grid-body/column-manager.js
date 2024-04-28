@@ -63,9 +63,9 @@ class ColumnManager extends React.Component {
             <div className="px-2 pb-2">
               <Input
                 type="text" 
-                aria-label={intl.get('Search_a_column')} 
+                aria-label={intl.get('Search_column')} 
                 bsSize="sm"
-                placeholder={intl.get('Search_a_column')} 
+                placeholder={intl.get('Search_a_column')}
                 value={keyword} 
                 onChange={this.searchColumn}
               />

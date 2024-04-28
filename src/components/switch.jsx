@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { handleEnterKeyDown } from '../utils/common-utils';
 
 import '../css/switch.css';
 
@@ -17,7 +16,7 @@ function Switch(props) {
     <div className={`timeline-switch ${className || ''}`}>
       <label className='custom-switch'>
         <input
-          aria-label={column.name}
+          aria-label={column?.name}
           className='custom-switch-input'
           name='custom-switch-checkbox'
           type='checkbox'
