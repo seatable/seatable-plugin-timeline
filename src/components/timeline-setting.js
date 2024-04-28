@@ -16,6 +16,7 @@ import { SETTING_KEY, zIndexes, RECORD_END_TYPE, GRID_VIEWS, DATE_UNIT, DATE_FOR
 
 import '@seafile/seafile-calendar/assets/index.css';
 import '../css/timeline-setting.css';
+import { handleEnterKeyDown } from '../utils/common-utils';
 
 const RECORD_END_TYPES = [ RECORD_END_TYPE.END_TIME, RECORD_END_TYPE.RECORD_DURATION ];
 
@@ -391,7 +392,14 @@ class TimelineSetting extends Component {
           <div className="setting-header">
             <div className="setting-header-container">
               <h3 className="h5 m-0">{intl.get('Settings')}</h3>
-              <i className="dtable-font dtable-icon-x btn-close" onClick={this.props.onHideTimelineSetting}></i>
+              <i
+                className="dtable-font dtable-icon-x btn-close"
+                id='timeline-setting-close-btn'
+                onClick={this.props.onHideTimelineSetting}
+                tabIndex={0}
+                aria-label={intl.get('Cancel')}
+                onKeyDown={handleEnterKeyDown(this.props.onHideTimelineSetting)}
+              ></i>
             </div>
           </div>
           <div className="setting-body">

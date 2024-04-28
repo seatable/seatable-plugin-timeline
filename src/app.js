@@ -73,6 +73,16 @@ class App extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({showDialog: nextProps.showDialog});
   }
+  
+  componentDidUpdate(prevProps, prevState) {
+    const { isShowTimelineSetting } = this.state;
+    const { isShowTimelineSetting: prevSetting } = prevState;
+    const closeSettingBtn = document.querySelector('#timeline-setting-close-btn');
+    const toggleSettingBtn = document.querySelector('#timeline-setting-toggle-btn');
+    if(!isShowTimelineSetting && prevSetting) toggleSettingBtn && toggleSettingBtn.focus();
+    if(isShowTimelineSetting && !prevSetting) closeSettingBtn && closeSettingBtn.focus();
+  }
+
 
   componentWillUnmount() {
     this.unsubscribeLocalDtableChanged();
@@ -666,7 +676,8 @@ class App extends React.Component {
               onKeyDown={handleEnterKeyDown(this.onExportAsImage)}
             ></span>
             <span 
-            className="timeline-operator dtable-font dtable-icon-set-up btn-settings" 
+            className="timeline-operator dtable-font dtable-icon-set-up btn-settings"
+            id="timeline-setting-toggle-btn" 
             onClick={this.onTimelineSettingToggle}
             tabIndex={0}
             aria-label={intl.get('Settings')}
