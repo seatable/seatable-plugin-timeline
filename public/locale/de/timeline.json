@@ -48,5 +48,15 @@
   "Search_a_column": "Spalte durchsuchen",
   "No_column": "Keine Spalte",
   "Not_used": "Nicht genutzt",
-  "Display_as_swimlane_mode": "Anzeigen als Swimlanes"
+  "Display_as_swimlane_mode": "Anzeigen als Swimlanes",
+  "Expand_group": "Gruppe erweitern",
+  "Toggle_drawer": "Seitenleiste umschalten",
+  "Navigate_to_today": "Navigieren Sie zum heutigen Tag",
+  "Open_view_dropdown_options": "Dropdown-Menüoptionen öffnen",
+  "Search_column": "eine Spalte durchsuchen",
+  "Previous": "vorherige",
+  "Next": "Vor",
+  "Add_new_view": "Neue Ansicht hinzufügen",
+  "Choose_time_range": "Neue Ansicht hinzufügen",
+  "Close_plugin": "Neue Ansicht hinzufügen"
 }

@@ -58,7 +58,7 @@ const en = {
   "Next": "Next",
   "Add_new_view": "Add new view",
   "Choose_time_range": "Choose time range",
-  "Close_plugin": "Close plugin",
+  "Close_plugin": "Close plugin"
 }
 ;
 

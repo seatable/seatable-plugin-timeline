@@ -48,7 +48,17 @@ const pt = {
   "Search_a_column": "Pesquise uma coluna",
   "No_column": "Sem coluna",
   "Not_used": "Não utilizado",
-  "Display_as_swimlane_mode": "Exibir como modo de swimlane"
+  "Display_as_swimlane_mode": "Exibir como modo de swimlane",
+  "Expand_group": "Expandir grupo",
+  "Toggle_drawer": "Alternar gaveta",
+  "Navigate_to_today": "Navegue até hoje",
+  "Open_view_dropdown_options": "Abrir opções suspensas de visualização",
+  "Search_column": "Coluna de pesquisa",
+  "Previous": "Anterior",
+  "Next": "Próximo",
+  "Add_new_view": "Adicionar nova visualização",
+  "Choose_time_range": "Escolha o intervalo de tempo",
+  "Close_plugin": "Fechar plug-in"
 }
 ;
 

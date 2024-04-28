@@ -52,6 +52,7 @@ class GroupItemLeft extends Component {
               tabIndex={0}
               aria-expanded={isExpanded}
               aria-label={intl.get('Expand_group')}
+              role="button"
               onKeyDown={handleEnterKeyDown(this.onExpandGroupToggle)}
             >
               <i className={`group-expand-icon dtable-font ${isExpanded ? 'dtable-icon-drop-down' : 'dtable-icon-right-slide'}`}></i>

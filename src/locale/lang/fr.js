@@ -48,7 +48,17 @@ const fr = {
   "Search_a_column": "Rechercher la colonne",
   "No_column": "Aucune colonne",
   "Not_used": "Ne pas utilisé",
-  "Display_as_swimlane_mode": "Afficher comme \"swimlanes\""
+  "Display_as_swimlane_mode": "Afficher comme \"swimlanes\"",
+  "Expand_group": "Agrandir le groupe",
+  "Toggle_drawer": "Basculer la barre latérale",
+  "Navigate_to_today": "Accédez à aujourd'hui",
+  "Open_view_dropdown_options": "Ouvrir les options du menu déroulant",
+  "Search_column": "colonne de recherche",
+  "Previous": "précédent",
+  "Next": "Avancer",
+  "Add_new_view": "Ajouter une nouvelle vue",
+  "Choose_time_range": "Choisissez une plage horaire",
+  "Close_plugin": "Fermer le plugin"
 }
 ;
 

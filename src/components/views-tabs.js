@@ -207,6 +207,7 @@ class ViewTab extends React.Component {
               tabIndex={0}
               aria-label={intl.get('Open_view_dropdown_options')}
               aria-expanded={isShowViewDropdown}
+              role='button'
             >
               <i className="dtable-font dtable-icon-drop-down"></i>
               {isShowViewDropdown &&

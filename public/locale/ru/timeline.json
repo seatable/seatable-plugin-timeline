@@ -48,5 +48,15 @@
   "Search_a_column": "Поиск в столбце",
   "No_column": "Нет столбца",
   "Not_used": "Не используется",
-  "Display_as_swimlane_mode": "Display as swimlane mode"
+  "Display_as_swimlane_mode": "Отображение в режиме дорожки",
+  "Expand_group": "Развернуть группу",
+  "Toggle_drawer": "Переключить ящик",
+  "Navigate_to_today": "Перейти к сегодняшнему дню",
+  "Open_view_dropdown_options": "Открыть раскрывающийся список вариантов просмотра",
+  "Search_column": "Столбец поиска",
+  "Previous": "Предыдущий",
+  "Next": "Вперед",
+  "Add_new_view": "Добавить новое представление",
+  "Choose_time_range": "Выберите временной диапазон",
+  "Close_plugin": "Закрыть плагин"
 }

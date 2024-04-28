@@ -48,5 +48,15 @@
   "Search_a_column": "Buscar columna",
   "No_column": "Sin columna",
   "Not_used": "No usado",
-  "Display_as_swimlane_mode": "Mostrar en modo swimlane"
+  "Display_as_swimlane_mode": "Mostrar en modo swimlane",
+  "Expand_group": "Expandir grupo",
+  "Toggle_drawer": "Cajón de palanca",
+  "Navigate_to_today": "Navega hasta hoy",
+  "Open_view_dropdown_options": "Abrir opciones desplegables de vista",
+  "Search_column": "Columna de búsqueda",
+  "Previous": "Previo",
+  "Next": "Siguiente",
+  "Add_new_view": "Agregar nueva vista",
+  "Choose_time_range": "Elige rango de tiempo",
+  "Close_plugin": "Cerrar complemento"
 }
