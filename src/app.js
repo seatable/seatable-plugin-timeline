@@ -60,6 +60,7 @@ class App extends React.Component {
       isLoading: true,
       showDialog: props.showDialog || false,
       isShowTimelineSetting: false,
+      focusOnSetting: false,
       plugin_settings: {},
       selectedViewIdx: 0,
     };
@@ -75,12 +76,12 @@ class App extends React.Component {
   }
   
   componentDidUpdate(prevProps, prevState) {
-    const { isShowTimelineSetting } = this.state;
-    const { isShowTimelineSetting: prevSetting } = prevState;
+    const { focusOnSetting } = this.state;
+    const { focusOnSetting: prevSetting } = prevState;
     const closeSettingBtn = document.querySelector('#timeline-setting-close-btn');
     const toggleSettingBtn = document.querySelector('#timeline-setting-toggle-btn');
-    if(!isShowTimelineSetting && prevSetting) toggleSettingBtn && toggleSettingBtn.focus();
-    if(isShowTimelineSetting && !prevSetting) closeSettingBtn && closeSettingBtn.focus();
+    if(!focusOnSetting && prevSetting) toggleSettingBtn && toggleSettingBtn.focus();
+    if(focusOnSetting && !prevSetting) closeSettingBtn && closeSettingBtn.focus();
   }
 
 
@@ -130,7 +131,7 @@ class App extends React.Component {
       showDialog,
       plugin_settings,
       selectedViewIdx,
-      isShowTimelineSetting
+      isShowTimelineSetting,
     });
   };
 
@@ -142,11 +143,17 @@ class App extends React.Component {
   };
 
   onTimelineSettingToggle = () => {
-    this.setState({isShowTimelineSetting: !this.state.isShowTimelineSetting});
+    this.setState({
+      isShowTimelineSetting: !this.state.isShowTimelineSetting,
+      focusOnSetting: !this.state.isShowTimelineSetting,
+    });
   };
 
   onHideTimelineSetting = () => {
-    this.setState({isShowTimelineSetting: false});
+    this.setState({
+      isShowTimelineSetting: false,
+      focusOnSetting: false,
+    });
   };
 
   onModifyTimelineSettings = (updated) => {
