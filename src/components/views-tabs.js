@@ -41,17 +41,17 @@ class ViewTab extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener('click', this.onHideViewDropdown);    
+    document.addEventListener('click', this.onHideViewDropdown);
   }
 
   componentDidUpdate() {
-    if(this.handleArrowKeyDown) {
+    if (this.handleArrowKeyDown) {
       document.removeEventListener('keydown', this.handleArrowKeyDown);
     }
 
     const btns = document.querySelectorAll('.dropdown-item-btn');
     const dropDownBtn = document.querySelector('.btn-view-dropdown');
-    if(!btns.length) return;
+    if (!btns.length) return;
     let currentIdx = -1;
     this.handleArrowKeyDown = (e) => {
       if (e.key === 'ArrowUp') {

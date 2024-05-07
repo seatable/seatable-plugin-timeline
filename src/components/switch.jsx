@@ -7,7 +7,7 @@ function Switch(props) {
   const { onChange, checked, placeholder, disabled, className, column } = props;
 
   const handleKeyDown = (e) => {
-    if(e.keyCode !== 13) return;
+    if (e.keyCode !== 13) return;
     e.target.checked = !checked;
     onChange(e);
   };

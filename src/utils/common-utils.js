@@ -36,7 +36,7 @@ export const isValidEmail = (email) => {
 export const handleEnterKeyDown = (callback) => {
   return function(event) {
     if (event.keyCode === 13) {
-      if(callback && typeof callback === 'function') callback(event);
+      if (callback && typeof callback === 'function') callback(event);
     }
   };
 };

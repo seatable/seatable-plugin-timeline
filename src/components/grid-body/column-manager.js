@@ -18,7 +18,7 @@ class ColumnManager extends React.Component {
   componentDidMount() {
     const managerBtn = document.getElementById('timeline-column-manager-btn');
     managerBtn.addEventListener('keydown', (e) => {
-      if(document.activeElement === managerBtn) handleEnterKeyDown(this.toggle)(e);
+      if (document.activeElement === managerBtn) handleEnterKeyDown(this.toggle)(e);
     });
     const btn = managerBtn.querySelector('button');
     btn.setAttribute('tabIndex', -1);

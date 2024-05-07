@@ -79,8 +79,8 @@ class App extends React.Component {
     const { focusOnSetting: prevSetting } = prevState;
     const closeSettingBtn = document.querySelector('#timeline-setting-close-btn');
     const toggleSettingBtn = document.querySelector('#timeline-setting-toggle-btn');
-    if(!focusOnSetting && prevSetting) toggleSettingBtn && toggleSettingBtn.focus();
-    if(focusOnSetting && !prevSetting) closeSettingBtn && closeSettingBtn.focus();
+    if (!focusOnSetting && prevSetting) toggleSettingBtn && toggleSettingBtn.focus();
+    if (focusOnSetting && !prevSetting) closeSettingBtn && closeSettingBtn.focus();
   }
 
 
