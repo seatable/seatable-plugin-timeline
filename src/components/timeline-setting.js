@@ -13,10 +13,9 @@ import { DTableSelect } from 'dtable-ui-component';
 import Switch from './switch';
 import { translateCalendar } from '../utils/seafile-calendar-translate';
 import { SETTING_KEY, zIndexes, RECORD_END_TYPE, GRID_VIEWS, DATE_UNIT, DATE_FORMAT } from '../constants';
-
+import { handleEnterKeyDown } from '../utils/common-utils';
 import '@seafile/seafile-calendar/assets/index.css';
 import '../css/timeline-setting.css';
-import { handleEnterKeyDown } from '../utils/common-utils';
 
 const RECORD_END_TYPES = [ RECORD_END_TYPE.END_TIME, RECORD_END_TYPE.RECORD_DURATION ];
 

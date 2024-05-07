@@ -192,7 +192,6 @@ class ViewTab extends React.Component {
           className="view-item-content d-flex align-items-center justify-content-center position-relative"
           ref={this.props.setViewItem(index)}
           onClick={this.onSelectView}
-          
         >
           <div className="view-name"
             onKeyDown={handleEnterKeyDown(this.onSelectView)}

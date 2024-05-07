@@ -20,12 +20,11 @@ import {
 import { generatorViewId, getDtableUuid } from './utils';
 import { getCollaboratorsDisplayString } from './utils/value-format-utils';
 import EventBus from './utils/event-bus';
-
-import './locale';
 import timelineLogo from './assets/image/timeline.png';
-
-import './css/app.css';
 import { handleEnterKeyDown } from './utils/common-utils';
+import './locale';
+import './css/app.css';
+
 
 /**
  * notes:
@@ -683,17 +682,17 @@ class App extends React.Component {
               onKeyDown={handleEnterKeyDown(this.onExportAsImage)}
             ></span>
             <span 
-            className="timeline-operator dtable-font dtable-icon-set-up btn-settings"
-            id="timeline-setting-toggle-btn" 
-            onClick={this.onTimelineSettingToggle}
-            tabIndex={0}
-            aria-label={intl.get('Settings')}
-            onKeyDown={handleEnterKeyDown(this.onTimelineSettingToggle)}
+              className="timeline-operator dtable-font dtable-icon-set-up btn-settings"
+              id="timeline-setting-toggle-btn" 
+              onClick={this.onTimelineSettingToggle}
+              tabIndex={0}
+              aria-label={intl.get('Settings')}
+              onKeyDown={handleEnterKeyDown(this.onTimelineSettingToggle)}
             ></span>
             <span 
-            className="timeline-operator dtable-font dtable-icon-x btn-close"
-             onClick={this.onPluginToggle}
-             tabIndex={0}
+              className="timeline-operator dtable-font dtable-icon-x btn-close"
+              onClick={this.onPluginToggle}
+              tabIndex={0}
               aria-label={intl.get('Close_plugin')}
               onKeyDown={handleEnterKeyDown(this.onPluginToggle)}
              ></span>
