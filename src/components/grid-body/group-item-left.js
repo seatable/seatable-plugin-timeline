@@ -5,6 +5,8 @@ import { CellType, getTableColumnByName } from 'dtable-utils';
 import { GROUP_HEADER_HEIGHT, ROW_HEIGHT } from '../../constants';
 import Rows from './rows';
 import Cell from '../row/cell';
+import { handleEnterKeyDown } from '../../utils/common-utils';
+import intl from 'react-intl-universal';
 
 class GroupItemLeft extends Component {
 
@@ -45,7 +47,14 @@ class GroupItemLeft extends Component {
           }
           <div>
             <span className="rows-count">{this.getEventsCount()}</span>
-            <span className="btn-group-expand" onClick={this.onExpandGroupToggle}>
+            <span className="btn-group-expand"
+              onClick={this.onExpandGroupToggle}
+              tabIndex={0}
+              aria-expanded={isExpanded}
+              aria-label={intl.get('Expand_group')}
+              role="button"
+              onKeyDown={handleEnterKeyDown(this.onExpandGroupToggle)}
+            >
               <i className={`group-expand-icon dtable-font ${isExpanded ? 'dtable-icon-drop-down' : 'dtable-icon-right-slide'}`}></i>
             </span>
           </div>

@@ -378,6 +378,8 @@ class EventCell extends React.Component {
             bgColor={bgColor}
             textColor={textColor}
             formatterStyle={formatterStyle}
+            canEventDateBeChanged={canEventDateBeChanged}
+            onEventMouseDown={this.onEventMouseDown}
           />
           {canEventEndDateBeChanged && (
             <div

@@ -56,6 +56,7 @@ class SelectExportDateRangeDialog extends Component {
               <input
                 readOnly
                 className="ant-calendar-picker-input ant-input"
+                autoFocus
                 value={value && value[0] && value[1] ? `${value[0].format(DATE_FORMAT.YEAR_MONTH_DAY)} - ${value[1].format(DATE_FORMAT.YEAR_MONTH_DAY)}` : ''}
               />
             </span>

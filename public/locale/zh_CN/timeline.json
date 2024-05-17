@@ -48,5 +48,15 @@
   "Search_a_column": "查找一个列",
   "No_column": "没有列",
   "Not_used": "不使用",
-  "Display_as_swimlane_mode": "显示为泳道模式"
+  "Display_as_swimlane_mode": "显示为泳道模式",
+  "Expand_group": "展开分组",
+  "Toggle_drawer": "切换侧边栏",
+  "Navigate_to_today": "转到今天",
+  "Open_view_dropdown_options": "打开下拉选项菜单",
+  "Search_column": "搜索列",
+  "Previous": "上一页",
+  "Next": "下一页",
+  "Add_new_view": "新建视图",
+  "Choose_time_range": "选择时间范围",
+  "Close_plugin": "关闭插件"
 }

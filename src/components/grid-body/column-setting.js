@@ -91,6 +91,7 @@ class ColumnSetting extends React.Component {
           <i className="dtable-font dtable-icon-drag"></i>
         </div>
         <Switch
+          column = {column}
           checked={column.shown}
           placeholder={(
             <>
