@@ -1,6 +1,6 @@
 {
   "name": "seatable-plugin-timeline",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "Visualize the recorded information on the timeline.",
   "dependencies": {
     "@seafile/seafile-calendar": "0.0.24",
