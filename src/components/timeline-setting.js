@@ -123,13 +123,12 @@ class TimelineSetting extends Component {
     }));
   }
 
-  renderSelector = (options, settingKey) => {
+  renderSelector = (options, settingKey, isClearable) => {
     const { settings } = this.props;
     let selectedOption = options.find(item => item.value === settings[settingKey]);
     if (!selectedOption) {
       if (settingKey === SETTING_KEY.TABLE_NAME ||
-        settingKey === SETTING_KEY.VIEW_NAME ||
-        settingKey === SETTING_KEY.LABEL_COLUMN_NAME) {
+        settingKey === SETTING_KEY.VIEW_NAME) {
         selectedOption = options[0];
       }
     }
@@ -139,6 +138,7 @@ class TimelineSetting extends Component {
         value={selectedOption}
         options={options}
         onChange={this.onModifySettings}
+        isClearable={selectedOption ? isClearable : false}
       />
     );
   };
@@ -146,14 +146,11 @@ class TimelineSetting extends Component {
   renderColorSelector = (options) => {
     const { settings } = this.props;
     const { colored_by_row_color, single_select_column_name } = settings;
-    let selectedOption;
+    let selectedOption = null;
     if (colored_by_row_color) {
       selectedOption = options.find((option) => option.setting_key === SETTING_KEY.COLORED_BY_ROW_COLOR);
     } else {
       selectedOption = options.find((option) => option.value === single_select_column_name);
-    }
-    if (!selectedOption) {
-      selectedOption = options[0];
     }
     return (
       <DTableSelect
@@ -161,6 +158,7 @@ class TimelineSetting extends Component {
         value={selectedOption}
         options={options}
         onChange={this.onSelectColoredBy}
+        isClearable={selectedOption ? true : false}
       />
     );
   };
@@ -203,9 +201,10 @@ class TimelineSetting extends Component {
     );
   };
 
-  onModifySettings = (selectedOption, evt) => {
+  onModifySettings = (selectedOption) => {
     let { settings } = this.props;
-    let { setting_key, value } = selectedOption;
+    let setting_key = selectedOption ? selectedOption.setting_key : SETTING_KEY.LABEL_COLUMN_NAME;
+    let value = selectedOption ? selectedOption.value : '';
     let updated;
     if (setting_key === SETTING_KEY.TABLE_NAME) {
       updated = {[setting_key]: value};  // Need init settings after select new table.
@@ -221,7 +220,8 @@ class TimelineSetting extends Component {
   };
 
   onSelectColoredBy = (selectedOption) => {
-    const { setting_key, value } = selectedOption;
+    let setting_key = selectedOption ? selectedOption.setting_key : SETTING_KEY.SINGLE_SELECT_COLUMN_NAME;
+    let value = selectedOption ? selectedOption.value : '';
     let update = {};
     if (setting_key === SETTING_KEY.COLORED_BY_ROW_COLOR) {
       update[SETTING_KEY.COLORED_BY_ROW_COLOR] = true;
@@ -351,21 +351,7 @@ class TimelineSetting extends Component {
         label: <span className={'select-module select-module-name'}>{intl.get('Row_color')}</span>,
       }
     );
-    if (colorFieldOptions.length) {
-      colorFieldOptions.unshift(
-        {
-          value: '',
-          setting_key: SETTING_KEY.SINGLE_SELECT_COLUMN_NAME,
-          label: <span className={'select-module select-module-name null-option-name'}>{intl.get('Not_used')}</span>,
-        }
-      );
-    }
     const labelFieldOptions = this.createOptions(labelFields, SETTING_KEY.LABEL_COLUMN_NAME, 'value');
-    labelFieldOptions.unshift({
-      value: '',
-      setting_key: SETTING_KEY.LABEL_COLUMN_NAME,
-      label: <span className={'select-module select-module-name null-option-name'}>{intl.get('Not_used')}</span>
-    });
     return {tableOptions, viewOptions, startDateFieldOptions, endDateFieldOptions, numberFieldOptions, colorFieldOptions, labelFieldOptions};
   };
 
@@ -419,7 +405,7 @@ class TimelineSetting extends Component {
               <div className="split-line"></div>
               <div className="setting-item labeled-by">
                 <div className="title">{intl.get('Block_labeled_by')}</div>
-                {this.renderSelector(labelFieldOptions, SETTING_KEY.LABEL_COLUMN_NAME)}
+                {this.renderSelector(labelFieldOptions, SETTING_KEY.LABEL_COLUMN_NAME, true)}
               </div>
               <div className="split-line"></div>
               <div className="setting-item start-time">
