@@ -1,12 +1,12 @@
 {
   "name": "seatable-plugin-timeline",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "Visualize the recorded information on the timeline.",
   "dependencies": {
     "@seafile/seafile-calendar": "0.0.24",
     "classnames": "^2.2.6",
     "dayjs": "1.10.7",
-    "dtable-ui-component": "5.2.6",
+    "dtable-ui-component": "5.2.7",
     "dtable-utils": "5.0.10",
     "html2canvas": "^1.4.1",
     "react": "17.0.2",

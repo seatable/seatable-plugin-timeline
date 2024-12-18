@@ -114,21 +114,16 @@
   border: none;
 }
 
-.dtable-selecttimeline-view-setting-selector__menu .header-icon,
+.timeline-view-setting-selector__menu .header-icon,
 .plugin-timeline-setting .header-icon {
   display: inline-block;
   padding: 0 0.3125rem;
   margin-left: -0.3125rem;
 }
 
-.dtable-selecttimeline-view-setting-selector__menu .header-icon .dtable-font,
+.timeline-view-setting-selector__menu .header-icon .dtable-font,
 .plugin-timeline-setting .header-icon .dtable-font {
   font-size: 14px;
   color: #aaa;
   cursor: pointer;
-}
-
-.dtable-selecttimeline-view-setting-selector__indicator.dtable-selecttimeline-view-setting-selector__dropdown-indicator,
-.dtable-selecttimeline-view-setting-selector__indicator.dtable-selecttimeline-view-setting-selector__clear-indicator {
-  padding: 8px 6px;
 }
