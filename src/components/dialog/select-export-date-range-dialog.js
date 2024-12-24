@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 import 'dayjs/locale/en-gb';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
+import { Modal, ModalBody, ModalFooter, Button } from 'reactstrap';
+import { DTableModalHeader } from 'dtable-ui-component';
 import intl from 'react-intl-universal';
 import Picker from '@seafile/seafile-calendar/lib/Picker';
 import RangeCalendar from '@seafile/seafile-calendar/lib/RangeCalendar';
@@ -131,7 +132,7 @@ class SelectExportDateRangeDialog extends Component {
     const { isExporting } = this.props;
     return (
       <Modal isOpen={true} toggle={this.toggle} autoFocus={false} className="timeline-export-select-date-range">
-        <ModalHeader toggle={this.toggle}>{intl.get('Select_the_date_range_to_export')}</ModalHeader>
+        <DTableModalHeader toggle={this.toggle}>{intl.get('Select_the_date_range_to_export')}</DTableModalHeader>
         <ModalBody>
           <div className="selected-date-range">{this.renderDatePicker()}</div>
         </ModalBody>
