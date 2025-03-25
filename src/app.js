@@ -690,7 +690,7 @@ class App extends React.Component {
               onKeyDown={handleEnterKeyDown(this.onTimelineSettingToggle)}
             ></span>
             <span 
-              className="timeline-operator dtable-font dtable-icon-x btn-close"
+              className="timeline-operator dtable-font dtable-icon-x"
               onClick={this.onPluginToggle}
               tabIndex={0}
               aria-label={intl.get('Close_plugin')}

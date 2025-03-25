@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import PropTypes from 'prop-types';
 
 class ExportView extends Component {
@@ -26,8 +26,7 @@ export const ExportViewGenerator = (props) => {
   exportContainer.setAttribute('id', 'timeline-export-container');
   exportContainer.setAttribute('class', 'timeline-export-container');
   document.body.appendChild(exportContainer);
-  ReactDOM.render(
-    <ExportView {...props} />,
-    exportContainer
-  );
+
+  const root = createRoot(exportContainer);
+  root.render(<ExportView {...props} />);
 };

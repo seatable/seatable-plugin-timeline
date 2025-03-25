@@ -38,7 +38,7 @@
 }
 
 .plugin-timeline .plugin-header .timeline-operator,
-.plugin-timeline .btn-close {
+.plugin-timeline .dtable-icon-x {
   display: inline-block;
   width: 24px;
   height: 24px;
@@ -57,7 +57,7 @@
   margin-right: .25rem;
 }
 
-.plugin-timeline .btn-close {
+.plugin-timeline .dtable-icon-x {
   font-weight: 700;
 }
 
@@ -283,6 +283,7 @@
 
 .timeline-toolbar .btn-select-view button {
   border-color: transparent;
+  line-height: 1.33;
 }
 
 .timeline-toolbar .btn-select-view .dropdown-item:hover {
