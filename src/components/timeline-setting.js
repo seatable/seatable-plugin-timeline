@@ -378,7 +378,7 @@ class TimelineSetting extends Component {
             <div className="setting-header-container">
               <h3 className="h5 m-0">{intl.get('Settings')}</h3>
               <i
-                className="dtable-font dtable-icon-x btn-close"
+                className="dtable-font dtable-icon-x"
                 id='timeline-setting-close-btn'
                 onClick={this.props.onHideTimelineSetting}
                 tabIndex={0}
