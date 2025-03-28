@@ -940,6 +940,12 @@
   border: none;
 }
 
+.timeline-column-manager-btn:focus {
+  background-color: #f6f6f6;
+  border-color: rgba(0, 20, 49, .12);
+  box-shadow: 0 0 0 2px rgba(24, 38, 57, .5);
+}
+
 .timeline-column-manager-menu {
   min-width: 255px;
 }
