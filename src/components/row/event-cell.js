@@ -362,7 +362,7 @@ class EventCell extends React.Component {
             zIndex: dragging ? zIndexes.EVENT_CELL + 1 : zIndexes.EVENT_CELL,
           }}
           ref={ref => this.timeLineEventCellRef = ref}
-          onDoubleClick={this.onRowExpand}
+          onClick={this.onRowExpand}
           onMouseDown={canEventDateBeChanged ? this.onEventMouseDown : () => {}}
         >
           {canEventStartDateBeChanged && (
