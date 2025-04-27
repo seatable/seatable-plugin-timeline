@@ -275,6 +275,11 @@
   margin-right: 5px;
 }
 
+.timeline-toolbar .btn-select-view .btn-select-text{
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+ }
+ 
 .timeline-toolbar .btn-select-view .btn-group {
   height: 100%;
   border: 1px solid #dbdbdb;

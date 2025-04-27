@@ -30,6 +30,7 @@ class Toolbar extends React.Component {
       currentDate: dayjs(props.selectedDate).format(DATE_FORMAT.YEAR_MONTH),
     };
     this.viewportRightScrollLeft = 0;
+    this.lang = window.dtable ? window.dtable.lang : 'zh-cn';
   }
 
   componentDidMount() {
@@ -175,7 +176,9 @@ class Toolbar extends React.Component {
           <div className="btn-select-view">
             <Dropdown group isOpen={this.state.isSelectViewDropdownOpen} size="sm" toggle={this.onSelectViewToggle}>
               <DropdownToggle caret>
-                {this.getDisplaySelectedGridView()}
+                <span className={this.lang !== 'zh-cn' ? 'btn-select-text' : ''}>
+                  {this.getDisplaySelectedGridView()}
+                </span>
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem onClick={this.onSelectGridView.bind(this, GRID_VIEWS.YEAR)}>{intl.get('Grid_view_year')}</DropdownItem>
